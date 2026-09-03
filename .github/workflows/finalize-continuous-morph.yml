@@ -1,0 +1,78 @@
+name: Finalize Continuous Catalogue Morph
+
+on:
+  push:
+    branches:
+      - feat/catalogue-continuous-morph
+    paths:
+      - '.github/workflows/finalize-continuous-morph.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feat/catalogue-continuous-morph
+          fetch-depth: 0
+
+      - name: Integrate morph assets and docs
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          version = '20260903-5'
+          index = Path('index.html')
+          html = index.read_text()
+          css_anchor = '  <link rel="stylesheet" href="catalogue-particle-preview.css?v=20260903-4" data-catalogue-particle-styles />'
+          morph_css = f'  <link rel="stylesheet" href="catalogue-blueprint-morph.css?v={version}" />'
+          if morph_css not in html:
+              html = html.replace(css_anchor, css_anchor + '\n' + morph_css, 1)
+          script_anchor = '  <script src="catalogue-particle-preview.js?v=20260903-3"></script>'
+          morph_script = f'  <script src="catalogue-blueprint-morph.js?v={version}"></script>'
+          if morph_script not in html:
+              html = html.replace(script_anchor, script_anchor + '\n' + morph_script, 1)
+          index.write_text(html)
+
+          decisions = Path('docs/DECISIONS.md')
+          text = decisions.read_text()
+          marker = '## 2026-09-03 — Catalogue blueprint uses continuous geometry morphing'
+          block = '''## 2026-09-03 — Catalogue blueprint uses continuous geometry morphing\n\nDecision:\n\nThe catalogue blueprint stage must behave as one persistent geometric system. Hovering another catalogue no longer swaps one SVG for another; the existing route continuously deforms into the next route.\n\nImplementation:\n\n- a single runtime SVG remains mounted for the entire catalogue interaction\n- Fitness, Padel, CSP Pro and Canopy School routes are normalized into 96 equally sampled points\n- each point uses spring physics and damping to converge toward the next catalogue geometry\n- rapid hover changes redirect the current intermediate geometry instead of restarting an animation\n- route runners and technical nodes remain attached to the living path during morphing\n- the WebGL image preview remains independent and unchanged\n\nRationale:\n\nThis produces structural continuity: the next blueprint visually emerges from the previous one rather than appearing as a replacement or transition effect.\n\n---\n\n'''
+          if marker not in text:
+              text = text.replace('## Future decision logging', block + '## Future decision logging', 1)
+              decisions.write_text(text)
+
+          next_file = Path('docs/NEXT.md')
+          next_text = next_file.read_text()
+          bullet = '- replaced catalogue blueprint SVG swapping with one continuous spring-morphed SVG geometry that redirects from its current intermediate state on rapid hover changes'
+          if bullet not in next_text:
+              anchor = '- filled the catalogue left column with a catalogue-reactive animated SVG blueprint path stage while preserving the floating WebGL image preview'
+              if anchor in next_text:
+                  next_text = next_text.replace(anchor, anchor + '\n' + bullet, 1)
+              else:
+                  next_text += '\n' + bullet + '\n'
+              next_file.write_text(next_text)
+          PY
+
+      - name: Validate
+        shell: bash
+        run: |
+          node --check catalogue-blueprint-morph.js
+          grep -q 'catalogue-blueprint-morph.css?v=20260903-5' index.html
+          grep -q 'catalogue-blueprint-morph.js?v=20260903-5' index.html
+          grep -q 'SAMPLE_COUNT = 96' catalogue-blueprint-morph.js
+          grep -q 'SPRING = 0.072' catalogue-blueprint-morph.js
+          git diff --check
+
+      - name: Commit final branch state
+        shell: bash
+        run: |
+          git config user.name 'Profils Sports Agent'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html docs/DECISIONS.md docs/NEXT.md
+          git commit -m 'docs: integrate continuous catalogue morph'
+          git push origin HEAD:feat/catalogue-continuous-morph
