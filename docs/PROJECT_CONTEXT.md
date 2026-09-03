@@ -6,7 +6,7 @@ This repository contains the active redesign of `profilssports.com`.
 
 The redesign started as an exploration in Figma, then moved to a direct HTML / CSS / JavaScript implementation because the user wanted a highly animated, production-like prototype that could be iterated quickly.
 
-The current active implementation is V4.
+The current active implementation is V3.
 
 Active repository:
 
@@ -110,7 +110,7 @@ Recommended simplified top-level architecture:
 - Company
 - Contact
 
-Current V4 homepage is still a single-page prototype rather than the final multi-page architecture.
+Current V3 homepage is still a single-page prototype rather than the final multi-page architecture.
 
 ## Verified service data from the legacy repo
 
@@ -455,20 +455,3 @@ Prefer:
 - strong motion with graceful fallbacks
 
 If the project grows into multiple rich pages with shared components and data-heavy interactions, a framework migration can be discussed later, but should not be introduced implicitly.
-
-
-## V4 motion system
-
-V4 keeps the approved V3 visual world and adds a more state-driven motion grammar inspired by the interaction principles observed on Heron AI, without copying its visual identity.
-
-Key additions:
-
-- a hero drag inspector that moves through PHOTO → PLAN → STRUCTURE → SURFACE → ÉQUIPEMENTS
-- the directional cursor becomes a horizontal drag instrument inside the inspector
-- the solutions carousel keeps its protected horizontal sticky behavior and adds subtle multi-speed depth between media, copy and numbering
-- the Method section becomes a long sticky scrollytelling sequence where the technical project builds across five verified lifecycle states
-- anchor navigation uses a short architectural blue-black wipe with a signal-yellow construction line
-- motion remains disabled or simplified under `prefers-reduced-motion`
-- the native cursor fallback remains mandatory when the custom cursor cannot safely run
-
-The interaction system should remain purposeful: motion communicates project state, inspection, progression or navigation rather than adding decorative effects.
