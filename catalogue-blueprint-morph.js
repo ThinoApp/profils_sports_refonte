@@ -19,31 +19,31 @@
 
   const STATES = {
     fitness: {
-      number: '01',
+      number: '01 / 04',
       title: 'FITNESS',
-      footer: 'PERFORMANCE CIRCUIT / ACTIVE ROUTE',
-      coordinate: 'X 042 / Y 118',
+      footer: 'CATALOGUE FITNESS',
+      coordinate: '74 PAGES',
       path: 'M62 436C82 286 126 128 257 105c116-20 197 85 204 189 8 119-73 197-191 181-96-13-158-95-141-190 15-85 92-143 176-124 70 16 114 86 96 154-17 64-79 103-143 87-51-13-80-65-67-116 10-41 48-69 89-62'
     },
     padel: {
-      number: '02',
+      number: '02 / 04',
       title: 'PADEL',
-      footer: 'RACKET TRAJECTORY / REBOUND LOGIC',
-      coordinate: 'X 128 / Y 064',
+      footer: 'CATALOGUE PADEL',
+      coordinate: '20 PAGES',
       path: 'M126 404C178 348 189 300 156 263c-30-34-19-82 28-102 62-26 118 20 106 78-10 49-60 62-79 100-18 36 10 81 63 73 56-8 87-68 63-115-19-38-6-90 45-113'
     },
     csp: {
-      number: '03',
+      number: '03 / 04',
       title: 'CSP PRO',
-      footer: 'OUTDOOR SYSTEM / STRUCTURAL VECTOR',
-      coordinate: 'AXIS 03 / LOAD 24',
+      footer: 'CATALOGUE CSP PRO',
+      coordinate: '4 PAGES',
       path: 'M93 411L159 311l66 48 72-149 74 54 58-110'
     },
     canopy: {
-      number: '04',
+      number: '04 / 04',
       title: 'CANOPY SCHOOL',
-      footer: 'EDUCATION CANOPY / FLOW ENVELOPE',
-      coordinate: 'ARC 04 / SPAN 18',
+      footer: 'CATALOGUE CANOPY SCHOOL',
+      coordinate: '4 PAGES',
       path: 'M90 402C139 259 208 167 292 143c67-19 122 16 151 72'
     }
   };
@@ -109,18 +109,18 @@
   const runnerTrail = createSvg('circle', { r: '3', fill: '#efe158', opacity: '.58' });
   svg.append(runnerTrail, runner);
 
-  const labelGroup = createSvg('g', { 'font-family': 'Arial, Helvetica, sans-serif', fill: '#091521' });
+  const labelGroup = createSvg('g', { fill: '#091521' });
   const label = (x, y, text, attrs = {}) => {
     const t = createSvg('text', { x, y, ...attrs });
     t.textContent = text;
     labelGroup.appendChild(t);
     return t;
   };
-  label(38, 49, 'PSI / MOTION BLUEPRINT', { 'font-size': '9', 'font-weight': '700', 'letter-spacing': '2' });
-  const stateNumber = label(436, 49, '01', { 'font-size': '9', 'font-weight': '700', 'letter-spacing': '2' });
-  const stateTitle = label(39, 86, 'FITNESS', { 'font-size': '32', 'font-weight': '700', 'letter-spacing': '-1' });
-  const stateFooter = label(38, 526, 'PERFORMANCE CIRCUIT / ACTIVE ROUTE', { 'font-size': '8', 'font-weight': '700', 'letter-spacing': '1.7', opacity: '.5' });
-  const stateCoordinate = label(454, 526, 'X 042 / Y 118', { 'font-size': '8', 'font-weight': '700', 'text-anchor': 'end', opacity: '.5' });
+  label(38, 49, 'PROFILS SPORTS / CATALOGUES', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8.5', 'font-weight': '600', 'letter-spacing': '.9', opacity: '.72' });
+  const stateNumber = label(454, 49, '01 / 04', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8.5', 'font-weight': '600', 'letter-spacing': '.4', 'text-anchor': 'end', opacity: '.72' });
+  const stateTitle = label(39, 88, 'FITNESS', { 'font-family': '"Barlow Condensed", Arial, sans-serif', 'font-size': '31', 'font-weight': '600', 'letter-spacing': '.2' });
+  const stateFooter = label(38, 526, 'CATALOGUE FITNESS', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8', 'font-weight': '500', 'letter-spacing': '.45', opacity: '.48' });
+  const stateCoordinate = label(454, 526, '74 PAGES', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8', 'font-weight': '500', 'letter-spacing': '.35', 'text-anchor': 'end', opacity: '.48' });
   svg.appendChild(labelGroup);
 
   stage.appendChild(svg);
