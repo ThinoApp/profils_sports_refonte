@@ -26,7 +26,7 @@ The site should feel closer to an architectural monograph / engineering studio t
 
 ## Visual direction
 
-Preserve the current V3 visual language unless the user explicitly requests a new direction.
+Preserve the current V4 visual and motion language unless the user explicitly requests a new direction.
 
 Core principles:
 
@@ -59,6 +59,9 @@ Do not remove or fundamentally redesign these without explicit approval:
 - horizontal sticky solutions carousel
 - directional mouse cursor inspired by the supplied reference video
 - cinematic hero treatment
+- hero drag / inspection interaction
+- state-based Method scrollytelling
+- architectural anchor transitions
 - catalogue interaction
 - blueprint / technical visual language
 - FR / EN support
@@ -203,7 +206,7 @@ Do not restore unconditional `cursor: none` behavior without a robust fallback.
 
 ## Current implementation status
 
-The current redesign is V3 and is already deployed on GitHub Pages.
+The current redesign is V4 and is deployed through GitHub Pages.
 
 For the latest priorities and known issues, always consult:
 

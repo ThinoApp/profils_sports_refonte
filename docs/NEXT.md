@@ -4,7 +4,7 @@ Last updated: 2026-09-03
 
 ## Current version
 
-V3 redesign deployed on GitHub Pages.
+V4 redesign deployed through GitHub Pages.
 
 Live preview:
 
@@ -18,12 +18,16 @@ Primary branch:
 
 - moved the active redesign workflow to `ThinoApp/profils_sports_refonte`
 - configured GitHub Pages deployment through GitHub Actions
-- established the V3 repository-backed homepage
+- established repository-backed homepage content from verified legacy sources
 - preserved the horizontal sticky solutions carousel
-- replaced the generic cursor treatment with a directional dart inspired by the supplied reference video
-- fixed a cursor compatibility bug by adding robust pointer detection and a native cursor fallback
-- extracted and incorporated verified service, catalogue and client data from the legacy repository
-- documented agent handoff context in `AGENTS.md` and `/docs`
+- implemented and hardened the directional dart cursor with native fallback
+- added the V4 hero `DRAG TO INSPECT` experience
+- made the cursor become a horizontal drag instrument inside the inspector
+- added PHOTO → PLAN → STRUCTURE → SURFACE → ÉQUIPEMENTS inspection states
+- added subtle multi-speed depth to the horizontal solutions carousel
+- transformed the Method section into state-based sticky scrollytelling
+- added architectural anchor transitions
+- documented the V4 interaction decisions for future agents
 
 ## Current implementation files
 
@@ -34,77 +38,52 @@ Primary branch:
 
 ## Current priorities
 
-1. Validate the directional cursor visually against the reference video on the live GitHub Pages build.
-2. Polish responsive behavior, especially the horizontal carousel and large typography on tablet/mobile.
-3. Build a proper Project / Reference page template ready for real verified projects.
-4. Build a richer Catalogue detail / browsing experience using the real catalogue page sequences.
-5. Continue replacing generic/legacy media with verified Profils Sports project imagery when available.
-6. Evolve the current single-page prototype toward the final site information architecture.
+1. Validate V4 visually on the live GitHub Pages build, especially hero composition and cursor behavior.
+2. Tune the hero inspector scale/position after testing on common desktop viewport sizes.
+3. Validate the long Method scrollytelling pacing and reduce its scroll length if it feels too slow.
+4. Polish responsive behavior for the hero inspector, carousel and large typography on tablet/mobile.
+5. Build a proper Project / Reference page template once real verified project data is available.
+6. Build a richer Catalogue detail / browsing experience using the real catalogue page sequences.
+7. Continue replacing generic/legacy media with verified Profils Sports project imagery when available.
 
-## Proposed future page architecture
+## Protected V4 interactions
 
-- Home
-- Projects
-- Solutions
-- Expertise
-- Company
-- Contact
+Do not remove or fundamentally redesign without explicit discussion:
 
-Potential solution detail pages can be created for:
-
-- Stades
-- Sports collectifs
-- Accès libre
-- Gymnases
-- Aménagement de sol
-- Installation & pose
-- Maintenance
-- Conseil & expertise
+- horizontal sticky solutions carousel
+- directional dart cursor and its native fallback
+- hero drag inspector
+- PHOTO → PLAN → STRUCTURE → SURFACE → ÉQUIPEMENTS state model
+- Method scrollytelling
+- architectural blueprint language
+- signal yellow `#EFE158`
 
 ## Known issues / watch points
 
 ### Cursor
 
-The latest cursor implementation should now:
+The custom cursor must only hide the native cursor after successful fine-pointer detection. V4 uses `any-pointer:fine`, pointer + mouse movement compatibility handling, and restores the native cursor when the custom cursor is unavailable.
 
-- activate on devices exposing a fine pointer
-- use `any-pointer:fine`
-- use pointermove + mousemove compatibility handling
-- restore the native cursor if custom cursor cannot run
+Inside the hero inspector, the cursor changes from a directional dart into a horizontal double-arrow / drag instrument and expands while dragging.
 
-If the cursor still fails on a specific browser/device, inspect the live build before changing the visual design itself.
+### Hero inspector
+
+The interaction supports pointer drag and keyboard arrows/Home/End. On reduced-motion environments the technical state is revealed without relying on motion.
+
+The inspector currently uses existing Profils Sports imagery as its photographic base rather than fabricated project media.
 
 ### External media
 
-The refonte currently references several assets directly from `www.profilssports.com` rather than copying heavy media into this repository.
-
-This keeps the refonte repository light, but creates an external dependency. If the legacy domain/assets change, media may break.
-
-A future production hardening step should decide whether to:
-
-- copy approved assets into the refonte repository, or
-- move them to a durable CDN / asset host.
+The refonte still references several assets directly from `www.profilssports.com`. A later production-hardening pass should decide whether approved assets are copied locally or moved to a durable asset host.
 
 ### Data quality
 
-Do not reuse obvious demo data from legacy pages such as fictional references, partners, awards, budgets or satisfaction metrics.
-
-Wait for verified data from the user or a trusted source before building final project case studies.
-
-## Do not change without discussion
-
-- V3 overall art direction
-- signal yellow `#EFE158`
-- monumental editorial typography system
-- horizontal sticky solutions carousel
-- directional dart cursor concept
-- technical blueprint / engineering language
-- repository-backed content integrity rule
+Do not reuse demo content from legacy references/partners pages as factual projects, awards, budgets, certifications or client claims.
 
 ## Handoff instructions for a new conversation
 
-The recommended opening prompt is:
+Recommended opening prompt:
 
 > Work on `ThinoApp/profils_sports_refonte`. Read `AGENTS.md`, `docs/PROJECT_CONTEXT.md`, `docs/DECISIONS.md` and `docs/NEXT.md` first. The repository is the source of truth. Then fetch the latest implementation files before making changes.
 
-If this file conflicts with the actual current repository implementation, treat the repository code and the most recent commits as authoritative and update this file accordingly.
+If this file conflicts with the actual current repository implementation, treat the repository code and latest commits as authoritative and update this file accordingly.
