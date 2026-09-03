@@ -269,6 +269,27 @@ This fills the large negative space created by moving the catalogue image to the
 
 ---
 
+## 2026-09-03 — Catalogue blueprint uses continuous geometry morphing
+
+Decision:
+
+The catalogue blueprint stage must behave as one persistent geometric system. Hovering another catalogue no longer swaps one SVG for another; the existing route continuously deforms into the next route.
+
+Implementation:
+
+- a single runtime SVG remains mounted for the entire catalogue interaction
+- Fitness, Padel, CSP Pro and Canopy School routes are normalized into 96 equally sampled points
+- each point uses spring physics and damping to converge toward the next catalogue geometry
+- rapid hover changes redirect the current intermediate geometry instead of restarting an animation
+- route runners and technical nodes remain attached to the living path during morphing
+- the WebGL image preview remains independent and unchanged
+
+Rationale:
+
+This produces structural continuity: the next blueprint visually emerges from the previous one rather than appearing as a replacement or transition effect.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
