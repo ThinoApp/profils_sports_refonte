@@ -1,0 +1,170 @@
+name: Install Catalogue Particle Preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/install-catalogue-particles.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Write particle preview module
+        shell: bash
+        run: |
+          cat <<'B64' | base64 -d | gunzip > catalogue-particle-preview.js
+          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
+          B64
+
+      - name: Write particle preview styles
+        shell: bash
+        run: |
+          cat <<'B64' | base64 -d | gunzip > catalogue-particle-preview.css
+          H4sICCxumWoCA2NhdGFsb2d1ZS1wYXJ0aWNsZS1wcmV2aWV3LmNzcwClVEFu2zAQvPsV2/QSB6YtJygQyJcCOfRSoEBboOe1uLIWpkiBpGW7QYE+oi/sS0pK
+          jC2niVHUPsmr1QxndoezG3hAj8qsNgQNWs+FCg+WWqYt/P75C9gZhZ4kSHJrbxogXaEuqCbtpyMA+FoR0I6dZ72C4giWMCzVyNqBD20lKrXEYg2lseDNpqgm
+          4b3cFAG+Np6NnkTEb7T88HH28Onzl/AFq40lB6glrGm/NGilMFrtQWPLK4wfTeFmNpoeqMWTDlGgbtHBYwBtjOPYm0PJO5KLUAqnIp9DFp+3LH2VwzzL2m38
+          XxGvKt8Xqlj4LlhL2uVwf5t1XzSGtScrqA1GuBy00RTrpsGC/T7htux4yaorVCwl6Vj1FvXTcVI/tGivhXhBhNzYTuUE5u+y2o1BsSa0nVOD35EJMpd6/h20
+          90ApUYThruhwrMXox+iMtVN2oiMOS/M4FD9/Lj51naoXkhRGq1zH874myQjXNWvRD2Q+z+bNbtxN/zo5npdB23jyahvqvThp7U62NHL/kg5LKPfw9vDGwbAr
+          7fDj6NTh4Sxf34Sg6D95VUhTIj3urQ1eeW6pJz3s4+1lVNZszzJdhJznWAZnEkFhgk06hOrqavGMEZfhltn4pG0YzEhuZXBXURlrEBpZpsV2vNKoxufHcBq3
+          AVq/PDC9vXcJj9DR+HLVlWnD7vXaJxcAxXRhESdxauRfGnK4a3b9uYcxwt0xH1nIR8hM2OiSrBPp1hX9rZunW7iPyrmbFCS7pststBfecN0Y61H7Rcf9ByE1
+          fWxPBgAA
+          B64
+
+      - name: Integrate module and update handoff docs
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path('index.html')
+          html = index.read_text()
+          script_tag = '  <script src="catalogue-particle-preview.js"></script>'
+          anchor = '  <script src="script.js"></script>'
+          if script_tag not in html:
+              if anchor not in html:
+                  raise SystemExit('script.js anchor not found')
+              html = html.replace(anchor, anchor + '\n' + script_tag, 1)
+              index.write_text(html)
+
+          decisions = Path('docs/DECISIONS.md')
+          decision_text = decisions.read_text()
+          marker = '## 2026-09-03 — Catalogue preview becomes a localized WebGL interaction'
+          if marker not in decision_text:
+              block = '''\n---\n\n## 2026-09-03 — Catalogue preview becomes a localized WebGL interaction\n\nDecision:\n\nApply the cursor-follow particle transition only to the `#catalogues` section. Keep the hero, horizontal solutions carousel, approach, clients and contact interactions unchanged.\n\nImplementation:\n\n- floating preview follows the pointer through `requestAnimationFrame` interpolation\n- Three.js + custom `ShaderMaterial` + `THREE.Points` render the transition\n- outgoing and incoming particle systems overlap temporally\n- stable states use sharp texture planes rather than visible particle mosaics\n- catalogue textures are preloaded before WebGL mode is enabled\n- the existing static catalogue preview remains the fallback for touch, reduced motion, WebGL/CORS failure and keyboard use\n\nCalibration note:\n\nThe supplied written prompt defines the required architecture and starting parameters, but the reference video for this specific particle effect has not been supplied in the current handoff. The current values are therefore an initial implementation baseline and must be calibrated against that video before claiming exact visual/timing parity.\n'''
+              future = '\n---\n\n## Future decision logging'
+              if future in decision_text:
+                  decision_text = decision_text.replace(future, block + future, 1)
+              else:
+                  decision_text += block
+              decisions.write_text(decision_text)
+
+          next_file = Path('docs/NEXT.md')
+          next_text = next_file.read_text()
+          bullet = '- added a localized WebGL particle preview to the catalogue list with cursor inertia, outgoing/incoming overlap and static fallback'
+          if bullet not in next_text:
+              anchor = '- documented agent handoff context in `AGENTS.md` and `/docs`'
+              if anchor in next_text:
+                  next_text = next_text.replace(anchor, anchor + '\n' + bullet, 1)
+              else:
+                  next_text += '\n' + bullet + '\n'
+          note_marker = '### Catalogue particle preview'
+          if note_marker not in next_text:
+              insert = '''\n### Catalogue particle preview\n\nDesktop fine-pointer users get a floating WebGL preview while hovering Fitness, Padel, CSP Pro and Canopy School. The preview follows the cursor with inertia and transitions between covers through overlapping outgoing/incoming particles.\n\nThe current tuning is based on the written reverse-engineering specification only. Exact size, offset, particle density, scatter radius, duration and easing still need frame-by-frame calibration once the specific reference video is available.\n\nThe original static catalogue preview is intentionally preserved as the fallback.\n'''
+              known = '## Do not change without discussion'
+              if known in next_text:
+                  next_text = next_text.replace(known, insert + '\n' + known, 1)
+              else:
+                  next_text += insert
+          next_file.write_text(next_text)
+          PY
+
+      - name: Validate files
+        shell: bash
+        run: |
+          node --check catalogue-particle-preview.js
+          grep -q 'catalogue-particle-preview.js' index.html
+          grep -q 'catalogue-particle-ready' catalogue-particle-preview.css
+          git diff --check
+
+      - name: Commit implementation
+        shell: bash
+        run: |
+          git config user.name "Profils Sports Agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html catalogue-particle-preview.js catalogue-particle-preview.css docs/DECISIONS.md docs/NEXT.md
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git commit -m "feat: add WebGL particle preview to catalogues"
+          git push
