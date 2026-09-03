@@ -290,6 +290,30 @@ This produces structural continuity: the next blueprint visually emerges from th
 
 ---
 
+## 2026-09-03 — Hero and manifesto become one scroll-driven shared scene
+
+Decision:
+
+The homepage Hero and the following “De la conception à l’exploitation” section are treated as one continuous desktop scene. The Hero stays in a full-viewport coordinate system while a scroll-driven clip mask closes toward the real central media rectangle of the manifesto behind it.
+
+Implementation:
+
+- one normalized scroll progress drives the full transition
+- the Hero is cropped with `clip-path: inset()` rather than uniformly scaled
+- the manifesto already exists behind the Hero during the transition
+- the final mask geometry is measured from the actual central media bounding box
+- Hero video layers crossfade internally into an architectural project-plan media treatment only near the end
+- manifesto grid, marker, headline, copy and three project-cycle items reveal at separate progress ranges
+- the header changes theme without changing geometry
+- reverse scrolling is inherently reversible because every state is derived from the same scroll progress
+- mobile and `prefers-reduced-motion` retain the normal non-pinned Hero + manifesto flow
+
+Rationale:
+
+This creates a signature transition based on framing and continuity rather than decorative zooms, fades or page-transition effects, while translating the reference interaction into Profils Sports’ architecture / engineering language.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
