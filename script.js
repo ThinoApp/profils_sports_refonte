@@ -3,7 +3,8 @@
   const qa = (s, c = document) => [...c.querySelectorAll(s)];
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fine = matchMedia('(pointer:fine)').matches;
+  // `any-pointer` is more reliable on laptops / hybrid devices than `pointer`.
+  const fine = matchMedia('(any-pointer:fine)').matches;
 
   addEventListener('load', () => {
     setTimeout(() => {
@@ -71,8 +72,36 @@
   addEventListener('resize', onScroll, { passive:true });
   renderScroll();
 
-  if (!reduced && fine) {
-    const cursor = q('.directional-cursor');
+  // ---------------------------------------------------------------------------
+  // Directional cursor
+  // ---------------------------------------------------------------------------
+  const cursor = q('.directional-cursor');
+  const customCursorEnabled = Boolean(cursor && fine && !reduced);
+
+  // Important fallback: CSS intentionally hides the native cursor for the
+  // desktop experience. If custom cursor support is not available, restore a
+  // normal system cursor so the page can never end up cursor-less.
+  if (!customCursorEnabled) {
+    document.body.style.cursor = 'auto';
+    if (cursor) cursor.style.display = 'none';
+
+    qa('a, button, [role="button"], label').forEach(el => {
+      el.style.cursor = 'pointer';
+    });
+    qa('input, select, textarea').forEach(el => {
+      el.style.cursor = 'auto';
+    });
+  }
+
+  if (customCursorEnabled) {
+    // Inline state makes the cursor independent from stylesheet load timing and
+    // ensures it renders above every site layer, including the intro transition.
+    cursor.style.display = 'block';
+    cursor.style.visibility = 'visible';
+    cursor.style.opacity = '0';
+    cursor.style.zIndex = '30000';
+    document.body.style.cursor = 'none';
+
     let tx = innerWidth * .5;
     let ty = innerHeight * .5;
     let x = tx;
@@ -85,17 +114,25 @@
     let visible = false;
 
     const shortestAngle = (from, to) => {
-      let delta = (to - from + 540) % 360 - 180;
+      const delta = (to - from + 540) % 360 - 180;
       return from + delta;
     };
 
     const showCursor = () => {
-      if (visible) return;
+      if (!cursor) return;
       visible = true;
       document.body.classList.add('cursor-ready');
+      cursor.style.opacity = '1';
     };
 
-    addEventListener('pointermove', e => {
+    const hideCursor = () => {
+      if (!cursor) return;
+      visible = false;
+      document.body.classList.remove('cursor-ready', 'cursor-pressed');
+      cursor.style.opacity = '0';
+    };
+
+    const handlePointerMove = e => {
       showCursor();
       tx = e.clientX;
       ty = e.clientY;
@@ -106,28 +143,29 @@
       speed = speed * .58 + instantaneousSpeed * .42;
 
       // Update direction only while the pointer is actually travelling.
-      // The arrow then keeps its last heading when the hand stops,
-      // exactly like the reference interaction.
+      // At rest the dart keeps its last heading, like the supplied reference.
       if (instantaneousSpeed > .65) {
         targetAngle = Math.atan2(vy, vx) * 180 / Math.PI;
       }
 
       lastInputX = tx;
       lastInputY = ty;
-    }, { passive: true });
+    };
 
-    addEventListener('pointerleave', () => {
-      visible = false;
-      document.body.classList.remove('cursor-ready');
-    });
-    addEventListener('pointerenter', showCursor);
+    addEventListener('pointermove', handlePointerMove, { passive: true });
+    // Mousemove is kept as a compatibility safety net for browsers/environments
+    // that expose a fine mouse but do not dispatch Pointer Events consistently.
+    addEventListener('mousemove', handlePointerMove, { passive: true });
+
+    document.documentElement.addEventListener('mouseenter', showCursor);
+    document.documentElement.addEventListener('mouseleave', hideCursor);
     addEventListener('pointerdown', () => document.body.classList.add('cursor-pressed'));
     addEventListener('pointerup', () => document.body.classList.remove('cursor-pressed'));
-    addEventListener('blur', () => document.body.classList.remove('cursor-ready', 'cursor-pressed'));
+    addEventListener('blur', hideCursor);
 
     const tickCursor = () => {
-      // Light positional inertia — enough to feel fluid without detaching
-      // the cursor from the user's hand.
+      // Light positional inertia — enough to feel fluid without detaching the
+      // visual cursor from the user's real pointer.
       x += (tx - x) * .42;
       y += (ty - y) * .42;
 
