@@ -1,0 +1,264 @@
+(() => {
+  const q = (s, c = document) => c.querySelector(s);
+  const qa = (s, c = document) => [...c.querySelectorAll(s)];
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(pointer:fine)').matches;
+
+  addEventListener('load', () => {
+    setTimeout(() => {
+      q('[data-preloader]')?.classList.add('is-done');
+      document.body.classList.add('is-loaded');
+    }, reduced ? 0 : 850);
+  });
+
+  const heroVideo = q('[data-hero-video]');
+  if (heroVideo && reduced) heroVideo.pause();
+  document.addEventListener('visibilitychange', () => {
+    if (!heroVideo || reduced) return;
+    if (document.hidden) heroVideo.pause();
+    else heroVideo.play().catch(() => {});
+  });
+
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      revealObserver.unobserve(entry.target);
+    });
+  }, { threshold: .14, rootMargin: '0px 0px -7% 0px' });
+  qa('[data-reveal]').forEach(el => revealObserver.observe(el));
+
+  const header = q('[data-header]');
+  const progress = q('.scroll-progress span');
+  const heroMedia = q('[data-parallax]');
+  const heroTitle = q('[data-hero-title]');
+  const horizontal = q('[data-horizontal-section]');
+  const horizontalTrack = q('[data-horizontal-track]');
+  const worldsProgress = q('.worlds-progress span');
+
+  let rafPending = false;
+  const renderScroll = () => {
+    rafPending = false;
+    const y = scrollY;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    if (progress) progress.style.width = `${max > 0 ? (y / max) * 100 : 0}%`;
+    header?.classList.toggle('is-scrolled', y > 70);
+
+    if (!reduced && heroMedia) heroMedia.style.transform = `translate3d(0,${y * .08}px,0) scale(1.045)`;
+    if (!reduced && heroTitle && y < innerHeight * 1.1) {
+      const p = clamp(y / innerHeight, 0, 1);
+      heroTitle.style.transform = `translate3d(${p * -2.5}vw,${p * 3.8}vh,0) scale(${1 - p * .045})`;
+    }
+
+    if (horizontal && horizontalTrack && innerWidth > 720 && !reduced) {
+      const r = horizontal.getBoundingClientRect();
+      const scrollable = horizontal.offsetHeight - innerHeight;
+      const local = clamp(-r.top, 0, scrollable);
+      const p = scrollable > 0 ? local / scrollable : 0;
+      const visibleTrackArea = innerWidth * .66;
+      const overflow = Math.max(0, horizontalTrack.scrollWidth - visibleTrackArea);
+      horizontalTrack.style.transform = `translate3d(${-p * overflow}px,0,0)`;
+      if (worldsProgress) worldsProgress.style.width = `${p * 100}%`;
+    }
+  };
+  const onScroll = () => {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(renderScroll);
+  };
+  addEventListener('scroll', onScroll, { passive:true });
+  addEventListener('resize', onScroll, { passive:true });
+  renderScroll();
+
+  if (!reduced && fine) {
+    const cursor = q('.directional-cursor');
+    let tx = innerWidth * .5;
+    let ty = innerHeight * .5;
+    let x = tx;
+    let y = ty;
+    let lastInputX = tx;
+    let lastInputY = ty;
+    let angle = -18;
+    let targetAngle = angle;
+    let speed = 0;
+    let visible = false;
+
+    const shortestAngle = (from, to) => {
+      let delta = (to - from + 540) % 360 - 180;
+      return from + delta;
+    };
+
+    const showCursor = () => {
+      if (visible) return;
+      visible = true;
+      document.body.classList.add('cursor-ready');
+    };
+
+    addEventListener('pointermove', e => {
+      showCursor();
+      tx = e.clientX;
+      ty = e.clientY;
+
+      const vx = tx - lastInputX;
+      const vy = ty - lastInputY;
+      const instantaneousSpeed = Math.hypot(vx, vy);
+      speed = speed * .58 + instantaneousSpeed * .42;
+
+      // Update direction only while the pointer is actually travelling.
+      // The arrow then keeps its last heading when the hand stops,
+      // exactly like the reference interaction.
+      if (instantaneousSpeed > .65) {
+        targetAngle = Math.atan2(vy, vx) * 180 / Math.PI;
+      }
+
+      lastInputX = tx;
+      lastInputY = ty;
+    }, { passive: true });
+
+    addEventListener('pointerleave', () => {
+      visible = false;
+      document.body.classList.remove('cursor-ready');
+    });
+    addEventListener('pointerenter', showCursor);
+    addEventListener('pointerdown', () => document.body.classList.add('cursor-pressed'));
+    addEventListener('pointerup', () => document.body.classList.remove('cursor-pressed'));
+    addEventListener('blur', () => document.body.classList.remove('cursor-ready', 'cursor-pressed'));
+
+    const tickCursor = () => {
+      // Light positional inertia — enough to feel fluid without detaching
+      // the cursor from the user's hand.
+      x += (tx - x) * .42;
+      y += (ty - y) * .42;
+
+      const unwrappedTarget = shortestAngle(angle, targetAngle);
+      angle += (unwrappedTarget - angle) * .24;
+      speed *= .88;
+
+      // Tiny kinetic stretch at high velocity. At rest it returns to 1.
+      const stretch = 1 + clamp(speed / 115, 0, .16);
+      const squash = 1 - clamp(speed / 180, 0, .07);
+
+      if (cursor) {
+        cursor.style.transform = `translate3d(${x - 12}px,${y - 12}px,0) rotate(${angle}deg) scale(${stretch},${squash})`;
+      }
+      requestAnimationFrame(tickCursor);
+    };
+    tickCursor();
+
+    qa('a,button,[data-cursor-label],input,select,textarea').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+
+    qa('.magnetic').forEach(el => {
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        const mx = e.clientX - (r.left + r.width/2);
+        const my = e.clientY - (r.top + r.height/2);
+        el.style.transform = `translate(${mx * .1}px,${my * .14}px)`;
+      });
+      el.addEventListener('pointerleave', () => el.style.transform = 'translate(0,0)');
+    });
+  }
+
+  const catalogueImages = {
+    fitness: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Fitness/Fitness_Page_01.jpg',
+    padel: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/PADEL/PADEL_page-0001.jpg',
+    csp: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/CSP%20Pro/CSP%20PRO_page-0001.jpg',
+    canopy: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Canopy/CANOPY%20SCHOOL_pages-to-jpg-0001.jpg'
+  };
+  const previewImage = q('.catalogue-preview__image');
+  const previewNumber = q('.catalogue-preview__data strong');
+  const previewCategory = q('.catalogue-preview__category');
+  const previewPages = q('.catalogue-preview__pages');
+  let lang = 'fr';
+
+  const activateCatalogue = (row, index) => {
+    qa('[data-catalogue]').forEach(r => r.classList.remove('is-active'));
+    row.classList.add('is-active');
+    if (previewImage) {
+      previewImage.style.backgroundImage = `url("${catalogueImages[row.dataset.catalogue]}")`;
+      if (!reduced && previewImage.animate) {
+        previewImage.animate(
+          [{transform:'scale(1.045)',filter:'brightness(.72)'},{transform:'scale(1)',filter:'brightness(1)'}],
+          {duration:520,easing:'cubic-bezier(.18,.82,.18,1)'}
+        );
+      }
+    }
+    if (previewNumber) previewNumber.textContent = String(index + 1).padStart(2,'0');
+    if (previewCategory) previewCategory.textContent = (lang === 'fr' ? row.dataset.categoryFr : row.dataset.categoryEn || row.dataset.categoryFr).toUpperCase();
+    if (previewPages) previewPages.textContent = `${row.dataset.pages} PAGES`;
+  };
+  const catalogueRows = qa('[data-catalogue]');
+  catalogueRows.forEach((row, index) => {
+    row.addEventListener('mouseenter', () => activateCatalogue(row, index));
+    row.addEventListener('focus', () => activateCatalogue(row, index));
+  });
+  if (catalogueRows[0]) activateCatalogue(catalogueRows[0], 0);
+
+  qa('[data-approach-row]').forEach(row => {
+    const activate = () => {
+      qa('[data-approach-row]').forEach(item => item.classList.remove('is-active'));
+      row.classList.add('is-active');
+      const code = q('[data-approach-code]');
+      if (code) code.innerHTML = (row.dataset.code || '').replaceAll(' / ', '<br>');
+    };
+    row.addEventListener('mouseenter', activate);
+    row.addEventListener('focusin', activate);
+  });
+
+  if (!reduced && fine) {
+    q('[data-blueprint]')?.addEventListener('pointermove', e => {
+      const host = e.currentTarget;
+      const r = host.getBoundingClientRect();
+      const x = (e.clientX-r.left)/r.width - .5;
+      const y = (e.clientY-r.top)/r.height - .5;
+      const photo = q('.blueprint-photo', host);
+      if (photo) photo.style.transform = `translate(${x * -10}px,${y * -8}px) scale(1.015)`;
+    });
+    q('[data-blueprint]')?.addEventListener('pointerleave', e => {
+      const photo = q('.blueprint-photo', e.currentTarget);
+      if (photo) photo.style.transform = 'translate(0,0) scale(1)';
+    });
+  }
+
+  const orbit = q('[data-orbit]');
+  if (orbit && !reduced && fine) {
+    q('#contact')?.addEventListener('pointermove', e => {
+      const r = e.currentTarget.getBoundingClientRect();
+      const x = (e.clientX-r.left)/r.width - .5;
+      const y = (e.clientY-r.top)/r.height - .5;
+      orbit.style.transform = `translate(${x * 26}px,${y * 20}px) rotate(${x * 1.5}deg)`;
+    });
+    q('#contact')?.addEventListener('pointerleave', () => orbit.style.transform = 'none');
+  }
+
+  q('[data-language]')?.addEventListener('click', () => {
+    lang = lang === 'fr' ? 'en' : 'fr';
+    document.documentElement.lang = lang;
+    qa('[data-fr][data-en]').forEach(el => {
+      const value = el.dataset[lang];
+      if (!value) return;
+      const arrow = el.querySelector(':scope > span:last-child');
+      if (el.matches('a.button') && arrow) {
+        el.firstChild.textContent = `${value} `;
+      } else {
+        el.innerHTML = value.replaceAll('\n','<br>');
+      }
+    });
+    const active = q('[data-catalogue].is-active');
+    if (active) activateCatalogue(active, catalogueRows.indexOf(active));
+  });
+
+  const menuButton = q('[data-menu-toggle]');
+  const menu = q('[data-mobile-menu]');
+  const setMenu = open => {
+    menuButton?.setAttribute('aria-expanded', String(open));
+    menu?.setAttribute('aria-hidden', String(!open));
+    menu?.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  menuButton?.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true'));
+  qa('a', menu).forEach(a => a.addEventListener('click', () => setMenu(false)));
+})();

@@ -1,0 +1,21 @@
+{
+  "services": [
+    {"name":"Accès libre","scope":["Aires de fitness","Street workout","Pumptrack","Skatepark","Terrains multisports"]},
+    {"name":"Aménagement de sol","scope":["BtoB","EPDM","SBR","Gazons synthétiques","Mulch","Vente en gros","Pose"]},
+    {"name":"Conseil & expertise","scope":["Aménagements design","Sport","Développement","Innovation"]},
+    {"name":"Gymnases","scope":["Traçage","Tribunes","Installation et aménagement","Maintenance"]},
+    {"name":"Installation & pose","scope":["Équipements et aménagements sports et loisirs"]},
+    {"name":"Maintenance","scope":["Aire de jeux pour enfants","Matériel sports et loisirs","Gymnase et stades"]},
+    {"name":"Sports collectifs","scope":["Football","Basket-ball","Handball","Rugby","Volley-ball"]},
+    {"name":"Stades","scope":["Installation et aménagement","Tribunes","Sièges de stade","Tunnel d'accès"]}
+  ],
+  "catalogues": [
+    {"name":"Fitness","category":"Performance","pages":74},
+    {"name":"Padel","category":"Sports de raquette","pages":20},
+    {"name":"CSP Pro","category":"Outdoor","pages":4},
+    {"name":"Canopy School","category":"Education","pages":4}
+  ],
+  "clientProfiles": ["Collectivités","Entreprises privées","Événementiel","Professionnels","Institutionnels","Sports","Tourisme","Urbanisme"],
+  "disciplines": ["Billard","Fitness","Padel","Pickleball","Pilates","Soccer","Street Workout","Tennis"],
+  "contact": {"email":"contact@profilssports.com","website":"https://www.profilssports.com"}
+}
