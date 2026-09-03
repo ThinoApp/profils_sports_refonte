@@ -314,6 +314,29 @@ This creates a signature transition based on framing and continuity rather than 
 
 ---
 
+## 2026-09-03 — Intro becomes a construction curtain
+
+Decision:
+
+Replace the basic wordmark loader with a short branded opening sequence that behaves like the construction of a sports field and opens directly onto the Hero.
+
+Implementation:
+
+- architectural grid and cross-axis lines appear first
+- monumental PROFILS / SPORTS lockup enters through masked typography
+- signal-yellow field marking grows across the viewport
+- a subtle stadium-plan ellipse reinforces the sports/infrastructure theme
+- progress is shown as a restrained numeric construction indicator
+- two dark architectural curtains separate and reveal the already-running Hero beneath
+- the intro is capped at roughly 2.3 seconds and never waits indefinitely on media
+- reduced-motion skips the sequence entirely
+
+Rationale:
+
+The intro should establish the brand world immediately rather than behave like a generic loading screen. The movement borrows best-practice patterns from award-winning web intros (masked type, staged graphic construction, split reveal) while keeping the visual language specific to Profils Sports.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:

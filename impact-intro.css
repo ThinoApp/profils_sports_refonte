@@ -1,0 +1,94 @@
+/* Profils Sports — impact intro curtain */
+.preloader.intro-upgraded {
+  --intro-progress: 0;
+  --intro-ink: #07131f;
+  --intro-paper: #f1efe6;
+  --intro-signal: #efe158;
+  display: block;
+  overflow: hidden;
+  background: var(--intro-ink);
+  color: var(--intro-paper);
+  clip-path: none !important;
+  pointer-events: auto !important;
+  transition: none !important;
+  isolation: isolate;
+}
+
+body.intro-running { overflow: hidden; }
+body.intro-running .site-header { opacity: 0; transform: translateY(-12px); }
+.site-header { transition: background .45s,color .45s,border-color .45s,opacity .45s ease,transform .6s cubic-bezier(.18,.82,.18,1); }
+
+.intro-upgraded .preloader-word,
+.intro-upgraded .preloader-rule { display: none; }
+
+.intro-stage { position:absolute; inset:0; z-index:2; overflow:hidden; }
+.intro-grid { position:absolute; inset:0; opacity:.36; background-image:linear-gradient(rgba(255,255,255,.065) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.065) 1px,transparent 1px); background-size:8.333vw 8.333vw; transform:scale(1.04); }
+.intro-grid::before,.intro-grid::after { content:""; position:absolute; background:rgba(239,225,88,.42); }
+.intro-grid::before { left:50%; top:0; bottom:0; width:1px; transform:scaleY(0); transform-origin:top; animation:introAxisY .52s .08s cubic-bezier(.22,.8,.18,1) forwards; }
+.intro-grid::after { top:50%; left:0; right:0; height:1px; transform:scaleX(0); transform-origin:left; animation:introAxisX .56s .14s cubic-bezier(.22,.8,.18,1) forwards; }
+
+.intro-corners { position:absolute; inset:30px; }
+.intro-corners i { position:absolute; width:28px; height:28px; opacity:.62; }
+.intro-corners i::before,.intro-corners i::after { content:""; position:absolute; background:var(--intro-signal); }
+.intro-corners i::before { width:28px; height:1px; }
+.intro-corners i::after { width:1px; height:28px; }
+.intro-corners i:nth-child(1){left:0;top:0}.intro-corners i:nth-child(2){right:0;top:0;transform:scaleX(-1)}.intro-corners i:nth-child(3){left:0;bottom:0;transform:scaleY(-1)}.intro-corners i:nth-child(4){right:0;bottom:0;transform:scale(-1)}
+
+.intro-meta { position:absolute; top:34px; left:38px; right:38px; display:flex; justify-content:space-between; align-items:flex-start; font-size:8px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.6); }
+.intro-meta strong { color:var(--intro-signal); font-weight:700; }
+
+.intro-lockup { position:absolute; left:4.8vw; right:4.8vw; top:50%; transform:translateY(-50%); display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:4vw; }
+.intro-wordmark { margin:0; font-family:"Barlow Condensed",sans-serif; font-weight:900; font-size:clamp(92px,16vw,270px); line-height:.64; letter-spacing:-.045em; text-transform:uppercase; }
+.intro-wordmark span { display:block; overflow:hidden; }
+.intro-wordmark b { display:block; font:inherit; transform:translateY(112%); animation:introWord .72s cubic-bezier(.16,.84,.2,1) forwards; }
+.intro-wordmark span:nth-child(2) b { animation-delay:.08s; color:var(--intro-signal); }
+
+.intro-side { width:min(24vw,330px); padding-bottom:1.2vh; display:grid; gap:18px; }
+.intro-side__label { font-size:9px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--intro-signal); }
+.intro-side__copy { margin:0; font-size:clamp(12px,1vw,15px); line-height:1.55; color:rgba(255,255,255,.68); }
+.intro-side__rule { height:1px; background:rgba(255,255,255,.18); overflow:hidden; }
+.intro-side__rule i { display:block; width:100%; height:100%; background:var(--intro-signal); transform:scaleX(var(--intro-progress)); transform-origin:left; }
+.intro-side__count { font-family:"Barlow Condensed",sans-serif; font-size:44px; line-height:.8; font-weight:700; color:var(--intro-paper); }
+
+.intro-field { position:absolute; width:min(52vw,840px); aspect-ratio:1.62; right:-8vw; bottom:-18vh; border:1px solid rgba(239,225,88,.25); border-radius:50%; opacity:.5; transform:rotate(-9deg) scale(.84); animation:introField .95s .28s cubic-bezier(.18,.82,.18,1) forwards; }
+.intro-field::before { content:""; position:absolute; left:23%; right:23%; top:22%; bottom:22%; border:1px solid rgba(239,225,88,.48); }
+.intro-field::after { content:""; position:absolute; left:50%; top:0; bottom:0; width:1px; background:rgba(239,225,88,.28); }
+
+.intro-signal-line { position:absolute; left:0; right:0; bottom:0; height:5px; background:var(--intro-signal); transform:scaleX(0); transform-origin:left; animation:introSignal 1.18s .34s cubic-bezier(.2,.86,.2,1) forwards; }
+
+.intro-curtain { position:absolute; inset:0; z-index:5; pointer-events:none; }
+.intro-curtain span { position:absolute; top:0; bottom:0; width:50.1%; background:var(--intro-ink); will-change:transform; }
+.intro-curtain span:first-child { left:0; transform:translateX(0); }
+.intro-curtain span:last-child { right:0; transform:translateX(0); }
+
+.intro-upgraded.is-opening .intro-stage { animation:introStageOut .7s cubic-bezier(.2,.72,.16,1) forwards; }
+.intro-upgraded.is-opening .intro-curtain span:first-child { animation:introCurtainLeft .92s cubic-bezier(.62,0,.16,1) forwards; }
+.intro-upgraded.is-opening .intro-curtain span:last-child { animation:introCurtainRight .92s cubic-bezier(.62,0,.16,1) forwards; }
+.intro-upgraded.is-opening .intro-signal-line { transform-origin:center; animation:introSignalExit .7s cubic-bezier(.3,.8,.2,1) forwards; }
+.intro-upgraded.is-complete { visibility:hidden; pointer-events:none !important; }
+
+@keyframes introWord { to{transform:translateY(0)} }
+@keyframes introAxisY { to{transform:scaleY(1)} }
+@keyframes introAxisX { to{transform:scaleX(1)} }
+@keyframes introField { to{transform:rotate(-9deg) scale(1);opacity:.72} }
+@keyframes introSignal { to{transform:scaleX(1)} }
+@keyframes introStageOut { to{opacity:0;transform:scale(1.018)} }
+@keyframes introCurtainLeft { to{transform:translateX(-102%)} }
+@keyframes introCurtainRight { to{transform:translateX(102%)} }
+@keyframes introSignalExit { 0%{transform:scaleX(1)} 100%{transform:scaleX(.16)} }
+
+@media (max-width:760px){
+  .intro-lockup{grid-template-columns:1fr;gap:28px;top:48%}
+  .intro-wordmark{font-size:clamp(84px,27vw,150px)}
+  .intro-side{width:min(72vw,340px)}
+  .intro-field{width:92vw;right:-32vw;bottom:-7vh}
+  .intro-grid{background-size:20vw 20vw}
+  .intro-meta{left:22px;right:22px;top:22px}
+  .intro-corners{inset:18px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .preloader.intro-upgraded { display:none !important; }
+  body.intro-running { overflow:auto; }
+  body.intro-running .site-header { opacity:1; transform:none; }
+}
