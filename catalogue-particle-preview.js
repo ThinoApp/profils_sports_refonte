@@ -11,7 +11,7 @@
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = matchMedia('(any-pointer:fine)').matches;
-  const desktop = matchMedia('(min-width:1101px)').matches;
+  const desktop = matchMedia('(min-width:900px)').matches;
   if (reduced || !finePointer || !desktop) return;
 
   const supportsWebGL = (() => {
@@ -51,10 +51,10 @@
   });
 
   const catalogueImages = {
-    fitness: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Fitness/Fitness_Page_01.jpg',
-    padel: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/PADEL/PADEL_page-0001.jpg',
-    csp: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/CSP%20Pro/CSP%20PRO_page-0001.jpg',
-    canopy: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Canopy/CANOPY%20SCHOOL_pages-to-jpg-0001.jpg'
+    fitness: 'assets/catalogue-preview/fitness.jpg',
+    padel: 'assets/catalogue-preview/padel.jpg',
+    csp: 'assets/catalogue-preview/csp.jpg',
+    canopy: 'assets/catalogue-preview/canopy.jpg'
   };
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -82,7 +82,7 @@
         return;
       }
       const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js';
+      script.src = 'vendor/three.min.js';
       script.async = true;
       script.crossOrigin = 'anonymous';
       script.dataset.threeCataloguePreview = '';

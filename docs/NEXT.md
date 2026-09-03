@@ -25,6 +25,7 @@ Primary branch:
 - extracted and incorporated verified service, catalogue and client data from the legacy repository
 - documented agent handoff context in `AGENTS.md` and `/docs`
 - added a localized WebGL particle preview to the catalogue list with cursor inertia, outgoing/incoming overlap and static fallback
+- hardened the catalogue particle preview by vendoring Three.js and the four catalogue cover textures locally, removing CDN/CORS activation failures
 
 ## Current implementation files
 
