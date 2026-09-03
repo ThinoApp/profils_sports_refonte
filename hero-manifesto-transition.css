@@ -1,0 +1,361 @@
+/* Hero → manifesto shared-element transition
+   Activated only when hero-manifesto-transition.js adds body.has-hero-manifesto-transition. */
+
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  body.has-hero-manifesto-transition .hero-manifesto-transition {
+    position: relative;
+    height: 300vh;
+    background: var(--paper);
+  }
+
+  body.has-hero-manifesto-transition .hero-manifesto-transition__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--paper);
+  }
+
+  body.has-hero-manifesto-transition .hero-manifesto-transition__next,
+  body.has-hero-manifesto-transition .hero-manifesto-transition__clip {
+    position: absolute;
+    inset: 0;
+  }
+
+  body.has-hero-manifesto-transition .hero-manifesto-transition__next {
+    z-index: 1;
+    background: var(--paper);
+  }
+
+  body.has-hero-manifesto-transition .hero-manifesto-transition__clip {
+    z-index: 3;
+    overflow: hidden;
+    clip-path: inset(0 0 0 0);
+    will-change: clip-path;
+    pointer-events: none;
+  }
+
+  body.has-hero-manifesto-transition .hero--transition {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    background: rgba(9, 21, 33, var(--hero-transition-bg-alpha, 1));
+    will-change: background-color;
+  }
+
+  body.has-hero-manifesto-transition .hero--transition .hero-media {
+    inset: -6%;
+  }
+
+  body.has-hero-manifesto-transition .hero--transition .hero-content,
+  body.has-hero-manifesto-transition .hero--transition .hero-coordinate,
+  body.has-hero-manifesto-transition .hero--transition .hero-proof,
+  body.has-hero-manifesto-transition .hero--transition .hero-media,
+  body.has-hero-manifesto-transition .hero--transition .hero-overlay,
+  body.has-hero-manifesto-transition .hero--transition .stadium-plan {
+    will-change: opacity, transform;
+  }
+
+  body.has-hero-manifesto-transition .manifesto--transition {
+    position: absolute;
+    inset: 0;
+    height: 100vh;
+    min-height: 100vh;
+    overflow: hidden;
+    padding: 0;
+    background:
+      linear-gradient(rgba(9, 21, 33, calc(.055 * var(--next-grid, 0))) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(9, 21, 33, calc(.055 * var(--next-grid, 0))) 1px, transparent 1px),
+      var(--paper);
+    background-size: 8vw 8vw;
+    color: var(--ink);
+  }
+
+  body.has-hero-manifesto-transition .manifesto--transition::before,
+  body.has-hero-manifesto-transition .manifesto--transition::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    opacity: var(--next-grid, 0);
+  }
+
+  body.has-hero-manifesto-transition .manifesto--transition::before {
+    left: var(--pad);
+    right: var(--pad);
+    top: 108px;
+    height: 1px;
+    background: var(--line-dark);
+  }
+
+  body.has-hero-manifesto-transition .manifesto--transition::after {
+    top: 108px;
+    bottom: 92px;
+    left: 34%;
+    width: 1px;
+    background: var(--line-dark);
+    box-shadow: 36vw 0 0 var(--line-dark);
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-shell {
+    position: absolute;
+    inset: 108px var(--pad) 92px;
+    display: grid;
+    grid-template-columns: minmax(0, .86fr) minmax(320px, .78fr) minmax(220px, .56fr);
+    gap: clamp(26px, 3vw, 54px);
+    align-items: stretch;
+    opacity: max(.10, var(--next-prepare, 0));
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding-right: clamp(18px, 2vw, 34px);
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-marker {
+    width: 12px;
+    height: 12px;
+    display: block;
+    margin-bottom: 28px;
+    background: var(--signal);
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-left .display-heading {
+    max-width: 7.4ch;
+    font-size: clamp(64px, 6.8vw, 110px);
+    line-height: .78;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-left .manifesto-copy {
+    max-width: 38ch;
+    margin-top: 34px;
+    padding-top: 0;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-left .manifesto-copy p {
+    margin: 0 0 14px;
+    font-size: clamp(13px, 1vw, 16px);
+    line-height: 1.58;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-left .manifesto-copy p:last-child {
+    color: #596163;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media {
+    position: relative;
+    align-self: center;
+    height: min(68vh, 690px);
+    min-height: 510px;
+    overflow: hidden;
+    background: var(--ink);
+    border: 1px solid rgba(9, 21, 33, .22);
+    opacity: max(.12, var(--next-prepare, 0));
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__photo,
+  body.has-hero-manifesto-transition .manifesto-transition-media__grid,
+  body.has-hero-manifesto-transition .manifesto-transition-media__pitch,
+  body.has-hero-manifesto-transition .manifesto-transition-media__scan {
+    position: absolute;
+    inset: 0;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__photo {
+    background:
+      linear-gradient(180deg, rgba(9, 21, 33, .18), rgba(9, 21, 33, .62)),
+      url('https://www.profilssports.com/assets/img/slide-1.jpeg') center / cover no-repeat;
+    filter: saturate(.55) contrast(1.08);
+    opacity: var(--media-swap, 0);
+    transform: scale(1.025);
+    will-change: opacity;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__grid {
+    background-image:
+      linear-gradient(rgba(239, 225, 88, .18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(239, 225, 88, .18) 1px, transparent 1px);
+    background-size: 12.5% 10%;
+    opacity: calc(.45 * var(--media-swap, 0));
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__pitch {
+    inset: 10%;
+    border: 1px solid rgba(239, 225, 88, calc(.78 * var(--media-swap, 0)));
+    opacity: var(--media-swap, 0);
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__axis {
+    position: absolute;
+    display: block;
+    background: rgba(239, 225, 88, .62);
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__axis--x {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__axis--y {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__circle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 28%;
+    aspect-ratio: 1;
+    border: 1px solid rgba(239, 225, 88, .75);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__box {
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    top: 25%;
+    bottom: 25%;
+    border: 1px solid rgba(239, 225, 88, .48);
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__scan {
+    top: 0;
+    bottom: auto;
+    height: 1px;
+    background: var(--signal);
+    opacity: calc(.8 * var(--media-swap, 0));
+    transform: translateY(calc(var(--media-swap, 0) * 65vh));
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-media__meta {
+    position: absolute;
+    z-index: 3;
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    color: rgba(255,255,255,.72);
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    opacity: var(--media-swap, 0);
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-top: 1px solid rgba(9, 21, 33, .2);
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-item {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 7px 15px;
+    padding: 25px 0 22px;
+    border-bottom: 1px solid rgba(9, 21, 33, .2);
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-item > span {
+    grid-row: 1 / span 2;
+    color: #837800;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .1em;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-item strong {
+    font-family: "Barlow Condensed", Arial, sans-serif;
+    font-size: clamp(28px, 2.3vw, 42px);
+    font-weight: 700;
+    line-height: .9;
+  }
+
+  body.has-hero-manifesto-transition .manifesto-transition-item p {
+    margin: 0;
+    max-width: 24ch;
+    color: #586062;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  body.has-hero-manifesto-transition .manifesto--transition .capability-tape {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    height: 72px;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  body.has-hero-manifesto-transition .manifesto--transition .capability-tape__track {
+    min-height: 72px;
+    font-size: 26px;
+  }
+
+  body.has-hero-manifesto-transition .hero-transition-tech {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  body.has-hero-manifesto-transition .hero-transition-tech::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-radial-gradient(ellipse at 67% 52%, transparent 0 38px, rgba(239,225,88,.11) 39px 40px, transparent 41px 58px);
+    transform: scale(calc(.94 + var(--hero-tech-progress, 0) * .12));
+    opacity: calc(.22 + var(--hero-tech-progress, 0) * .55);
+  }
+
+  body.has-hero-manifesto-transition .hero-transition-tech__line {
+    position: absolute;
+    display: block;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(239,225,88,.7), transparent);
+    transform-origin: left;
+    transform: scaleX(var(--hero-tech-progress, 0));
+  }
+
+  body.has-hero-manifesto-transition .hero-transition-tech__line--a { left: 8%; right: 18%; top: 28%; }
+  body.has-hero-manifesto-transition .hero-transition-tech__line--b { left: 24%; right: 5%; top: 61%; transform-origin: right; }
+  body.has-hero-manifesto-transition .hero-transition-tech__line--c { left: 42%; right: 12%; top: 76%; opacity: .55; }
+
+  body.has-hero-manifesto-transition .hero-transition-tech__mark {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(239,225,88,.72);
+    transform: rotate(45deg) scale(var(--hero-tech-progress, 0));
+  }
+
+  body.has-hero-manifesto-transition .hero-transition-tech__mark--a { left: 64%; top: 34%; }
+  body.has-hero-manifesto-transition .hero-transition-tech__mark--b { left: 79%; top: 68%; }
+}

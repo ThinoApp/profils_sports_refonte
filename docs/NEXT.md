@@ -29,6 +29,7 @@ Primary branch:
 - added explicit cache-busting version parameters for the catalogue WebGL module, CSS, local Three.js runtime and local cover textures after Safari kept executing the older CORS-dependent bundle
 - filled the catalogue left column with a catalogue-reactive animated SVG blueprint path stage while preserving the floating WebGL image preview
 - replaced catalogue blueprint SVG swapping with one continuous spring-morphed SVG geometry that redirects from its current intermediate state on rapid hover changes
+- connected the Hero and “De la conception à l’exploitation” manifesto through a single reversible scroll-driven clip/shared-media transition on desktop
 
 ## Current implementation files
 
