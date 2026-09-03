@@ -1,0 +1,77 @@
+name: Cache Bust Catalogue Particle Preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cache-bust-catalogue-particles.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cache-bust:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Version particle assets
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          version = '20260903-3'
+
+          index_path = Path('index.html')
+          html = index_path.read_text()
+          html = html.replace('href="catalogue-particle-preview.css"', f'href="catalogue-particle-preview.css?v={version}"')
+          html = html.replace('src="catalogue-particle-preview.js"', f'src="catalogue-particle-preview.js?v={version}"')
+          index_path.write_text(html)
+
+          js_path = Path('catalogue-particle-preview.js')
+          js = js_path.read_text()
+          js = js.replace("script.src = 'vendor/three.min.js';", f"script.src = 'vendor/three.min.js?v={version}';")
+          js = js.replace("fitness: 'assets/catalogue-preview/fitness.jpg'", f"fitness: 'assets/catalogue-preview/fitness.jpg?v={version}'")
+          js = js.replace("padel: 'assets/catalogue-preview/padel.jpg'", f"padel: 'assets/catalogue-preview/padel.jpg?v={version}'")
+          js = js.replace("csp: 'assets/catalogue-preview/csp.jpg'", f"csp: 'assets/catalogue-preview/csp.jpg?v={version}'")
+          js = js.replace("canopy: 'assets/catalogue-preview/canopy.jpg'", f"canopy: 'assets/catalogue-preview/canopy.jpg?v={version}'")
+          marker = "  'use strict';\n"
+          build_line = f"  console.info('[CatalogueParticlePreview] build {version}');\n"
+          if build_line not in js:
+              js = js.replace(marker, marker + build_line, 1)
+          js_path.write_text(js)
+
+          next_path = Path('docs/NEXT.md')
+          next_text = next_path.read_text()
+          note = '- added explicit cache-busting version parameters for the catalogue WebGL module, CSS, local Three.js runtime and local cover textures after Safari kept executing the older CORS-dependent bundle'
+          if note not in next_text:
+              anchor = '- hardened the catalogue particle preview by vendoring Three.js and the four catalogue cover textures locally, removing CDN/CORS activation failures'
+              if anchor in next_text:
+                  next_text = next_text.replace(anchor, anchor + '\n' + note, 1)
+              else:
+                  next_text += '\n' + note + '\n'
+          next_path.write_text(next_text)
+          PY
+
+      - name: Validate
+        shell: bash
+        run: |
+          node --check catalogue-particle-preview.js
+          grep -q 'catalogue-particle-preview.js?v=20260903-3' index.html
+          grep -q 'catalogue-particle-preview.css?v=20260903-3' index.html
+          grep -q 'vendor/three.min.js?v=20260903-3' catalogue-particle-preview.js
+          grep -q 'assets/catalogue-preview/fitness.jpg?v=20260903-3' catalogue-particle-preview.js
+          git diff --check
+
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "Profils Sports Agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html catalogue-particle-preview.js docs/NEXT.md
+          git commit -m "fix: force fresh catalogue particle assets"
+          git push
