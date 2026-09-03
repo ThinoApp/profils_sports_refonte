@@ -122,3 +122,5 @@ The recommended opening prompt is:
 > Work on `ThinoApp/profils_sports_refonte`. Read `AGENTS.md`, `docs/PROJECT_CONTEXT.md`, `docs/DECISIONS.md` and `docs/NEXT.md` first. The repository is the source of truth. Then fetch the latest implementation files before making changes.
 
 If this file conflicts with the actual current repository implementation, treat the repository code and the most recent commits as authoritative and update this file accordingly.
+
+- stabilized the directional cursor heading by sampling direction once per animation frame, filtering the movement vector and removing simultaneous pointermove/mousemove input

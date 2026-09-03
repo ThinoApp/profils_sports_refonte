@@ -106,8 +106,11 @@
     let ty = innerHeight * .5;
     let x = tx;
     let y = ty;
-    let lastInputX = tx;
-    let lastInputY = ty;
+    let sampledX = tx;
+    let sampledY = ty;
+    let directionX = 0;
+    let directionY = 0;
+    let pointerInitialized = false;
     let angle = -18;
     let targetAngle = angle;
     let speed = 0;
@@ -133,29 +136,32 @@
     };
 
     const handlePointerMove = e => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+
+      const nextX = e.clientX;
+      const nextY = e.clientY;
       showCursor();
-      tx = e.clientX;
-      ty = e.clientY;
 
-      const vx = tx - lastInputX;
-      const vy = ty - lastInputY;
-      const instantaneousSpeed = Math.hypot(vx, vy);
-      speed = speed * .58 + instantaneousSpeed * .42;
-
-      // Update direction only while the pointer is actually travelling.
-      // At rest the dart keeps its last heading, like the supplied reference.
-      if (instantaneousSpeed > .65) {
-        targetAngle = Math.atan2(vy, vx) * 180 / Math.PI;
+      if (!pointerInitialized) {
+        pointerInitialized = true;
+        tx = nextX;
+        ty = nextY;
+        x = nextX;
+        y = nextY;
+        sampledX = nextX;
+        sampledY = nextY;
+        return;
       }
 
-      lastInputX = tx;
-      lastInputY = ty;
+      tx = nextX;
+      ty = nextY;
     };
 
-    addEventListener('pointermove', handlePointerMove, { passive: true });
-    // Mousemove is kept as a compatibility safety net for browsers/environments
-    // that expose a fine mouse but do not dispatch Pointer Events consistently.
-    addEventListener('mousemove', handlePointerMove, { passive: true });
+    if ('PointerEvent' in window) {
+      addEventListener('pointermove', handlePointerMove, { passive: true });
+    } else {
+      addEventListener('mousemove', handlePointerMove, { passive: true });
+    }
 
     document.documentElement.addEventListener('mouseenter', showCursor);
     document.documentElement.addEventListener('mouseleave', hideCursor);
@@ -164,16 +170,34 @@
     addEventListener('blur', hideCursor);
 
     const tickCursor = () => {
-      // Light positional inertia — enough to feel fluid without detaching the
-      // visual cursor from the user's real pointer.
-      x += (tx - x) * .42;
-      y += (ty - y) * .42;
+      const frameDX = tx - sampledX;
+      const frameDY = ty - sampledY;
+      sampledX = tx;
+      sampledY = ty;
+      const frameDistance = Math.hypot(frameDX, frameDY);
+
+      if (frameDistance > .18) {
+        const directionResponse = clamp(frameDistance / 12, .24, .5);
+        directionX += (frameDX - directionX) * directionResponse;
+        directionY += (frameDY - directionY) * directionResponse;
+
+        const directionMagnitude = Math.hypot(directionX, directionY);
+        if (directionMagnitude > .7) {
+          targetAngle = Math.atan2(directionY, directionX) * 180 / Math.PI;
+        }
+        speed = speed * .66 + frameDistance * .34;
+      } else {
+        directionX *= .86;
+        directionY *= .86;
+        speed *= .88;
+      }
+
+      x += (tx - x) * .56;
+      y += (ty - y) * .56;
 
       const unwrappedTarget = shortestAngle(angle, targetAngle);
-      angle += (unwrappedTarget - angle) * .24;
-      speed *= .88;
+      angle += (unwrappedTarget - angle) * .34;
 
-      // Tiny kinetic stretch at high velocity. At rest it returns to 1.
       const stretch = 1 + clamp(speed / 115, 0, .16);
       const squash = 1 - clamp(speed / 180, 0, .07);
 
