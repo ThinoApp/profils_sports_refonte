@@ -1,0 +1,41 @@
+name: Restore pre-V4 state
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-pre-v4.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Restore files from pre-V4 commit
+        run: |
+          git checkout 9f3b266fa978037d68389612e2e041032812a13e -- \
+            AGENTS.md \
+            docs/PROJECT_CONTEXT.md \
+            docs/DECISIONS.md \
+            docs/NEXT.md \
+            index.html \
+            styles.css \
+            script.js
+
+      - name: Commit restored state
+        run: |
+          git config user.name "Profils Sports Agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --cached --quiet; then
+            echo "Nothing to restore"
+            exit 0
+          fi
+          git commit -m "revert: restore pre-V4 redesign state"
+          git push
