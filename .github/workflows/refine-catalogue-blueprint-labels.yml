@@ -1,0 +1,74 @@
+name: Refine Catalogue Blueprint Labels
+
+on:
+  push:
+    branches:
+      - style/catalogue-blueprint-labels
+    paths:
+      - '.github/workflows/refine-catalogue-blueprint-labels.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: style/catalogue-blueprint-labels
+          fetch-depth: 0
+
+      - name: Refine blueprint typography and labels
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          js_path = Path('catalogue-blueprint-morph.js')
+          js = js_path.read_text()
+
+          replacements = {
+              "number: '01',\n      title: 'FITNESS',\n      footer: 'PERFORMANCE CIRCUIT / ACTIVE ROUTE',\n      coordinate: 'X 042 / Y 118',": "number: '01 / 04',\n      title: 'FITNESS',\n      footer: 'CATALOGUE FITNESS',\n      coordinate: '74 PAGES',",
+              "number: '02',\n      title: 'PADEL',\n      footer: 'RACKET TRAJECTORY / REBOUND LOGIC',\n      coordinate: 'X 128 / Y 064',": "number: '02 / 04',\n      title: 'PADEL',\n      footer: 'CATALOGUE PADEL',\n      coordinate: '20 PAGES',",
+              "number: '03',\n      title: 'CSP PRO',\n      footer: 'OUTDOOR SYSTEM / STRUCTURAL VECTOR',\n      coordinate: 'AXIS 03 / LOAD 24',": "number: '03 / 04',\n      title: 'CSP PRO',\n      footer: 'CATALOGUE CSP PRO',\n      coordinate: '4 PAGES',",
+              "number: '04',\n      title: 'CANOPY SCHOOL',\n      footer: 'EDUCATION CANOPY / FLOW ENVELOPE',\n      coordinate: 'ARC 04 / SPAN 18',": "number: '04 / 04',\n      title: 'CANOPY SCHOOL',\n      footer: 'CATALOGUE CANOPY SCHOOL',\n      coordinate: '4 PAGES',",
+              "const labelGroup = createSvg('g', { 'font-family': 'Arial, Helvetica, sans-serif', fill: '#091521' });": "const labelGroup = createSvg('g', { fill: '#091521' });",
+              "label(38, 49, 'PSI / MOTION BLUEPRINT', { 'font-size': '9', 'font-weight': '700', 'letter-spacing': '2' });": "label(38, 49, 'PROFILS SPORTS / CATALOGUES', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8.5', 'font-weight': '600', 'letter-spacing': '.9', opacity: '.72' });",
+              "const stateNumber = label(436, 49, '01', { 'font-size': '9', 'font-weight': '700', 'letter-spacing': '2' });": "const stateNumber = label(454, 49, '01 / 04', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8.5', 'font-weight': '600', 'letter-spacing': '.4', 'text-anchor': 'end', opacity: '.72' });",
+              "const stateTitle = label(39, 86, 'FITNESS', { 'font-size': '32', 'font-weight': '700', 'letter-spacing': '-1' });": "const stateTitle = label(39, 88, 'FITNESS', { 'font-family': '\"Barlow Condensed\", Arial, sans-serif', 'font-size': '31', 'font-weight': '600', 'letter-spacing': '.2' });",
+              "const stateFooter = label(38, 526, 'PERFORMANCE CIRCUIT / ACTIVE ROUTE', { 'font-size': '8', 'font-weight': '700', 'letter-spacing': '1.7', opacity: '.5' });": "const stateFooter = label(38, 526, 'CATALOGUE FITNESS', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8', 'font-weight': '500', 'letter-spacing': '.45', opacity: '.48' });",
+              "const stateCoordinate = label(454, 526, 'X 042 / Y 118', { 'font-size': '8', 'font-weight': '700', 'text-anchor': 'end', opacity: '.5' });": "const stateCoordinate = label(454, 526, '74 PAGES', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8', 'font-weight': '500', 'letter-spacing': '.35', 'text-anchor': 'end', opacity: '.48' });"
+          }
+
+          for old, new in replacements.items():
+              if old not in js:
+                  raise SystemExit(f'Missing expected fragment: {old[:80]}')
+              js = js.replace(old, new, 1)
+
+          js_path.write_text(js)
+
+          index = Path('index.html')
+          html = index.read_text()
+          html = html.replace('catalogue-blueprint-morph.js?v=20260903-5', 'catalogue-blueprint-morph.js?v=20260903-6')
+          index.write_text(html)
+          PY
+
+      - name: Validate
+        shell: bash
+        run: |
+          node --check catalogue-blueprint-morph.js
+          grep -q 'PROFILS SPORTS / CATALOGUES' catalogue-blueprint-morph.js
+          grep -q "number: '02 / 04'" catalogue-blueprint-morph.js
+          grep -q "coordinate: '20 PAGES'" catalogue-blueprint-morph.js
+          grep -q 'catalogue-blueprint-morph.js?v=20260903-6' index.html
+          git diff --check
+
+      - name: Commit refinement
+        shell: bash
+        run: |
+          git config user.name 'Profils Sports Agent'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add catalogue-blueprint-morph.js index.html
+          git commit -m 'style: refine catalogue blueprint typography'
+          git push origin HEAD:style/catalogue-blueprint-labels
