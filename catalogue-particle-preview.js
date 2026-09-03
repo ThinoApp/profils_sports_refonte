@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  console.info('[CatalogueParticlePreview] build 20260903-3');
 
   const root = document.documentElement;
   const body = document.body;
@@ -51,10 +52,10 @@
   });
 
   const catalogueImages = {
-    fitness: 'assets/catalogue-preview/fitness.jpg',
-    padel: 'assets/catalogue-preview/padel.jpg',
-    csp: 'assets/catalogue-preview/csp.jpg',
-    canopy: 'assets/catalogue-preview/canopy.jpg'
+    fitness: 'assets/catalogue-preview/fitness.jpg?v=20260903-3',
+    padel: 'assets/catalogue-preview/padel.jpg?v=20260903-3',
+    csp: 'assets/catalogue-preview/csp.jpg?v=20260903-3',
+    canopy: 'assets/catalogue-preview/canopy.jpg?v=20260903-3'
   };
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -82,7 +83,7 @@
         return;
       }
       const script = document.createElement('script');
-      script.src = 'vendor/three.min.js';
+      script.src = 'vendor/three.min.js?v=20260903-3';
       script.async = true;
       script.crossOrigin = 'anonymous';
       script.dataset.threeCataloguePreview = '';

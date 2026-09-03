@@ -26,6 +26,7 @@ Primary branch:
 - documented agent handoff context in `AGENTS.md` and `/docs`
 - added a localized WebGL particle preview to the catalogue list with cursor inertia, outgoing/incoming overlap and static fallback
 - hardened the catalogue particle preview by vendoring Three.js and the four catalogue cover textures locally, removing CDN/CORS activation failures
+- added explicit cache-busting version parameters for the catalogue WebGL module, CSS, local Three.js runtime and local cover textures after Safari kept executing the older CORS-dependent bundle
 
 ## Current implementation files
 
