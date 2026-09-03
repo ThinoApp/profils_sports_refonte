@@ -30,6 +30,7 @@ Primary branch:
 - filled the catalogue left column with a catalogue-reactive animated SVG blueprint path stage while preserving the floating WebGL image preview
 - replaced catalogue blueprint SVG swapping with one continuous spring-morphed SVG geometry that redirects from its current intermediate state on rapid hover changes
 - connected the Hero and “De la conception à l’exploitation” manifesto through a single reversible scroll-driven clip/shared-media transition on desktop
+- replaced the basic preloader with a branded construction-curtain intro: architectural grid, monumental masked type, signal field line and split reveal into the live Hero
 
 ## Current implementation files
 
