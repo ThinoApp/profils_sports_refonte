@@ -24,6 +24,7 @@ Primary branch:
 - fixed a cursor compatibility bug by adding robust pointer detection and a native cursor fallback
 - extracted and incorporated verified service, catalogue and client data from the legacy repository
 - documented agent handoff context in `AGENTS.md` and `/docs`
+- added a localized WebGL particle preview to the catalogue list with cursor inertia, outgoing/incoming overlap and static fallback
 
 ## Current implementation files
 
@@ -90,6 +91,15 @@ A future production hardening step should decide whether to:
 Do not reuse obvious demo data from legacy pages such as fictional references, partners, awards, budgets or satisfaction metrics.
 
 Wait for verified data from the user or a trusted source before building final project case studies.
+
+
+### Catalogue particle preview
+
+Desktop fine-pointer users get a floating WebGL preview while hovering Fitness, Padel, CSP Pro and Canopy School. The preview follows the cursor with inertia and transitions between covers through overlapping outgoing/incoming particles.
+
+The current tuning is based on the written reverse-engineering specification only. Exact size, offset, particle density, scatter radius, duration and easing still need frame-by-frame calibration once the specific reference video is available.
+
+The original static catalogue preview is intentionally preserved as the fallback.
 
 ## Do not change without discussion
 

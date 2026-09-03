@@ -228,6 +228,27 @@ Current compatibility rules:
 
 ---
 
+## 2026-09-03 — Catalogue preview becomes a localized WebGL interaction
+
+Decision:
+
+Apply the cursor-follow particle transition only to the `#catalogues` section. Keep the hero, horizontal solutions carousel, approach, clients and contact interactions unchanged.
+
+Implementation:
+
+- floating preview follows the pointer through `requestAnimationFrame` interpolation
+- Three.js + custom `ShaderMaterial` + `THREE.Points` render the transition
+- outgoing and incoming particle systems overlap temporally
+- stable states use sharp texture planes rather than visible particle mosaics
+- catalogue textures are preloaded before WebGL mode is enabled
+- the existing static catalogue preview remains the fallback for touch, reduced motion, WebGL/CORS failure and keyboard use
+
+Calibration note:
+
+The supplied written prompt defines the required architecture and starting parameters, but the reference video for this specific particle effect has not been supplied in the current handoff. The current values are therefore an initial implementation baseline and must be calibrated against that video before claiming exact visual/timing parity.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:

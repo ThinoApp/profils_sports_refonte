@@ -1,0 +1,56 @@
+/* Catalogue particle preview — isolated desktop enhancement.
+   The existing catalogue preview remains the fallback for touch, reduced motion,
+   WebGL/CORS failures and keyboard-only navigation. */
+.catalogue-particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 8200;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--catalogue-particle-duration, 150ms) linear,
+              visibility 0s linear var(--catalogue-particle-duration, 150ms);
+  will-change: opacity;
+}
+
+.catalogue-particle-canvas.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+@media (min-width:1101px) and (pointer:fine), (min-width:1101px) and (any-pointer:fine) {
+  body.catalogue-particle-ready #catalogues .catalogue-preview {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-list {
+    position: relative;
+    z-index: 2;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-row {
+    position: relative;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-row::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-left: 0 solid var(--signal);
+    pointer-events: none;
+    transition: border-left-width .28s var(--ease);
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-row:hover::after,
+  body.catalogue-particle-ready #catalogues .catalogue-row.is-active::after {
+    border-left-width: 3px;
+  }
+}
+
+@media (max-width:1100px), (prefers-reduced-motion: reduce) {
+  .catalogue-particle-canvas { display: none !important; }
+}
