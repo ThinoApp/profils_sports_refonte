@@ -22,9 +22,78 @@
 }
 
 @media (min-width:900px) and (pointer:fine), (min-width:900px) and (any-pointer:fine) {
+  /* Once the floating WebGL preview is active, the former static cover block
+     becomes a permanent motion-blueprint stage instead of disappearing. */
   body.catalogue-particle-ready #catalogues .catalogue-preview {
-    visibility: hidden;
+    visibility: visible;
     pointer-events: none;
+    min-height: 560px;
+    background-color: var(--paper);
+    background-image: url("assets/catalogue-paths/fitness.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border: 1px solid rgba(9,21,33,.14);
+    color: var(--ink);
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: inset 0 0 0 1px rgba(239,225,88,.05);
+    animation: cataloguePathFitness .52s var(--ease) both;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-preview > * {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  /* Animated technical sweep. The SVG itself carries the route animation;
+     this second layer gives the stage a live plotting / scanner quality. */
+  body.catalogue-particle-ready #catalogues .catalogue-preview::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    left: 18px;
+    right: 18px;
+    height: 1px;
+    top: 18px;
+    background: linear-gradient(90deg, transparent, rgba(239,225,88,.95) 18%, rgba(239,225,88,.28) 62%, transparent);
+    box-shadow: 0 0 18px rgba(239,225,88,.22);
+    opacity: .72;
+    animation: cataloguePathScan 5.6s cubic-bezier(.45,0,.22,1) infinite alternate;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-preview::after {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    width: 11px;
+    height: 11px;
+    right: 31px;
+    bottom: 31px;
+    border: 1px solid rgba(9,21,33,.7);
+    background: var(--signal);
+    box-shadow: 0 0 0 7px rgba(239,225,88,.14), 0 0 0 15px rgba(9,21,33,.035);
+    animation: cataloguePathBeacon 2.9s ease-in-out infinite;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-layout:has(.catalogue-row[data-catalogue="fitness"].is-active) .catalogue-preview {
+    background-image: url("assets/catalogue-paths/fitness.svg");
+    animation-name: cataloguePathFitness;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-layout:has(.catalogue-row[data-catalogue="padel"].is-active) .catalogue-preview {
+    background-image: url("assets/catalogue-paths/padel.svg");
+    animation-name: cataloguePathPadel;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-layout:has(.catalogue-row[data-catalogue="csp"].is-active) .catalogue-preview {
+    background-image: url("assets/catalogue-paths/csp.svg");
+    animation-name: cataloguePathCsp;
+  }
+
+  body.catalogue-particle-ready #catalogues .catalogue-layout:has(.catalogue-row[data-catalogue="canopy"].is-active) .catalogue-preview {
+    background-image: url("assets/catalogue-paths/canopy.svg");
+    animation-name: cataloguePathCanopy;
   }
 
   body.catalogue-particle-ready #catalogues .catalogue-list {
@@ -51,6 +120,41 @@
   }
 }
 
+@keyframes cataloguePathScan {
+  0% { transform: translateY(0); opacity: .18; }
+  12% { opacity: .75; }
+  88% { opacity: .62; }
+  100% { transform: translateY(523px); opacity: .12; }
+}
+
+@keyframes cataloguePathBeacon {
+  0%,100% { transform: scale(.72) rotate(0deg); opacity: .45; }
+  42% { transform: scale(1) rotate(90deg); opacity: 1; }
+  68% { transform: scale(.84) rotate(180deg); opacity: .72; }
+}
+
+@keyframes cataloguePathFitness {
+  0% { opacity: .28; transform: translate3d(-10px,12px,0) scale(.985); filter: blur(5px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes cataloguePathPadel {
+  0% { opacity: .28; transform: translate3d(12px,-8px,0) scale(.985); filter: blur(5px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes cataloguePathCsp {
+  0% { opacity: .28; transform: translate3d(-6px,-12px,0) scale(.985); filter: blur(5px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes cataloguePathCanopy {
+  0% { opacity: .28; transform: translate3d(10px,10px,0) scale(.985); filter: blur(5px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+
 @media (max-width:899px), (prefers-reduced-motion: reduce) {
   .catalogue-particle-canvas { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #catalogues .catalogue-preview::before,
+  #catalogues .catalogue-preview::after { animation: none !important; }
 }
