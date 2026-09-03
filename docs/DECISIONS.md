@@ -249,6 +249,26 @@ The supplied written prompt defines the required architecture and starting param
 
 ---
 
+## 2026-09-03 — Catalogue left column becomes a motion blueprint stage
+
+Decision:
+
+When the floating WebGL catalogue preview is active, the former static preview area in the left column remains occupied by an animated technical path scene rather than becoming empty.
+
+Implementation:
+
+- four authored SVG motion blueprints correspond to Fitness, Padel, CSP Pro and Canopy School
+- each route uses animated path drawing, moving markers, technical grid/crosshair language and signal-yellow wayfinding
+- the active blueprint follows the current catalogue hover/focus state
+- the floating WebGL image remains independent and continues to follow the cursor
+- touch / reduced-motion / WebGL fallback behavior remains unchanged
+
+Rationale:
+
+This fills the large negative space created by moving the catalogue image to the cursor while reinforcing the architecture / engineering / sports positioning instead of adding decorative particles or generic illustration.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:

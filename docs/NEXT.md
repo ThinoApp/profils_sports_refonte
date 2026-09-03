@@ -27,6 +27,7 @@ Primary branch:
 - added a localized WebGL particle preview to the catalogue list with cursor inertia, outgoing/incoming overlap and static fallback
 - hardened the catalogue particle preview by vendoring Three.js and the four catalogue cover textures locally, removing CDN/CORS activation failures
 - added explicit cache-busting version parameters for the catalogue WebGL module, CSS, local Three.js runtime and local cover textures after Safari kept executing the older CORS-dependent bundle
+- filled the catalogue left column with a catalogue-reactive animated SVG blueprint path stage while preserving the floating WebGL image preview
 
 ## Current implementation files
 
