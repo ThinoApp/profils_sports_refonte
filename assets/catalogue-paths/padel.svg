@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 520 560" preserveAspectRatio="xMidYMid meet">
+  <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#091521" stroke-opacity=".08"/></pattern></defs>
+  <rect width="520" height="560" fill="#f1efe6"/><rect x="18" y="18" width="484" height="524" fill="url(#grid)" stroke="#091521" stroke-opacity=".14"/>
+  <g fill="none" stroke="#091521" stroke-opacity=".22" stroke-width="1.4">
+    <rect x="93" y="112" width="334" height="336"/><path d="M260 112v336M93 280h334M165 112v336M355 112v336"/>
+    <path d="M93 180h334M93 380h334" stroke-dasharray="5 8"/><circle cx="260" cy="280" r="72" stroke-opacity=".12"/>
+  </g>
+  <path id="route" pathLength="1" d="M126 404C178 348 189 300 156 263c-30-34-19-82 28-102 62-26 118 20 106 78-10 49-60 62-79 100-18 36 10 81 63 73 56-8 87-68 63-115-19-38-6-90 45-113" fill="none" stroke="#efe158" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1" stroke-dashoffset="1"><animate attributeName="stroke-dashoffset" values="1;0;0;-1" keyTimes="0;.32;.7;1" dur="6.2s" repeatCount="indefinite"/></path>
+  <g fill="#efe158"><circle r="6"><animateMotion dur="6.2s" repeatCount="indefinite"><mpath xlink:href="#route"/></animateMotion></circle><circle r="3" opacity=".6"><animateMotion dur="6.2s" begin="-3.1s" repeatCount="indefinite"><mpath xlink:href="#route"/></animateMotion></circle></g>
+  <g fill="none" stroke="#091521" stroke-opacity=".3"><path d="M126 404l19-1m-9-10v20M382 184l18 0m-9-9v18"/><circle cx="211" cy="339" r="17"/><circle cx="290" cy="239" r="17"/></g>
+  <path d="M64 465H458" fill="none" stroke="#091521" stroke-opacity=".28" stroke-dasharray="4 9"><animate attributeName="stroke-dashoffset" from="0" to="-52" dur="4s" repeatCount="indefinite"/></path>
+  <g font-family="Arial,Helvetica,sans-serif" fill="#091521"><text x="38" y="49" font-size="9" font-weight="700" letter-spacing="2">PSI / MOTION BLUEPRINT</text><text x="436" y="49" font-size="9" font-weight="700" letter-spacing="2">02</text><text x="39" y="86" font-size="32" font-weight="700">PADEL</text><text x="38" y="526" font-size="8" font-weight="700" letter-spacing="1.7" opacity=".5">RACKET TRAJECTORY / REBOUND LOGIC</text><text x="454" y="526" font-size="8" font-weight="700" text-anchor="end" opacity=".5">X 128 / Y 064</text></g>
+</svg>
