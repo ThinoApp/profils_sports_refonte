@@ -1,0 +1,116 @@
+name: Fix Catalogue Particle Assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-catalogue-particle-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Vendor runtime and catalogue textures
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p vendor assets/catalogue-preview
+
+          curl -fL --retry 3 --retry-delay 2 \
+            'https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js' \
+            -o vendor/three.min.js
+
+          curl -fL --retry 3 --retry-delay 2 \
+            'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Fitness/Fitness_Page_01.jpg' \
+            -o assets/catalogue-preview/fitness.jpg
+          curl -fL --retry 3 --retry-delay 2 \
+            'https://www.profilssports.com/assets/CATALOGUES_THUMBS/PADEL/PADEL_page-0001.jpg' \
+            -o assets/catalogue-preview/padel.jpg
+          curl -fL --retry 3 --retry-delay 2 \
+            'https://www.profilssports.com/assets/CATALOGUES_THUMBS/CSP%20Pro/CSP%20PRO_page-0001.jpg' \
+            -o assets/catalogue-preview/csp.jpg
+          curl -fL --retry 3 --retry-delay 2 \
+            'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Canopy/CANOPY%20SCHOOL_pages-to-jpg-0001.jpg' \
+            -o assets/catalogue-preview/canopy.jpg
+
+          test -s vendor/three.min.js
+          test -s assets/catalogue-preview/fitness.jpg
+          test -s assets/catalogue-preview/padel.jpg
+          test -s assets/catalogue-preview/csp.jpg
+          test -s assets/catalogue-preview/canopy.jpg
+
+      - name: Make the effect self-contained
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          js_path = Path('catalogue-particle-preview.js')
+          js = js_path.read_text()
+          replacements = {
+              "const desktop = matchMedia('(min-width:1101px)').matches;": "const desktop = matchMedia('(min-width:900px)').matches;",
+              "fitness: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Fitness/Fitness_Page_01.jpg'": "fitness: 'assets/catalogue-preview/fitness.jpg'",
+              "padel: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/PADEL/PADEL_page-0001.jpg'": "padel: 'assets/catalogue-preview/padel.jpg'",
+              "csp: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/CSP%20Pro/CSP%20PRO_page-0001.jpg'": "csp: 'assets/catalogue-preview/csp.jpg'",
+              "canopy: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Canopy/CANOPY%20SCHOOL_pages-to-jpg-0001.jpg'": "canopy: 'assets/catalogue-preview/canopy.jpg'",
+              "script.src = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js';": "script.src = 'vendor/three.min.js';"
+          }
+          for old, new in replacements.items():
+              if old not in js:
+                  raise SystemExit(f'Missing expected JS fragment: {old}')
+              js = js.replace(old, new, 1)
+          js_path.write_text(js)
+
+          css_path = Path('catalogue-particle-preview.css')
+          css = css_path.read_text()
+          css = css.replace('@media (min-width:1101px) and (pointer:fine), (min-width:1101px) and (any-pointer:fine) {', '@media (min-width:900px) and (pointer:fine), (min-width:900px) and (any-pointer:fine) {')
+          css = css.replace('@media (max-width:1100px), (prefers-reduced-motion: reduce) {', '@media (max-width:899px), (prefers-reduced-motion: reduce) {')
+          css_path.write_text(css)
+
+          index_path = Path('index.html')
+          html = index_path.read_text()
+          style_tag = '  <link rel="stylesheet" href="catalogue-particle-preview.css" data-catalogue-particle-styles />'
+          anchor = '  <link rel="stylesheet" href="styles.css" />'
+          if style_tag not in html:
+              if anchor not in html:
+                  raise SystemExit('styles.css anchor missing')
+              html = html.replace(anchor, anchor + '\n' + style_tag, 1)
+          index_path.write_text(html)
+
+          next_path = Path('docs/NEXT.md')
+          next_text = next_path.read_text()
+          note = '- hardened the catalogue particle preview by vendoring Three.js and the four catalogue cover textures locally, removing CDN/CORS activation failures'
+          if note not in next_text:
+              anchor = '- added a localized WebGL particle preview to the catalogue list with cursor inertia, outgoing/incoming overlap and static fallback'
+              if anchor in next_text:
+                  next_text = next_text.replace(anchor, anchor + '\n' + note, 1)
+              else:
+                  next_text += '\n' + note + '\n'
+          next_path.write_text(next_text)
+          PY
+
+      - name: Validate
+        shell: bash
+        run: |
+          node --check catalogue-particle-preview.js
+          grep -q 'vendor/three.min.js' catalogue-particle-preview.js
+          grep -q 'assets/catalogue-preview/fitness.jpg' catalogue-particle-preview.js
+          grep -q 'catalogue-particle-preview.css' index.html
+          git diff --check
+
+      - name: Commit fix
+        shell: bash
+        run: |
+          git config user.name "Profils Sports Agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vendor/three.min.js assets/catalogue-preview catalogue-particle-preview.js catalogue-particle-preview.css index.html docs/NEXT.md
+          git commit -m "fix: make catalogue particle preview self-contained"
+          git push
