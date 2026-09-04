@@ -417,6 +417,30 @@ The reference effect is strongest when interpreted as “revealing what exists b
 
 ---
 
+## 2026-09-04 — Method inspection uses hover + drag, not liquid
+
+Decision:
+
+Replace the localized liquid/SDF reveal in the Method / `#approach` visual with a restrained split-surface hover + drag interaction.
+
+Implementation:
+
+- the project photo remains the visible base layer
+- a stage-specific technical drawing occupies a second full-size layer beneath it
+- a one-pixel signal-yellow divider defines the boundary between `PROJET` and `INGÉNIERIE`
+- hover gently previews the interaction without taking over the composition
+- dragging the surface moves the divider directly and leaves the inspection position where the user releases it
+- double-click resets the divider to its initial position
+- each of the five Method rows still updates the technical geometry and verified labels
+- no WebGL, particle simulation, fluid membrane, blur or glow is used
+- reduced-motion, mobile and non-fine-pointer users retain the original static blueprint fallback
+
+Rationale:
+
+The liquid membrane added visual mass and made the Method feel like an effect demo rather than an engineering interface. A direct comparison gesture better communicates the intended idea: visible project on one side, underlying engineering on the other.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
