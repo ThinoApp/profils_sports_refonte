@@ -19,10 +19,10 @@
   const FLIGHT_DELAY = 70;
   const FLIGHT_DURATION = 720;
   const PHASES = [
-    { at: 0, label: 'IMPLANTATION', code: '01' },
-    { at: 0.27, label: 'STRUCTURE', code: '02' },
-    { at: 0.56, label: 'ÉQUIPEMENT', code: '03' },
-    { at: 0.82, label: 'MISE EN JEU', code: '04' }
+    { at: 0, label: 'IMPLANTATION' },
+    { at: 0.27, label: 'STRUCTURE' },
+    { at: 0.56, label: 'ÉQUIPEMENT' },
+    { at: 0.82, label: 'MISE EN JEU' }
   ];
 
   preloader.classList.add('intro-upgraded');
@@ -32,14 +32,6 @@
     <div class="intro-stage">
       <div class="intro-atmosphere" aria-hidden="true"></div>
       <div class="intro-grid" aria-hidden="true"></div>
-
-      <div class="intro-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-
-      <div class="intro-meta">
-        <span>PROFILS SPORTS INTERNATIONAL</span>
-        <span class="intro-meta__center">SPORTS ARCHITECTURE / PERFORMANCE ENGINEERING</span>
-        <strong><i data-intro-phase-code>01</i> / 04</strong>
-      </div>
 
       <svg class="intro-blueprint" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <g class="intro-blueprint__ghost">
@@ -74,15 +66,9 @@
           <span>PHASE ACTIVE</span>
           <strong data-intro-phase>IMPLANTATION</strong>
         </div>
-        <div class="intro-readout__media" data-intro-media>HERO / STANDBY</div>
-      </div>
-
-      <div class="intro-phases" aria-hidden="true">
-        ${PHASES.map((phase, index) => `<span data-phase-index="${index}"><i></i><b>${phase.code}</b>${phase.label}</span>`).join('')}
       </div>
 
       <div class="intro-progress" aria-hidden="true"><i></i></div>
-      <div class="intro-impact-line" aria-hidden="true"></div>
     </div>
 
     <div class="intro-gates" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -104,9 +90,6 @@
 
   const count = preloader.querySelector('[data-intro-count]');
   const phaseLabel = preloader.querySelector('[data-intro-phase]');
-  const phaseCode = preloader.querySelector('[data-intro-phase-code]');
-  const mediaLabel = preloader.querySelector('[data-intro-media]');
-  const phaseNodes = [...preloader.querySelectorAll('[data-phase-index]')];
   const wordmarkLines = [...preloader.querySelectorAll('.intro-wordmark > span')];
   const bridge = preloader.querySelector('.intro-bridge');
   const bridgeLines = [...preloader.querySelectorAll('.intro-bridge > span')];
@@ -273,8 +256,6 @@
   };
 
   const setMediaReady = () => {
-    preloader.classList.add('is-media-ready');
-    if (mediaLabel) mediaLabel.textContent = 'HERO / READY';
     heroVideo?.play().catch(() => {});
   };
 
@@ -294,11 +275,6 @@
     currentPhase = nextPhase;
     const phase = PHASES[currentPhase];
     if (phaseLabel) phaseLabel.textContent = phase.label;
-    if (phaseCode) phaseCode.textContent = phase.code;
-    phaseNodes.forEach((node, index) => {
-      node.classList.toggle('is-active', index === currentPhase);
-      node.classList.toggle('is-complete', index < currentPhase);
-    });
     preloader.dataset.phase = String(currentPhase + 1);
   };
 

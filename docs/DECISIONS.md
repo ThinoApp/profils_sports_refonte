@@ -322,7 +322,7 @@ Replace the basic wordmark loader with a short branded opening sequence that beh
 
 Implementation:
 
-- architectural grid and cross-axis lines appear first
+- architectural grid appears first
 - monumental PROFILS / SPORTS lockup enters through masked typography
 - signal-yellow field marking grows across the viewport
 - a subtle stadium-plan ellipse reinforces the sports/infrastructure theme
@@ -346,7 +346,8 @@ The pre-loader is a short, four-beat construction sequence: implantation, struct
 Implementation:
 
 - the full sequence has a fixed 2.65-second build and a 1.4-second overlapping exit
-- Hero video readiness is surfaced as telemetry but never blocks the opening
+- Hero video readiness never blocks the opening; its redundant telemetry label is intentionally omitted
+- top metadata, the corner phase counter, the bottom phase rail, the four corner brackets and the full-screen centre axes are intentionally omitted so the scene focuses on the wordmark, field blueprint and primary progress readout
 - the Hero shutters and typography begin only when the intro reaches its impact beat
 - a transient typography bridge measures the rendered glyph bounds of every intro and Hero line, then uses a FLIP transform to preserve exact geometry above the opening gates
 - the pre-loader root becomes transparent and non-interactive on the impact beat, allowing the opening gates to progressively expose the live Hero instead of hiding it behind an opaque root until teardown
