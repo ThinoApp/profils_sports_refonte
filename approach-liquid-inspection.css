@@ -1,0 +1,146 @@
+/* Profils Sports — Method / Approach liquid engineering inspection.
+   Enhanced desktop-only layer. The original blueprint remains the fallback. */
+
+#approach [data-blueprint].approach-liquid-ready {
+  isolation: isolate;
+  background: #07131f;
+}
+
+#approach [data-blueprint].approach-liquid-ready .blueprint-photo {
+  z-index: 1;
+  filter: saturate(.68) contrast(1.08) brightness(.82);
+}
+
+#approach [data-blueprint].approach-liquid-ready::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(7,19,31,.08), rgba(7,19,31,.30)),
+    linear-gradient(90deg, rgba(7,19,31,.20), transparent 42%, rgba(7,19,31,.08));
+}
+
+/* The old permanent technical HUD is deliberately removed only after the
+   enhanced surface is alive. The photo itself remains untouched as fallback. */
+#approach [data-blueprint].approach-liquid-ready .blueprint-measure,
+#approach [data-blueprint].approach-liquid-ready .blueprint-cross,
+#approach [data-blueprint].approach-liquid-ready .blueprint-scan,
+#approach [data-blueprint].approach-liquid-ready .blueprint-card {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.approach-liquid-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 1;
+  will-change: opacity;
+}
+
+.approach-liquid-frame {
+  position: absolute;
+  inset: 18px;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,.13);
+}
+
+.approach-liquid-frame::before,
+.approach-liquid-frame::after {
+  content: "";
+  position: absolute;
+  background: #efe158;
+}
+
+.approach-liquid-frame::before {
+  left: -1px;
+  top: -1px;
+  width: 52px;
+  height: 1px;
+}
+
+.approach-liquid-frame::after {
+  left: -1px;
+  top: -1px;
+  width: 1px;
+  height: 52px;
+}
+
+.approach-liquid-ui {
+  position: absolute;
+  z-index: 6;
+  left: 34px;
+  right: 34px;
+  bottom: 30px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 24px;
+  pointer-events: none;
+  color: #fff;
+}
+
+.approach-liquid-ui__state {
+  display: grid;
+  gap: 6px;
+  max-width: 420px;
+}
+
+.approach-liquid-ui__mode,
+.approach-liquid-ui__hint {
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.approach-liquid-ui__mode {
+  color: #efe158;
+}
+
+.approach-liquid-ui__stage {
+  font-family: "Barlow Condensed", Arial, sans-serif;
+  font-size: clamp(26px, 2.5vw, 42px);
+  font-weight: 700;
+  line-height: .9;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.approach-liquid-ui__hint {
+  align-self: end;
+  padding-bottom: 4px;
+  color: rgba(255,255,255,.62);
+  transition: opacity .35s ease, transform .45s cubic-bezier(.18,.82,.18,1);
+}
+
+#approach [data-blueprint].approach-liquid-ready.is-liquid-interacted .approach-liquid-ui__hint {
+  opacity: .22;
+  transform: translateY(4px);
+}
+
+#approach [data-blueprint].approach-liquid-ready.is-liquid-active .approach-liquid-frame {
+  border-color: rgba(239,225,88,.23);
+}
+
+/* Active Method row and inspection surface should read as one instrument. */
+#approach:has([data-blueprint].approach-liquid-ready) .approach-row.is-active {
+  background: rgba(239,225,88,.09);
+}
+
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .approach-liquid-canvas,
+  .approach-liquid-frame,
+  .approach-liquid-ui {
+    display: none !important;
+  }
+}
