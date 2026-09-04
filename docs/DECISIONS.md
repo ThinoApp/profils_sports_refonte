@@ -353,7 +353,10 @@ Implementation:
 - the pre-loader root becomes transparent and non-interactive on the impact beat, allowing the opening gates to progressively expose the live Hero instead of hiding it behind an opaque root until teardown
 - the pre-loader and Hero shutter timings are synchronised, and the real Hero title is released 390ms into the gate movement so its masked line animation remains visible beneath the travelling copy
 - teardown occurs only after the Hero title, supporting content, flight path and logo landing have all reached their settled states
-- a signal-yellow SVG Bézier path detaches from the final `SHAPE.` line and lands at the measured centre of the header logo, including compensation for the header's opening transform
+- only after the field drawing reaches 100%, its SVG geometry contracts into a proxy of the authentic Profils Sports logo
+- that same logo proxy and a signal-yellow cursor share a measured SVG Bézier path to the exact header-logo geometry, including compensation for the header's opening transform
+- the real header logo remains hidden until the moving proxy lands and crossfades into it, preventing a duplicate logo or visible swap
+- a 512px local derivative of the authentic logo is preloaded for both the proxy and Header, avoiding a late or blank morph caused by the oversized remote source
 - pointer, Enter, Space or Escape can skip the intro after its opening beat
 - direct hash navigation and `prefers-reduced-motion` skip the intro entirely
 - no additional runtime or media dependency is introduced
