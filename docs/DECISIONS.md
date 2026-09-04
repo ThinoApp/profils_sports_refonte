@@ -371,6 +371,29 @@ The previous intro waited for video readiness and could block the page for almos
 
 ---
 
+## 2026-09-04 — Hero becomes editorial and action-led
+
+Decision:
+
+Reduce the number of simultaneous visual signals in the Hero while preserving the monumental `SPORT / TAKES / SHAPE.` title and its post-preloader cursor reveal exactly as the primary signature interaction.
+
+Implementation:
+
+- the Hero title markup (`.hero-title .hero-line > b`) is not changed, so the intro continues to measure and reveal the real glyph geometry
+- the static stadium-plan layer, repository/debug coordinates and four-cell proof strip are removed from the enhanced runtime Hero
+- the brand cue is reduced to `SPORTING EXCELLENCE` + `DESIGN & CONSTRUCTION`
+- supporting copy is compressed to one verified project-cycle statement
+- the lower-right area becomes a clear project-start action (`CADRER LE PROJET`) with Solutions as a secondary route
+- the video overlay is lighter so real media carries more of the composition
+- technical drawing language is intentionally deferred to the Hero → manifesto scroll transition instead of competing with the initial Hero
+- pointer interaction on the clipped Hero is enabled only while the transition stage is in its initial `hero` phase, making the CTA genuinely actionable without blocking the manifesto later
+
+Rationale:
+
+The previous Hero combined video, monumental type, stadium drawing, tagline, repository coordinates, four proof cells, explanatory copy and navigation at once. Removing secondary telemetry restores editorial hierarchy and makes the first screen read as one statement plus one next action rather than a collection of interface modules.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:

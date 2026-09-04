@@ -37,6 +37,7 @@ Primary branch:
 - simplified the pre-loader by removing its redundant top metadata, corner phase counter, bottom phase rail, media status, four corner brackets and full-screen centre axes while preserving the main construction sequence and Hero transition
 - centred the field construction and connected its six sequential drawing segments to one persistent signal-yellow cursor, including curved pen-up transfers between disconnected markings; that same cursor curves into the emerging logo, accompanies it along a measured path and lands it on the real Header logo without a visual swap
 - extended that uninterrupted construction gesture into the Hero headline: after the logo lands, the same cursor measures and reveals `SPORT`, `TAKES` and `SHAPE.` line by line instead of handing the title to an unrelated entrance animation
+- decluttered the Hero into a title-led editorial composition with one concise project brief and a genuinely clickable project-start action, while preserving the post-preloader cursor reveal geometry unchanged
 
 ## Current implementation files
 
