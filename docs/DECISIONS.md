@@ -341,15 +341,16 @@ The intro should establish the brand world immediately rather than behave like a
 
 Decision:
 
-The pre-loader is a short, four-beat construction sequence: implantation, structure, equipment and opening play. It culminates in the same `SPORT TAKES SHAPE.` typography as the Hero, then opens through four alternating architectural gates while triggering the Hero reveal on the impact beat.
+The pre-loader is a short, four-beat construction sequence: implantation, structure, equipment and opening play. The centred sports field is its sole visual subject; `SPORT TAKES SHAPE.` belongs exclusively to the Hero and appears only after the field has resolved into the brand mark.
 
 Implementation:
 
-- the full sequence has a fixed 2.65-second build and a 1.4-second overlapping exit
+- the sequence has a fixed 2.65-second field build, a 640ms field-to-logo resolve and a 1.4-second overlapping exit
 - Hero video readiness never blocks the opening; its redundant telemetry label is intentionally omitted
-- top metadata, the corner phase counter, the bottom phase rail, the four corner brackets and the full-screen centre axes are intentionally omitted so the scene focuses on the wordmark, field blueprint and primary progress readout
+- top metadata, the corner phase counter, the bottom phase rail, the four corner brackets and the full-screen centre axes are intentionally omitted so the scene focuses on the field blueprint and primary progress readout
+- the field is centred and its six structural segments are drawn sequentially by one persistent signal-yellow cursor
 - the Hero shutters and typography begin only when the intro reaches its impact beat
-- a transient typography bridge measures the rendered glyph bounds of every intro and Hero line, then uses a FLIP transform to preserve exact geometry above the opening gates
+- the loader does not repeat the Hero headline; the real Hero typography performs its only entrance beneath the opening gates
 - the pre-loader root becomes transparent and non-interactive on the impact beat, allowing the opening gates to progressively expose the live Hero instead of hiding it behind an opaque root until teardown
 - the pre-loader and Hero shutter timings are synchronised, and the real Hero title is released 390ms into the gate movement so its masked line animation remains visible beneath the travelling copy
 - teardown occurs only after the Hero title, supporting content, flight path and logo landing have all reached their settled states
@@ -357,6 +358,7 @@ Implementation:
 - that same logo proxy and a signal-yellow cursor share a measured SVG Bézier path to the exact header-logo geometry, including compensation for the header's opening transform
 - the real header logo remains hidden until the moving proxy lands and crossfades into it, preventing a duplicate logo or visible swap
 - a 512px local derivative of the authentic logo is preloaded for both the proxy and Header, avoiding a late or blank morph caused by the oversized remote source
+- the same cursor that draws the field curves into the emerging logo and continues along its flight path, avoiding a cursor swap between phases
 - pointer, Enter, Space or Escape can skip the intro after its opening beat
 - direct hash navigation and `prefers-reduced-motion` skip the intro entirely
 - no additional runtime or media dependency is introduced

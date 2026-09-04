@@ -1,7 +1,6 @@
 /* Profils Sports — architectural impact intro */
 .preloader.intro-upgraded {
   --intro-progress: 0;
-  --intro-field-offset: 2400;
   --intro-marks-offset: 260;
   --intro-ink: #07131f;
   --intro-paper: #f1efe6;
@@ -31,40 +30,23 @@ body.intro-opening .site-header { opacity:1; transform:none; }
 .intro-grid { position:absolute; inset:-8%; opacity:0; background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px); background-size:clamp(54px,6.25vw,110px) clamp(54px,6.25vw,110px); transform:perspective(900px) rotateX(12deg) scale(1.08); transition:opacity .7s ease,transform 2.5s cubic-bezier(.18,.82,.18,1); }
 .intro-upgraded.is-building .intro-grid { opacity:.7; transform:perspective(900px) rotateX(0) scale(1); }
 
-.intro-blueprint { position:absolute; z-index:1; width:min(74vw,1180px); height:min(72vh,820px); right:-7vw; top:10vh; overflow:visible; transform:rotate(-6deg) scale(.88); opacity:.08; transition:transform 2.5s cubic-bezier(.18,.82,.18,1),opacity .8s ease; }
-.intro-upgraded.is-building .intro-blueprint { transform:rotate(-3deg) scale(1); opacity:.78; }
-.intro-blueprint * { vector-effect:non-scaling-stroke; fill:none; }
+.intro-blueprint { position:absolute; z-index:1; width:min(88vw,116vh,1280px); height:auto; left:50%; top:48%; overflow:visible; transform:translate3d(-50%,-50%,0) rotate(-5deg) scale(.88); opacity:.08; transition:transform 2.5s cubic-bezier(.18,.82,.18,1),opacity .8s ease; }
+.intro-upgraded.is-building .intro-blueprint { transform:translate3d(-50%,-50%,0) rotate(0) scale(1); opacity:.82; }
+.intro-blueprint * { fill:none; }
 .intro-blueprint__ghost,.intro-blueprint__field,.intro-blueprint__marks { transform-box:fill-box; transform-origin:center; will-change:transform,opacity; }
 .intro-blueprint__ghost { stroke:rgba(239,225,88,.22); stroke-width:1; stroke-dasharray:8 13; transition:opacity .34s ease,transform .58s cubic-bezier(.18,.82,.18,1); }
-.intro-blueprint__field { stroke:rgba(239,225,88,.74); stroke-width:1.25; stroke-dasharray:2400; stroke-dashoffset:var(--intro-field-offset); transition:opacity .5s .08s ease,transform .64s cubic-bezier(.18,.82,.18,1); }
+.intro-blueprint__field { stroke:rgba(239,225,88,.82); stroke-width:1.35; transition:opacity .5s .08s ease,transform .64s cubic-bezier(.18,.82,.18,1); }
+.intro-blueprint__field > * { stroke-linecap:round; stroke-linejoin:round; }
 .intro-blueprint__marks { stroke:rgba(255,255,255,.38); stroke-width:1; stroke-dasharray:260; stroke-dashoffset:var(--intro-marks-offset); transition:opacity .34s ease,transform .52s cubic-bezier(.18,.82,.18,1); }
 .intro-upgraded.is-resolving .intro-blueprint__ghost { opacity:0; transform:scale(.76); }
 .intro-upgraded.is-resolving .intro-blueprint__field { opacity:0; transform:scale(.18) rotate(5deg); }
 .intro-upgraded.is-resolving .intro-blueprint__marks { opacity:0; transform:scale(.3); }
 
-.intro-lockup { position:absolute; z-index:4; left:var(--pad); top:26.5vh; }
-.intro-kicker { display:flex; align-items:center; gap:13px; margin:0 0 18px 5px; overflow:hidden; font-size:8px; font-weight:800; letter-spacing:.18em; color:rgba(255,255,255,.64); }
-.intro-kicker span { transform:translateY(130%); transition:transform .55s cubic-bezier(.18,.82,.18,1); }
-.intro-kicker i { width:18px; height:1px; background:var(--intro-signal); transform:scaleX(0); transition:transform .45s .2s ease; }
-.intro-upgraded.is-building .intro-kicker span { transform:none; }
-.intro-upgraded.is-building .intro-kicker span:nth-of-type(2){transition-delay:.08s}
-.intro-upgraded.is-building .intro-kicker span:nth-of-type(3){transition-delay:.16s}
-.intro-upgraded.is-building .intro-kicker i { transform:scaleX(1); }
-
-.intro-wordmark { margin:0; width:min(930px,73vw); font-family:"Barlow Condensed",sans-serif; font-weight:900; font-size:clamp(112px,15.2vw,236px); line-height:.67; letter-spacing:-.035em; text-transform:uppercase; }
-.intro-wordmark > span { display:block; overflow:hidden; }
-.intro-wordmark b { display:block; font:inherit; transform:translate3d(0,115%,0) skewY(4deg); transition:transform .82s cubic-bezier(.16,.84,.2,1); }
-.intro-wordmark__offset { padding-left:17%; }
-.intro-wordmark__signal { color:var(--intro-signal); }
-.intro-upgraded.is-building .intro-wordmark > span:nth-child(1) b { transform:none; transition-delay:.14s; }
-.intro-upgraded.is-building .intro-wordmark > span:nth-child(2) b { transform:none; transition-delay:.36s; }
-.intro-upgraded.is-building .intro-wordmark > span:nth-child(3) b { transform:none; transition-delay:.60s; }
-.intro-lockup,.intro-readout,.intro-progress { transition:opacity .34s ease,transform .5s cubic-bezier(.18,.82,.18,1); }
-.intro-upgraded.is-resolving .intro-lockup { opacity:0; transform:translate3d(-1.4vw,0,0); }
+.intro-readout,.intro-progress { transition:opacity .34s ease,transform .5s cubic-bezier(.18,.82,.18,1); }
 .intro-upgraded.is-resolving .intro-readout { opacity:0; transform:translate3d(0,12px,0); }
 .intro-upgraded.is-resolving .intro-progress { opacity:0; }
 
-.intro-readout { position:absolute; z-index:6; right:4.8vw; bottom:12vh; width:min(29vw,410px); display:grid; grid-template-columns:auto 1fr; gap:20px 26px; align-items:end; }
+.intro-readout { position:absolute; z-index:6; right:4.8vw; bottom:5vh; width:min(29vw,410px); display:grid; grid-template-columns:auto 1fr; gap:20px 26px; align-items:end; }
 .intro-readout__count { display:flex; align-items:flex-start; font-family:"Barlow Condensed",sans-serif; font-size:clamp(60px,6vw,94px); font-weight:700; line-height:.72; color:var(--intro-paper); font-variant-numeric:tabular-nums; }
 .intro-readout__count small { margin:2px 0 0 5px; color:var(--intro-signal); font:700 10px/1 "Archivo",sans-serif; }
 .intro-readout__state { padding:0 0 3px 18px; border-left:1px solid rgba(255,255,255,.2); display:grid; gap:7px; }
@@ -77,22 +59,19 @@ body.intro-opening .site-header { opacity:1; transform:none; }
 .intro-logo-proxy { position:fixed; z-index:12; display:block; opacity:0; object-fit:contain; clip-path:circle(8% at 50% 50%); filter:brightness(0) saturate(100%) invert(88%) sepia(91%) saturate(488%) hue-rotate(352deg) brightness(101%) contrast(87%); transform:scale(.38) rotate(-10deg); transform-origin:center; transition:opacity .34s .08s ease,clip-path .62s cubic-bezier(.18,.82,.18,1),transform .62s cubic-bezier(.18,.82,.18,1); will-change:transform,opacity,clip-path; }
 .intro-upgraded.is-resolving .intro-logo-proxy { opacity:1; clip-path:circle(50% at 50% 50%); transform:scale(1) rotate(0); }
 .intro-upgraded.is-resolving .intro-logo-proxy.is-landed { opacity:0; }
+.intro-builder-cursor { position:fixed; z-index:14; left:0; top:0; width:32px; height:18px; opacity:0; color:var(--intro-signal); pointer-events:none; transform-origin:center; filter:drop-shadow(0 0 12px rgba(239,225,88,.82)); will-change:transform,opacity; transition:opacity .18s ease; }
+.intro-builder-cursor i { position:absolute; inset:0; display:block; background:currentColor; clip-path:polygon(0 4%,100% 50%,0 96%,30% 50%); }
+.intro-builder-cursor::after { content:""; position:absolute; width:5px; height:5px; left:13.5px; top:6.5px; border-radius:50%; background:var(--intro-paper); }
+.intro-builder-cursor.is-active { opacity:1; }
+.intro-builder-cursor.is-landed { opacity:0; }
 .intro-gates { position:absolute; z-index:9; inset:0; display:grid; grid-template-columns:repeat(4,1fr); pointer-events:none; }
 .intro-gates span { background:transparent; border-right:1px solid transparent; transform:translateY(0); will-change:transform; }
 .intro-upgraded.is-opening .intro-gates span { background:var(--intro-ink); border-color:rgba(255,255,255,.055); }
-.intro-bridge { position:fixed; z-index:10; inset:0; margin:0; pointer-events:none; opacity:0; font-family:"Barlow Condensed",sans-serif; font-size:clamp(112px,15.2vw,236px); font-weight:900; line-height:.67; letter-spacing:-.035em; text-transform:uppercase; }
-.intro-bridge > span { position:fixed; display:block; overflow:hidden; will-change:transform,opacity; }
-.intro-bridge b { display:block; font:inherit; }
-.intro-bridge__signal { color:var(--intro-signal); }
 .intro-flight { position:fixed; z-index:13; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; opacity:0; }
 .intro-flight path { vector-effect:non-scaling-stroke; }
 .intro-flight__trace { fill:none; stroke:var(--intro-signal); stroke-width:1.5; filter:drop-shadow(0 0 8px rgba(239,225,88,.48)); }
-.intro-flight__runner { opacity:0; filter:drop-shadow(0 0 12px rgba(239,225,88,.82)); }
-.intro-flight__runner path { fill:var(--intro-signal); }
-.intro-flight__runner circle { fill:var(--intro-paper); }
 .intro-flight__landing { fill:none; stroke:var(--intro-signal); stroke-width:1.5; opacity:0; transform-box:fill-box; transform-origin:center; }
 .intro-flight.is-flying { opacity:1; }
-.intro-flight.is-flying .intro-flight__runner { opacity:1; }
 .intro-flight.is-landed { transition:opacity .22s .16s ease; opacity:0; }
 .intro-flight.is-landed .intro-flight__landing { animation:introFlightLanding .44s cubic-bezier(.18,.82,.18,1) both; }
 .brand-logo { transition:filter .35s,opacity .16s ease; }
@@ -127,20 +106,13 @@ body.intro-opening.intro-hero-release .hero-proof { transition:opacity .58s .08s
 @keyframes introLogoLanding { 0%,100%{transform:scale(1)} 42%{transform:scale(.82) rotate(-5deg)} 68%{transform:scale(1.13) rotate(2deg)} }
 
 @media (max-width:900px){
-  .intro-blueprint { width:112vw; height:72vh; right:-44vw; top:16vh; }
-  .intro-lockup { left:var(--pad); top:26vh; }
-  .intro-wordmark,.intro-bridge { font-size:clamp(100px,16vw,170px); }
+  .intro-blueprint { width:min(98vw,108vh); }
   .intro-readout { width:min(43vw,330px); }
 }
 
 @media (max-width:620px){
-  .intro-lockup { left:20px; right:20px; top:24vh; }
-  .intro-kicker { gap:7px; margin-bottom:15px; font-size:5.5px; letter-spacing:.11em; }
-  .intro-kicker i { width:8px; }
-  .intro-wordmark,.intro-bridge { font-size:clamp(86px,25vw,124px); line-height:.69; }
-  .intro-wordmark__offset { padding-left:9%; }
-  .intro-blueprint { width:154vw; height:66vh; right:-55vw; top:20vh; opacity:.05; }
-  .intro-upgraded.is-building .intro-blueprint { opacity:.46; }
+  .intro-blueprint { width:min(114vw,96vh); top:45%; opacity:.05; }
+  .intro-upgraded.is-building .intro-blueprint { opacity:.68; }
   .intro-readout { left:24px; right:24px; bottom:13vh; width:auto; grid-template-columns:auto 1fr; }
   .intro-readout__count { font-size:56px; }
   .intro-readout__state strong { font-size:19px; }

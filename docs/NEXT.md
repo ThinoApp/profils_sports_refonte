@@ -31,11 +31,11 @@ Primary branch:
 - replaced catalogue blueprint SVG swapping with one continuous spring-morphed SVG geometry that redirects from its current intermediate state on rapid hover changes
 - connected the Hero and “De la conception à l’exploitation” manifesto through a single reversible scroll-driven clip/shared-media transition on desktop
 - replaced the basic preloader with a branded construction-curtain intro: architectural grid, monumental masked type, signal field line and split reveal into the live Hero
-- rebuilt the pre-loader as a deterministic four-phase architectural impact sequence with a field blueprint, monumental `SPORT TAKES SHAPE.` crescendo, four-gate reveal, Hero-synchronised opening and non-blocking video readiness
-- replaced the pre-loader/Hero title handoff with a runtime-measured FLIP bridge so all three glyph boxes land exactly on the Hero title instead of disappearing and reappearing
+- rebuilt the pre-loader as a deterministic four-phase architectural impact sequence with a field blueprint, four-gate reveal, Hero-synchronised opening and non-blocking video readiness
+- removed the redundant pre-loader copy of `SPORT TAKES SHAPE.` so the headline performs its first and only entrance inside the Hero
 - removed the abrupt final Hero cut by making the pre-loader root transparent during its opening, synchronising both shutter systems and keeping the overlay mounted until every visible Hero/brand motion has settled
 - simplified the pre-loader by removing its redundant top metadata, corner phase counter, bottom phase rail, media status, four corner brackets and full-screen centre axes while preserving the main construction sequence and Hero transition
-- connected the completed field blueprint to the Header through one field-to-logo resolve: a preloaded local derivative of the authentic logo emerges from the collapsing field, then travels with the signal-yellow cursor on a measured path and lands on the real Header logo without a visual swap
+- centred the field construction and connected its six sequential drawing segments to one persistent signal-yellow cursor; that same cursor curves into the emerging logo, accompanies it along a measured path and lands it on the real Header logo without a visual swap
 
 ## Current implementation files
 
