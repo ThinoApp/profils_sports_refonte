@@ -92,7 +92,7 @@
   const handle = document.createElement('div');
   handle.className = 'approach-drag-handle';
   handle.setAttribute('aria-hidden', 'true');
-  handle.textContent = 'GLISSER';
+  handle.textContent = '';
 
   const ui = document.createElement('div');
   ui.className = 'approach-drag-ui';
@@ -100,17 +100,13 @@
   ui.innerHTML = `
     <span class="approach-drag-ui__photo">PROJET</span>
     <span class="approach-drag-ui__technical">INGÉNIERIE</span>
-    <strong class="approach-drag-stage"></strong>
-    <span class="approach-drag-hint">SURVOLER UNE MÉTHODE · LE TRACEUR CONSTRUIT SON PLAN</span>
   `;
 
   host.append(layer, ui, surface, divider, handle);
 
   const ctx = canvas.getContext('2d');
-  const stageLabel = ui.querySelector('.approach-drag-stage');
   const photoLabel = ui.querySelector('.approach-drag-ui__photo');
   const technicalLabel = ui.querySelector('.approach-drag-ui__technical');
-  const hintLabel = ui.querySelector('.approach-drag-hint');
 
   let activeStep = Math.max(0, rows.findIndex(row => row.classList.contains('is-active')));
   let width = 1;
@@ -139,7 +135,7 @@
   const drawGrid = () => {
     const gap = Math.max(34, Math.round(width / 12));
     ctx.save();
-    ctx.strokeStyle = 'rgba(239,225,88,.14)';
+    ctx.strokeStyle = 'rgba(239,225,88,.065)';
     ctx.lineWidth = 1;
     for (let x = 0; x <= width; x += gap) {
       ctx.beginPath();
@@ -158,10 +154,7 @@
 
   const drawBlueprint = () => {
     if (!ctx) return;
-    const state = STATES[activeStep] || STATES[0];
     const isEn = lang() === 'en';
-    const labels = isEn ? state.labelsEn : state.labelsFr;
-    const title = isEn ? state.en : state.fr;
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
@@ -169,36 +162,9 @@
     ctx.fillRect(0, 0, width, height);
     drawGrid();
 
-    ctx.strokeStyle = 'rgba(239,225,88,.72)';
-    ctx.fillStyle = 'rgba(239,225,88,.88)';
-    ctx.lineWidth = 1.35;
-    ctx.strokeRect(18.5, 18.5, width - 37, height - 37);
-
-    ctx.font = `700 ${Math.max(9, width * .014)}px Arial`;
-    ctx.fillText('PROFILS SPORTS / PROJECT SYSTEM', 30, 42);
-    ctx.textAlign = 'right';
-    ctx.fillText(`${String(activeStep + 1).padStart(2,'0')} / 05`, width - 30, 42);
-    ctx.textAlign = 'left';
-
-    ctx.font = `600 ${Math.max(9, width * .013)}px Arial`;
-    labels.forEach((label, index) => {
-      const col = index % 2;
-      const row = Math.floor(index / 2);
-      const x = 30 + col * width * .47;
-      const y = height - 112 + row * 30;
-      ctx.fillStyle = 'rgba(255,255,255,.25)';
-      ctx.fillRect(x, y - 7, 18, 1);
-      ctx.fillStyle = 'rgba(255,255,255,.82)';
-      ctx.fillText(label, x + 28, y);
-    });
-
-    stageLabel.textContent = title;
     photoLabel.textContent = isEn ? 'PROJECT' : 'PROJET';
     technicalLabel.textContent = isEn ? 'ENGINEERING' : 'INGÉNIERIE';
-    hintLabel.textContent = isEn
-      ? 'HOVER A METHOD · THE TRACER BUILDS ITS DRAWING'
-      : 'SURVOLER UNE MÉTHODE · LE TRACEUR CONSTRUIT SON PLAN';
-    handle.textContent = isEn ? 'DRAG' : 'GLISSER';
+    handle.textContent = '';
   };
 
   const fmt = value => Number(value.toFixed(2));
