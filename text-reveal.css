@@ -1,0 +1,43 @@
+/* Editorial line-mask reveal adapted from the supplied text-reveal reference. */
+[data-text-reveal] {
+  transform:translateZ(0);
+}
+
+[data-text-reveal][data-text-reveal-pending] {
+  visibility:hidden;
+}
+
+[data-text-reveal] .text-reveal-line {
+  display:block;
+  overflow:hidden;
+  padding-bottom:.12em;
+  margin-bottom:-.12em;
+  backface-visibility:hidden;
+  -webkit-font-smoothing:antialiased;
+  will-change:transform;
+}
+
+[data-text-reveal].text-reveal-complete .text-reveal-line {
+  will-change:auto;
+}
+
+@media (prefers-reduced-motion:reduce) {
+  [data-text-reveal],
+  [data-text-reveal] .text-reveal-line {
+    visibility:visible !important;
+    opacity:1 !important;
+    transform:none !important;
+    animation:none !important;
+    transition:none !important;
+    will-change:auto !important;
+  }
+}
+
+@media print {
+  [data-text-reveal],
+  [data-text-reveal] .text-reveal-line {
+    visibility:visible !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+}

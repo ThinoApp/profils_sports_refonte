@@ -302,6 +302,7 @@
   }
 
   q('[data-language]')?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('site:language-will-change'));
     lang = lang === 'fr' ? 'en' : 'fr';
     document.documentElement.lang = lang;
     qa('[data-fr][data-en]').forEach(el => {
@@ -316,6 +317,7 @@
     });
     const active = q('[data-catalogue].is-active');
     if (active) activateCatalogue(active, catalogueRows.indexOf(active));
+    document.dispatchEvent(new CustomEvent('site:language-change', { detail: { lang } }));
   });
 
   const menuButton = q('[data-menu-toggle]');

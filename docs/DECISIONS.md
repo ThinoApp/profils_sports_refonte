@@ -541,6 +541,28 @@ The previous media repeated the active title, instruction, metadata and technica
 
 ---
 
+## 2026-09-04 — Text reveals remain selective and editorial
+
+Decision:
+
+Use the supplied line-mask text reveal as a chapter-level pacing device, not as a blanket animation applied to every label and control.
+
+Implementation:
+
+- animate the principal headings in Solutions, Catalogue, Method, Clients, Performance and Contact
+- pair the reveal with only the short editorial summaries that introduce those chapters
+- preserve the Hero's bespoke pre-loader-to-headline construction and the manifesto's shared-media transition without a second text system
+- split text into its real rendered lines and reveal each line vertically through an overflow mask with a restrained `expo.out` stagger
+- vendor GSAP 3.15.0, ScrollTrigger and SplitText locally instead of creating a runtime CDN dependency
+- destroy and rebuild splits around FR / EN DOM updates so translated copy is measured correctly and never restored to the previous language
+- keep source text visible when JavaScript or the motion libraries are unavailable, and bypass splitting for print and `prefers-reduced-motion`
+
+Rationale:
+
+The reveal gives long editorial chapters a clearer arrival and reinforces the site's architectural cadence. Limiting it to hierarchy-bearing copy avoids motion noise, protects interaction-heavy sections and prevents the carefully authored Hero entrance from becoming redundant.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:

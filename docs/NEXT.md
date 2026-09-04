@@ -42,6 +42,7 @@ Primary branch:
 - moved the Method tracer from drag to Method-row hover/focus: each row now redraws its technical geometry from a genuinely blank technical substrate, while drag remains dedicated to the photo ↔ engineering split
 - clarified the Method information hierarchy: the five-step list now carries the explanation and expands only the active row, while the technical face is reduced to a quiet grid, split comparison and cursor-drawn figure
 - replaced direct catalogue-page links with a full-screen 3D helical ribbon viewer using all 102 authentic catalogue pages; every page is now a subdivided, double-sided surface whose vertices bend around the same vertical helix
+- added selective editorial line-mask reveals to the main Solutions, Catalogue, Method, Clients, Performance and Contact copy; the Hero keeps its dedicated pre-loader choreography, while local GSAP/SplitText assets, live FR/EN re-splitting and reduced-motion fallbacks keep the treatment robust
 
 ## Current implementation files
 
@@ -141,6 +142,12 @@ Clicking any of the four catalogue rows opens a full-screen WebGL ribbon built f
 The pages are not rigid planes placed on a path. Each mesh uses a 32 × 4 subdivided surface and every vertex is analytically projected onto the helix, so the image itself curves with the ribbon. One double-sided shader displays the authentic image on both faces and corrects the rear UV orientation to prevent mirrored text.
 
 Wheel, trackpad, vertical/horizontal drag, touch and keyboard all advance one shared inertial progress value. Wheel and drag settle through a soft snap to the nearest central page, while far page meshes recycle above or below the viewport to create an infinite sequence. The pool uses 15 desktop or 17 mobile surfaces; mipmaps and multisample antialiasing remain disabled, device pixel ratio is capped, and adaptive resolution protects motion cadence on slower GPUs. Reduced-motion or unavailable-WebGL environments retain the horizontal static page rail.
+
+### Editorial text reveals
+
+The primary headings and a limited set of editorial summaries reveal line by line through real text masks when they enter the viewport. The Hero and manifesto remain excluded because their motion already belongs to the pre-loader and shared-media sequence.
+
+GSAP 3.15.0, ScrollTrigger and SplitText are vendored locally. Line wrapping is recalculated after responsive layout changes and after every FR / EN switch. If the motion libraries are unavailable, when printing, or when `prefers-reduced-motion` is active, the original semantic text remains immediately visible.
 
 ## Do not change without discussion
 
