@@ -39,7 +39,7 @@ Primary branch:
 - extended that uninterrupted construction gesture into the Hero headline: after the logo lands, the same cursor measures and reveals `SPORT`, `TAKES` and `SHAPE.` line by line instead of handing the title to an unrelated entrance animation
 - decluttered the Hero into a title-led editorial composition with one concise project brief and a genuinely clickable project-start action, while preserving the post-preloader cursor reveal geometry unchanged
 - replaced the rejected liquid Method reveal with a precise hover + drag project/engineering split: a signal-yellow divider directly compares the photo with stage-specific technical drawings and keeps the original static fallback
-- added a replayable signal-yellow Method tracer: every new drag redraws the active technical geometry with a dedicated cursor, curved pen-up transfers and a clean reset on drag release
+- moved the Method tracer from drag to Method-row hover/focus: each row now redraws its technical geometry from a genuinely blank technical substrate, while drag remains dedicated to the photo ↔ engineering split
 
 ## Current implementation files
 

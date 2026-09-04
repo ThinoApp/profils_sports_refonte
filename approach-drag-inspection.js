@@ -101,7 +101,7 @@
     <span class="approach-drag-ui__photo">PROJET</span>
     <span class="approach-drag-ui__technical">INGÉNIERIE</span>
     <strong class="approach-drag-stage"></strong>
-    <span class="approach-drag-hint">GLISSER POUR INSPECTER · LE TRACEUR CONSTRUIT LE PLAN</span>
+    <span class="approach-drag-hint">SURVOLER UNE MÉTHODE · LE TRACEUR CONSTRUIT SON PLAN</span>
   `;
 
   host.append(layer, ui, surface, divider, handle);
@@ -156,89 +156,6 @@
     ctx.restore();
   };
 
-  const drawField = () => {
-    const x = width * .18;
-    const y = height * .30;
-    const w = width * .64;
-    const h = height * .48;
-    ctx.strokeRect(x, y, w, h);
-    ctx.beginPath(); ctx.moveTo(x + w / 2, y); ctx.lineTo(x + w / 2, y + h); ctx.stroke();
-    ctx.beginPath(); ctx.arc(x + w / 2, y + h / 2, Math.min(w, h) * .13, 0, Math.PI * 2); ctx.stroke();
-    ctx.strokeRect(x, y + h * .26, w * .13, h * .48);
-    ctx.strokeRect(x + w * .87, y + h * .26, w * .13, h * .48);
-  };
-
-  const drawStructure = () => {
-    const baseY = height * .76;
-    ctx.beginPath();
-    ctx.moveTo(width * .18, baseY);
-    ctx.quadraticCurveTo(width * .38, height * .29, width * .5, height * .35);
-    ctx.quadraticCurveTo(width * .62, height * .29, width * .82, baseY);
-    ctx.stroke();
-    for (let i = 0; i < 7; i += 1) {
-      const x = width * (.22 + i * .093);
-      const apexY = height * (.39 + Math.abs(3 - i) * .038);
-      ctx.beginPath(); ctx.moveTo(x, baseY - height * .025); ctx.lineTo(width * .5, apexY); ctx.stroke();
-      ctx.beginPath(); ctx.arc(x, baseY - height * .025, 4, 0, Math.PI * 2); ctx.fill();
-    }
-  };
-
-  const drawFlow = () => {
-    const boxes = [[.15,.34],[.42,.34],[.69,.34],[.285,.64],[.555,.64]];
-    const bw = width * .16;
-    const bh = height * .105;
-    boxes.forEach(([px, py], index) => {
-      const x = width * px;
-      const y = height * py;
-      ctx.strokeRect(x, y, bw, bh);
-      ctx.fillRect(x + 14, y + 18, 24, 3);
-      ctx.font = `600 ${Math.max(10,width*.014)}px Arial`;
-      ctx.fillText(String(index + 1).padStart(2,'0'), x + 14, y + bh - 15);
-    });
-    const points = [[.31,.392,.42,.392],[.58,.392,.69,.392],[.23,.445,.365,.64],[.85,.445,.635,.64],[.445,.692,.555,.692]];
-    points.forEach(([x1,y1,x2,y2]) => {
-      ctx.beginPath(); ctx.moveTo(width*x1,height*y1); ctx.lineTo(width*x2,height*y2); ctx.stroke();
-    });
-  };
-
-  const drawDelivery = () => {
-    const x = width * .16;
-    const y = height * .30;
-    const w = width * .68;
-    const h = height * .48;
-    ctx.strokeRect(x, y, w, h);
-    for (let i = 0; i < 5; i += 1) {
-      const yy = y + h * (.16 + i * .17);
-      ctx.beginPath(); ctx.moveTo(x + w * .08, yy); ctx.lineTo(x + w * .88, yy); ctx.stroke();
-      ctx.beginPath(); ctx.arc(x + w * (.12 + i * .16), yy, 5, 0, Math.PI * 2); ctx.fill();
-    }
-    ctx.beginPath();
-    ctx.moveTo(x + w * .08, y + h * .16);
-    ctx.lineTo(x + w * .28, y + h * .33);
-    ctx.lineTo(x + w * .44, y + h * .50);
-    ctx.lineTo(x + w * .60, y + h * .67);
-    ctx.lineTo(x + w * .76, y + h * .84);
-    ctx.stroke();
-  };
-
-  const drawMaintenance = () => {
-    const cx = width * .52;
-    const cy = height * .55;
-    const radii = [height * .24, height * .18, height * .12];
-    radii.forEach(radius => {
-      ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.stroke();
-    });
-    const pts = [
-      [cx, cy-radii[0]], [cx+radii[0]*.87,cy-radii[0]*.28], [cx+radii[0]*.65,cy+radii[0]*.76],
-      [cx-radii[0]*.55,cy+radii[0]*.84], [cx-radii[0]*.92,cy-radii[0]*.22]
-    ];
-    pts.forEach((p, index) => {
-      const n = pts[(index + 1) % pts.length];
-      ctx.beginPath(); ctx.arc(p[0], p[1], 5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(p[0],p[1]); ctx.lineTo(n[0],n[1]); ctx.stroke();
-    });
-  };
-
   const drawBlueprint = () => {
     if (!ctx) return;
     const state = STATES[activeStep] || STATES[0];
@@ -263,17 +180,6 @@
     ctx.fillText(`${String(activeStep + 1).padStart(2,'0')} / 05`, width - 30, 42);
     ctx.textAlign = 'left';
 
-    ctx.save();
-    ctx.strokeStyle = 'rgba(239,225,88,.62)';
-    ctx.fillStyle = 'rgba(239,225,88,.82)';
-    ctx.lineWidth = 1.35;
-    if (state.geometry === 'field') drawField();
-    else if (state.geometry === 'structure') drawStructure();
-    else if (state.geometry === 'flow') drawFlow();
-    else if (state.geometry === 'delivery') drawDelivery();
-    else drawMaintenance();
-    ctx.restore();
-
     ctx.font = `600 ${Math.max(9, width * .013)}px Arial`;
     labels.forEach((label, index) => {
       const col = index % 2;
@@ -290,8 +196,8 @@
     photoLabel.textContent = isEn ? 'PROJECT' : 'PROJET';
     technicalLabel.textContent = isEn ? 'ENGINEERING' : 'INGÉNIERIE';
     hintLabel.textContent = isEn
-      ? 'DRAG TO INSPECT · THE TRACER BUILDS THE DRAWING'
-      : 'GLISSER POUR INSPECTER · LE TRACEUR CONSTRUIT LE PLAN';
+      ? 'HOVER A METHOD · THE TRACER BUILDS ITS DRAWING'
+      : 'SURVOLER UNE MÉTHODE · LE TRACEUR CONSTRUIT SON PLAN';
     handle.textContent = isEn ? 'DRAG' : 'GLISSER';
   };
 
@@ -536,7 +442,6 @@
     canvas.style.height = `${height}px`;
     drawBlueprint();
     rebuildTrace();
-    if (dragging) startTrace();
   };
 
   const startAnimation = () => {
@@ -598,7 +503,6 @@
     targetX = pointerPercent(event);
     surface.setPointerCapture?.(event.pointerId);
     startAnimation();
-    startTrace();
   });
 
   const endDrag = event => {
@@ -608,7 +512,6 @@
     host.classList.remove('is-dragging');
     if (event?.pointerId != null) surface.releasePointerCapture?.(event.pointerId);
     startAnimation();
-    stopTrace(false);
   };
 
   surface.addEventListener('pointerup', endDrag);
@@ -624,15 +527,14 @@
   });
 
   rows.forEach((row, index) => {
-    const setStep = () => {
-      if (activeStep === index) return;
+    const activateAndTrace = () => {
       activeStep = index;
       drawBlueprint();
       rebuildTrace();
-      if (dragging) startTrace();
+      startTrace();
     };
-    row.addEventListener('mouseenter', setStep);
-    row.addEventListener('focusin', setStep);
+    row.addEventListener('mouseenter', activateAndTrace);
+    row.addEventListener('focusin', activateAndTrace);
   });
 
   const rowObserver = new MutationObserver(() => {
@@ -641,7 +543,6 @@
       activeStep = index;
       drawBlueprint();
       rebuildTrace();
-      if (dragging) startTrace();
     }
   });
   rows.forEach(row => rowObserver.observe(row, { attributes: true, attributeFilter: ['class'] }));
