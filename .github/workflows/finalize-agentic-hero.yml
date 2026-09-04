@@ -1,0 +1,296 @@
+name: Finalize Agentic Hero
+
+on:
+  push:
+    branches:
+      - feat/declutter-agentic-hero
+    paths:
+      - '.github/workflows/finalize-agentic-hero.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feat/declutter-agentic-hero
+          fetch-depth: 0
+
+      - name: Build decluttered action-led Hero
+        shell: bash
+        run: |
+          cat > hero-editorial.css <<'CSS'
+          /* Profils Sports — editorial, action-led Hero layer.
+             The monumental Hero title is intentionally untouched: the intro cursor
+             continues to measure and reveal the same .hero-line > b geometry. */
+
+          .hero.hero--editorial .stadium-plan,
+          .hero.hero--editorial .hero-coordinate,
+          .hero.hero--editorial .hero-proof {
+            display: none !important;
+          }
+
+          .hero.hero--editorial .hero-overlay {
+            background:
+              linear-gradient(90deg, rgba(9,21,33,.79) 0%, rgba(9,21,33,.52) 34%, rgba(9,21,33,.19) 68%, rgba(9,21,33,.12) 100%),
+              linear-gradient(0deg, rgba(9,21,33,.72) 0%, rgba(9,21,33,.18) 34%, transparent 62%);
+          }
+
+          .hero.hero--editorial .hero-content {
+            padding: calc(var(--header-h) + 42px) var(--pad) 48px;
+            display: grid;
+            grid-template-rows: auto minmax(0,1fr) auto;
+            gap: clamp(28px,4vh,52px);
+          }
+
+          .hero.hero--editorial .hero-tagline {
+            align-self: start;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: rgba(255,255,255,.62);
+            font-size: 8px;
+            letter-spacing: .14em;
+          }
+
+          .hero.hero--editorial .hero-tagline span:first-child {
+            color: var(--signal);
+          }
+
+          .hero.hero--editorial .hero-tagline span + span {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+          }
+
+          .hero.hero--editorial .hero-tagline span + span::before {
+            content: "";
+            width: 26px;
+            height: 1px;
+            background: rgba(255,255,255,.34);
+          }
+
+          .hero.hero--editorial .hero-title {
+            align-self: center;
+          }
+
+          .hero.hero--editorial .hero-bottom {
+            align-self: end;
+            display: grid;
+            grid-template-columns: minmax(280px,440px) minmax(310px,390px);
+            justify-content: space-between;
+            align-items: end;
+            gap: clamp(34px,6vw,96px);
+          }
+
+          .hero-brief {
+            display: grid;
+            gap: 10px;
+            max-width: 440px;
+          }
+
+          .hero-brief__eyebrow {
+            color: var(--signal);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+          }
+
+          .hero.hero--editorial .hero-bottom .hero-brief p {
+            width: auto;
+            max-width: 38ch;
+            margin: 0;
+            color: rgba(255,255,255,.78);
+            font-size: clamp(14px,1.1vw,17px);
+            line-height: 1.5;
+          }
+
+          .hero-actions {
+            display: grid;
+            gap: 13px;
+            justify-items: stretch;
+          }
+
+          .hero-command {
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 26px;
+            padding: 13px 18px 13px 20px;
+            background: var(--signal);
+            color: var(--ink);
+            transition: transform .28s var(--ease), background .28s ease;
+          }
+
+          .hero-command > span {
+            display: grid;
+            gap: 4px;
+          }
+
+          .hero-command small {
+            font-size: 7px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            opacity: .6;
+          }
+
+          .hero-command strong {
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: .9;
+            letter-spacing: -.01em;
+            text-transform: uppercase;
+          }
+
+          .hero-command > b {
+            font: 500 24px/1 "Archivo", Arial, sans-serif;
+            transition: transform .28s var(--ease);
+          }
+
+          .hero-command:hover {
+            transform: translateY(-3px);
+            background: #f4e96e;
+          }
+
+          .hero-command:hover > b {
+            transform: translate(3px,-3px);
+          }
+
+          .hero-solutions-link {
+            justify-self: end;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255,255,255,.48);
+            color: rgba(255,255,255,.78);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            transition: color .25s ease, border-color .25s ease;
+          }
+
+          .hero-solutions-link:hover {
+            color: var(--signal);
+            border-color: var(--signal);
+          }
+
+          /* The Hero CTA must be usable while the Hero is the active scene, but
+             must stop intercepting input once the scroll-driven crop begins. */
+          body.has-hero-manifesto-transition .hero-manifesto-transition[data-phase="hero"] .hero-manifesto-transition__clip {
+            pointer-events: auto;
+          }
+
+          body.has-hero-manifesto-transition .hero-manifesto-transition:not([data-phase="hero"]) .hero-manifesto-transition__clip {
+            pointer-events: none;
+          }
+
+          @media (max-width:1100px) {
+            .hero.hero--editorial .hero-bottom {
+              grid-template-columns: minmax(250px,1fr) minmax(280px,350px);
+            }
+          }
+
+          @media (max-width:720px) {
+            .hero.hero--editorial .hero-content {
+              padding: calc(var(--header-h) + 30px) var(--pad) 24px;
+              gap: 22px;
+            }
+
+            .hero.hero--editorial .hero-tagline {
+              gap: 9px;
+              font-size: 6.5px;
+            }
+
+            .hero.hero--editorial .hero-tagline span + span::before {
+              width: 14px;
+            }
+
+            .hero.hero--editorial .hero-bottom {
+              grid-template-columns: 1fr;
+              gap: 20px;
+            }
+
+            .hero.hero--editorial .hero-bottom .hero-brief p {
+              max-width: 30ch;
+              font-size: 13px;
+            }
+
+            .hero-actions {
+              gap: 10px;
+            }
+
+            .hero-command {
+              min-height: 62px;
+              padding: 11px 15px;
+            }
+
+            .hero-command strong {
+              font-size: 24px;
+            }
+
+            .hero-solutions-link {
+              justify-self: start;
+            }
+          }
+          CSS
+
+          python - <<'PY'
+          from pathlib import Path
+
+          js_path = Path('hero-manifesto-transition.js')
+          js = js_path.read_text()
+          anchor = "  if (!hero || !manifesto) return;\n\n  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;"
+          block = '''  if (!hero || !manifesto) return;\n\n  // ---------------------------------------------------------------------------\n  // Hero editorial compaction. Keep the title DOM completely intact because the\n  // pre-loader measures `.hero-title .hero-line b` at runtime for its cursor sweep.\n  // Only secondary content and decorative layers are simplified here.\n  // ---------------------------------------------------------------------------\n  hero.classList.add('hero--editorial');\n\n  if (!document.querySelector('link[data-hero-editorial]')) {\n    const editorialStyles = document.createElement('link');\n    editorialStyles.rel = 'stylesheet';\n    editorialStyles.href = 'hero-editorial.css?v=20260904-hero1';\n    editorialStyles.dataset.heroEditorial = '';\n    document.head.appendChild(editorialStyles);\n  }\n\n  const heroTagline = hero.querySelector('.hero-tagline');\n  if (heroTagline) {\n    heroTagline.innerHTML = `\n      <span>SPORTING EXCELLENCE</span>\n      <span data-fr=\"Design & Construction\" data-en=\"Design & Construction\">DESIGN & CONSTRUCTION</span>\n    `;\n  }\n\n  const heroBottom = hero.querySelector('.hero-bottom');\n  if (heroBottom) {\n    heroBottom.innerHTML = `\n      <div class=\"hero-brief\">\n        <span class=\"hero-brief__eyebrow\" data-fr=\"De la faisabilité à l'exploitation\" data-en=\"From feasibility to operations\">DE LA FAISABILITÉ À L'EXPLOITATION</span>\n        <p data-fr=\"Conception, ingénierie, installation et maintenance d'infrastructures sportives.\" data-en=\"Design, engineering, installation and maintenance of sports infrastructure.\">Conception, ingénierie, installation et maintenance d'infrastructures sportives.</p>\n      </div>\n      <div class=\"hero-actions\">\n        <a class=\"hero-command\" href=\"#contact\">\n          <span><small data-fr=\"Démarrer\" data-en=\"Start\">DÉMARRER</small><strong data-fr=\"Cadrer le projet\" data-en=\"Frame the project\">CADRER LE PROJET</strong></span>\n          <b aria-hidden=\"true\">↗</b>\n        </a>\n        <a class=\"hero-solutions-link\" href=\"#solutions\" data-fr=\"Voir les solutions\" data-en=\"View solutions\">VOIR LES SOLUTIONS <span aria-hidden=\"true\">↓</span></a>\n      </div>\n    `;\n\n    heroBottom.querySelectorAll('a').forEach(link => {\n      link.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));\n      link.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));\n    });\n  }\n\n  // These elements were competing with the video, title and action hierarchy.\n  // Technical drawing language returns intentionally during the scroll transition.\n  hero.querySelector('.stadium-plan')?.remove();\n  hero.querySelector('.hero-coordinate')?.remove();\n  hero.querySelector('.hero-proof')?.remove();\n\n  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;'''
+          if anchor not in js:
+              raise SystemExit('hero transition insertion anchor not found')
+          js = js.replace(anchor, block, 1)
+          js_path.write_text(js)
+
+          decisions_path = Path('docs/DECISIONS.md')
+          decisions = decisions_path.read_text()
+          marker = '## 2026-09-04 — Hero becomes editorial and action-led'
+          if marker not in decisions:
+              entry = '''\n---\n\n## 2026-09-04 — Hero becomes editorial and action-led\n\nDecision:\n\nReduce the number of simultaneous visual signals in the Hero while preserving the monumental `SPORT / TAKES / SHAPE.` title and its post-preloader cursor reveal exactly as the primary signature interaction.\n\nImplementation:\n\n- the Hero title markup (`.hero-title .hero-line > b`) is not changed, so the intro continues to measure and reveal the real glyph geometry\n- the static stadium-plan layer, repository/debug coordinates and four-cell proof strip are removed from the enhanced runtime Hero\n- the brand cue is reduced to `SPORTING EXCELLENCE` + `DESIGN & CONSTRUCTION`\n- supporting copy is compressed to one verified project-cycle statement\n- the lower-right area becomes a clear project-start action (`CADRER LE PROJET`) with Solutions as a secondary route\n- the video overlay is lighter so real media carries more of the composition\n- technical drawing language is intentionally deferred to the Hero → manifesto scroll transition instead of competing with the initial Hero\n- pointer interaction on the clipped Hero is enabled only while the transition stage is in its initial `hero` phase, making the CTA genuinely actionable without blocking the manifesto later\n\nRationale:\n\nThe previous Hero combined video, monumental type, stadium drawing, tagline, repository coordinates, four proof cells, explanatory copy and navigation at once. Removing secondary telemetry restores editorial hierarchy and makes the first screen read as one statement plus one next action rather than a collection of interface modules.\n'''
+              decisions = decisions.replace('\n---\n\n## Future decision logging', entry + '\n---\n\n## Future decision logging', 1)
+              decisions_path.write_text(decisions)
+
+          next_path = Path('docs/NEXT.md')
+          next_text = next_path.read_text()
+          bullet = '- decluttered the Hero into a title-led editorial composition with one concise project brief and a genuinely clickable project-start action, while preserving the post-preloader cursor reveal geometry unchanged'
+          if bullet not in next_text:
+              anchor_next = '- extended that uninterrupted construction gesture into the Hero headline: after the logo lands, the same cursor measures and reveals `SPORT`, `TAKES` and `SHAPE.` line by line instead of handing the title to an unrelated entrance animation'
+              if anchor_next in next_text:
+                  next_text = next_text.replace(anchor_next, anchor_next + '\n' + bullet, 1)
+              else:
+                  next_text += '\n' + bullet + '\n'
+              next_path.write_text(next_text)
+          PY
+
+      - name: Validate
+        shell: bash
+        run: |
+          node --check hero-manifesto-transition.js
+          grep -q "hero.classList.add('hero--editorial')" hero-manifesto-transition.js
+          grep -q 'hero-title .hero-line b' impact-intro.js
+          grep -q 'CADRER LE PROJET' hero-manifesto-transition.js
+          grep -q 'data-phase="hero"' hero-editorial.css
+          grep -q 'Hero becomes editorial and action-led' docs/DECISIONS.md
+          git diff --check
+
+      - name: Commit Hero refinement
+        shell: bash
+        run: |
+          git config user.name 'Profils Sports Agent'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add hero-editorial.css hero-manifesto-transition.js docs/DECISIONS.md docs/NEXT.md
+          git commit -m 'feat: declutter and sharpen hero hierarchy'
+          git push origin HEAD:feat/declutter-agentic-hero
