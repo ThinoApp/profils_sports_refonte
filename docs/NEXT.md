@@ -35,7 +35,8 @@ Primary branch:
 - removed the redundant pre-loader copy of `SPORT TAKES SHAPE.` so the headline performs its first and only entrance inside the Hero
 - removed the abrupt final Hero cut by making the pre-loader root transparent during its opening, synchronising both shutter systems and keeping the overlay mounted until every visible Hero/brand motion has settled
 - simplified the pre-loader by removing its redundant top metadata, corner phase counter, bottom phase rail, media status, four corner brackets and full-screen centre axes while preserving the main construction sequence and Hero transition
-- centred the field construction and connected its six sequential drawing segments to one persistent signal-yellow cursor; that same cursor curves into the emerging logo, accompanies it along a measured path and lands it on the real Header logo without a visual swap
+- centred the field construction and connected its six sequential drawing segments to one persistent signal-yellow cursor, including curved pen-up transfers between disconnected markings; that same cursor curves into the emerging logo, accompanies it along a measured path and lands it on the real Header logo without a visual swap
+- extended that uninterrupted construction gesture into the Hero headline: after the logo lands, the same cursor measures and reveals `SPORT`, `TAKES` and `SHAPE.` line by line instead of handing the title to an unrelated entrance animation
 
 ## Current implementation files
 

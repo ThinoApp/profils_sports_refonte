@@ -13,9 +13,9 @@
 
   const heroVideo = document.querySelector('[data-hero-video]');
   const BUILD_DURATION = 2650;
-  const EXIT_DURATION = 1400;
+  const EXIT_DURATION = 2360;
   const LOGO_RESOLVE_DURATION = 640;
-  const HERO_RELEASE_DELAY = 390;
+  const HERO_SUPPORT_DELAY = 390;
   const FLIGHT_DURATION = 820;
   const PHASES = [
     { at: 0, label: 'IMPLANTATION' },
@@ -83,6 +83,7 @@
   const flightLanding = preloader.querySelector('[data-intro-flight-landing]');
   const brand = document.querySelector('.brand');
   const brandLogo = document.querySelector('.brand-logo');
+  const heroTitleLines = [...document.querySelectorAll('.hero-title .hero-line b')];
   const siteHeader = document.querySelector('[data-header]');
   if (logoProxy && brandLogo) logoProxy.src = brandLogo.currentSrc || brandLogo.src;
   const start = performance.now();
@@ -92,6 +93,7 @@
   let raf = 0;
   let resolveTimer = 0;
   let resolveCursorRaf = 0;
+  let heroTitleRaf = 0;
   const cursorState = { x: 0, y: 0, angle: 0, ready: false };
 
   const clamp = value => Math.min(1, Math.max(0, value));
@@ -102,12 +104,12 @@
     : 1 - Math.pow(-2 * value + 2, 3) / 2;
 
   const segmentRanges = [
-    [0, .31],
-    [.31, .43],
-    [.43, .58],
-    [.58, .70],
-    [.70, .84],
-    [.84, 1]
+    [0, .27],
+    [.31, .42],
+    [.46, .58],
+    [.62, .70],
+    [.74, .84],
+    [.88, 1]
   ];
   const segmentData = buildSegments.map((node, index) => {
     const length = node.getTotalLength();
@@ -117,21 +119,15 @@
     return { node, length, dashLength, range: segmentRanges[index] || [0, 1] };
   });
 
-  const placeBuilderCursor = (x, y, angle, immediate = false) => {
+  const placeBuilderCursor = (x, y, angle, travelling = false) => {
     if (!builderCursor) return;
-    if (!cursorState.ready || immediate) {
-      cursorState.x = x;
-      cursorState.y = y;
-      cursorState.angle = angle;
-      cursorState.ready = true;
-    } else {
-      cursorState.x += (x - cursorState.x) * .42;
-      cursorState.y += (y - cursorState.y) * .42;
-      const angleDelta = ((angle - cursorState.angle + 540) % 360) - 180;
-      cursorState.angle += angleDelta * .38;
-    }
+    cursorState.x = x;
+    cursorState.y = y;
+    cursorState.angle = angle;
+    cursorState.ready = true;
     builderCursor.style.transform = `translate3d(${cursorState.x - 16}px,${cursorState.y - 9}px,0) rotate(${cursorState.angle}deg)`;
     builderCursor.classList.add('is-active');
+    builderCursor.classList.toggle('is-travelling', travelling);
   };
 
   const segmentScreenPoint = (node, distance) => {
@@ -151,22 +147,169 @@
     };
   };
 
-  const updateBuildDrawing = (progress, immediateCursor = false) => {
-    let active = segmentData[0];
-    let activeProgress = 0;
+  const curvedScreenPoint = (startPoint, endPoint, progress, bend = 0) => {
+    const eased = cubicEase(progress);
+    const inverse = 1 - eased;
+    const deltaX = endPoint.x - startPoint.x;
+    const deltaY = endPoint.y - startPoint.y;
+    const distance = Math.max(1, Math.hypot(deltaX, deltaY));
+    const control = {
+      x: (startPoint.x + endPoint.x) * .5 - deltaY / distance * bend,
+      y: (startPoint.y + endPoint.y) * .5 + deltaX / distance * bend
+    };
+    const x = inverse * inverse * startPoint.x + 2 * inverse * eased * control.x + eased * eased * endPoint.x;
+    const y = inverse * inverse * startPoint.y + 2 * inverse * eased * control.y + eased * eased * endPoint.y;
+    const tangentX = 2 * inverse * (control.x - startPoint.x) + 2 * eased * (endPoint.x - control.x);
+    const tangentY = 2 * inverse * (control.y - startPoint.y) + 2 * eased * (endPoint.y - control.y);
+    return { x, y, angle: Math.atan2(tangentY, tangentX) * 180 / Math.PI };
+  };
+
+  const transitScreenPoint = (from, to, progress, index) => {
+    const startPoint = segmentScreenPoint(from.node, from.length);
+    const endPoint = segmentScreenPoint(to.node, 0);
+    if (!startPoint || !endPoint) return null;
+    const deltaX = endPoint.x - startPoint.x;
+    const deltaY = endPoint.y - startPoint.y;
+    const distance = Math.max(1, Math.hypot(deltaX, deltaY));
+    const bend = Math.min(44, distance * .14) * (index % 2 ? -1 : 1);
+    return curvedScreenPoint(startPoint, endPoint, progress, bend);
+  };
+
+  const updateBuildDrawing = progress => {
     segmentData.forEach(data => {
       const [from, to] = data.range;
       const local = clamp((progress - from) / Math.max(.001, to - from));
       const drawn = cubicEase(local);
       data.node.style.strokeDashoffset = String(data.dashLength * (1 - drawn));
-      if (progress >= from) {
-        active = data;
-        activeProgress = drawn;
-      }
     });
-    if (!active) return;
-    const cursorPoint = segmentScreenPoint(active.node, active.length * activeProgress);
-    if (cursorPoint) placeBuilderCursor(cursorPoint.x, cursorPoint.y, cursorPoint.angle, immediateCursor);
+
+    for (let index = 0; index < segmentData.length; index += 1) {
+      const active = segmentData[index];
+      const [from, to] = active.range;
+      if (progress >= from && progress <= to) {
+        const local = clamp((progress - from) / Math.max(.001, to - from));
+        const cursorPoint = segmentScreenPoint(active.node, active.length * cubicEase(local));
+        if (cursorPoint) placeBuilderCursor(cursorPoint.x, cursorPoint.y, cursorPoint.angle);
+        return;
+      }
+
+      const next = segmentData[index + 1];
+      if (next && progress > to && progress < next.range[0]) {
+        const transit = clamp((progress - to) / Math.max(.001, next.range[0] - to));
+        const cursorPoint = transitScreenPoint(active, next, transit, index);
+        if (cursorPoint) placeBuilderCursor(cursorPoint.x, cursorPoint.y, cursorPoint.angle, true);
+        return;
+      }
+    }
+
+    const finalSegment = segmentData[segmentData.length - 1];
+    const cursorPoint = segmentScreenPoint(finalSegment.node, finalSegment.length);
+    if (cursorPoint) placeBuilderCursor(cursorPoint.x, cursorPoint.y, cursorPoint.angle);
+  };
+
+  const glyphScreenBox = element => {
+    const elementBox = element.getBoundingClientRect();
+    const textNode = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+    if (!textNode) return elementBox;
+    const range = document.createRange();
+    range.selectNodeContents(textNode);
+    const glyphBox = range.getBoundingClientRect();
+    return glyphBox.width ? glyphBox : elementBox;
+  };
+
+  const startHeroTitleBuild = () => {
+    if (!builderCursor || !heroTitleLines.length) {
+      builderCursor?.classList.add('is-landed');
+      document.body.classList.add('intro-hero-title-complete');
+      return;
+    }
+
+    cancelAnimationFrame(heroTitleRaf);
+    builderCursor.classList.remove('is-landed', 'is-travelling');
+
+    heroTitleLines.forEach(line => {
+      line.style.transition = 'none';
+      line.style.transform = 'none';
+      line.style.clipPath = 'inset(0 100% 0 0)';
+    });
+    document.body.classList.add('intro-hero-drawing');
+    // Measure only after the translated pre-entry state has been replaced by
+    // the final Hero geometry hidden behind its horizontal reveal mask.
+    void heroTitleLines[0].offsetWidth;
+
+    const lineData = heroTitleLines.map(line => {
+      const box = line.getBoundingClientRect();
+      const glyphBox = glyphScreenBox(line);
+      return {
+        line,
+        box,
+        start: { x: glyphBox.left - 8, y: box.top + box.height * .72 },
+        end: { x: glyphBox.right + 8, y: box.top + box.height * .72 },
+        duration: Math.max(250, Math.min(300, glyphBox.width * .55))
+      };
+    });
+    const activities = [];
+    let timelineCursor = 0;
+    let previousPoint = { x: cursorState.x, y: cursorState.y };
+
+    lineData.forEach((data, index) => {
+      const travelDuration = index === 0 ? 230 : 105;
+      activities.push({
+        type: 'travel',
+        from: previousPoint,
+        to: data.start,
+        start: timelineCursor,
+        end: timelineCursor + travelDuration,
+        bend: index === 0 ? 64 : (index % 2 ? -28 : 28)
+      });
+      timelineCursor += travelDuration;
+      activities.push({
+        type: 'draw',
+        data,
+        index,
+        start: timelineCursor,
+        end: timelineCursor + data.duration
+      });
+      timelineCursor += data.duration;
+      previousPoint = data.end;
+    });
+
+    const titleStart = performance.now();
+    const animateHeroTitle = now => {
+      const elapsed = now - titleStart;
+      const active = activities.find(activity => elapsed >= activity.start && elapsed <= activity.end);
+
+      if (active?.type === 'travel') {
+        const local = clamp((elapsed - active.start) / Math.max(1, active.end - active.start));
+        const point = curvedScreenPoint(active.from, active.to, local, active.bend);
+        placeBuilderCursor(point.x, point.y, point.angle, true);
+      } else if (active?.type === 'draw') {
+        const local = clamp((elapsed - active.start) / Math.max(1, active.end - active.start));
+        const drawn = cubicEase(local);
+        const point = {
+          x: active.data.start.x + (active.data.end.x - active.data.start.x) * drawn,
+          y: active.data.start.y
+        };
+        const rightInset = Math.max(0, active.data.box.right - point.x);
+        active.data.line.style.clipPath = `inset(0 ${rightInset.toFixed(2)}px 0 0)`;
+        placeBuilderCursor(point.x, point.y, 0);
+      }
+
+      if (elapsed < timelineCursor) {
+        heroTitleRaf = requestAnimationFrame(animateHeroTitle);
+        return;
+      }
+
+      lineData.forEach(({ line }) => {
+        line.style.removeProperty('clip-path');
+        line.style.removeProperty('transform');
+        line.style.removeProperty('transition');
+      });
+      builderCursor.classList.add('is-landed');
+      document.body.classList.add('intro-hero-title-complete');
+    };
+
+    heroTitleRaf = requestAnimationFrame(animateHeroTitle);
   };
 
   const animateCursorToLogo = logoGeometry => {
@@ -190,7 +333,7 @@
       const y = inverse * inverse * from.y + 2 * inverse * eased * control.y + eased * eased * to.y;
       const tangentX = 2 * inverse * (control.x - from.x) + 2 * eased * (to.x - control.x);
       const tangentY = 2 * inverse * (control.y - from.y) + 2 * eased * (to.y - control.y);
-      placeBuilderCursor(x, y, Math.atan2(tangentY, tangentX) * 180 / Math.PI, true);
+      placeBuilderCursor(x, y, Math.atan2(tangentY, tangentX) * 180 / Math.PI);
       if (progress < 1) resolveCursorRaf = requestAnimationFrame(animateResolveCursor);
     };
     resolveCursorRaf = requestAnimationFrame(animateResolveCursor);
@@ -256,7 +399,7 @@
 
       flightTrace.style.strokeDashoffset = String(length - travelled);
       logoProxy.style.transform = `translate3d(${point.x - origin.x}px,${point.y - origin.y}px,0) scale(${logoScale})`;
-      placeBuilderCursor(cursorPoint.x, cursorPoint.y, angle, true);
+      placeBuilderCursor(cursorPoint.x, cursorPoint.y, angle);
 
       if (progress < 1) {
         requestAnimationFrame(animateFlight);
@@ -267,8 +410,8 @@
       flight.classList.add('is-landed');
       logoProxy.style.transition = 'opacity .18s ease';
       logoProxy.classList.add('is-landed');
-      builderCursor.classList.add('is-landed');
       brand?.classList.add('is-intro-landed');
+      startHeroTitleBuild();
       setTimeout(() => brand?.classList.remove('is-intro-landed'), 650);
     };
 
@@ -301,7 +444,7 @@
   const completeBuild = () => {
     preloader.style.setProperty('--intro-progress', '1');
     preloader.style.setProperty('--intro-marks-offset', '0');
-    updateBuildDrawing(1, true);
+    updateBuildDrawing(1);
     if (count) count.textContent = '100';
     updatePhase(1);
   };
@@ -351,21 +494,22 @@
     // Measure the moving and final logo before opening alters either geometry.
     startFlight();
 
-    // The Hero opens under the flight; its title appears here for the first
-    // time, after the loader has already resolved into the brand mark.
+    // The Hero opens beneath the flight. Supporting content follows the gates;
+    // the headline stays masked until the cursor returns from the Header logo.
     document.body.classList.add('is-loaded', 'intro-opening');
     preloader.classList.add('is-opening');
 
     setTimeout(() => {
       document.body.classList.add('intro-hero-release');
-    }, HERO_RELEASE_DELAY);
+    }, HERO_SUPPORT_DELAY);
 
     // The overlay stays mounted until the longest visible Hero/brand motion is
     // settled. Its root is transparent and non-interactive during this phase.
     setTimeout(() => {
       removeEventListener('keydown', skip);
+      cancelAnimationFrame(heroTitleRaf);
       preloader.classList.add('is-complete');
-      document.body.classList.remove('intro-running', 'intro-opening', 'intro-hero-release', 'intro-logo-landed');
+      document.body.classList.remove('intro-running', 'intro-opening', 'intro-hero-release', 'intro-hero-drawing', 'intro-hero-title-complete', 'intro-logo-landed');
       document.body.classList.add('intro-complete');
     }, EXIT_DURATION);
   };

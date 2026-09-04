@@ -345,14 +345,16 @@ The pre-loader is a short, four-beat construction sequence: implantation, struct
 
 Implementation:
 
-- the sequence has a fixed 2.65-second field build, a 640ms field-to-logo resolve and a 1.4-second overlapping exit
+- the sequence has a fixed 2.65-second field build, a 640ms field-to-logo resolve and a 2.36-second overlapping logo/Headline exit
 - Hero video readiness never blocks the opening; its redundant telemetry label is intentionally omitted
 - top metadata, the corner phase counter, the bottom phase rail, the four corner brackets and the full-screen centre axes are intentionally omitted so the scene focuses on the field blueprint and primary progress readout
 - the field is centred and its six structural segments are drawn sequentially by one persistent signal-yellow cursor
+- each disconnected field segment is separated by a short curved pen-up transfer; drawing pauses during that transfer so the cursor never teleports or drifts away from the line it is constructing
 - the Hero shutters and typography begin only when the intro reaches its impact beat
 - the loader does not repeat the Hero headline; the real Hero typography performs its only entrance beneath the opening gates
 - the pre-loader root becomes transparent and non-interactive on the impact beat, allowing the opening gates to progressively expose the live Hero instead of hiding it behind an opaque root until teardown
-- the pre-loader and Hero shutter timings are synchronised, and the real Hero title is released 390ms into the gate movement so its masked line animation remains visible beneath the travelling copy
+- the pre-loader and Hero shutter timings are synchronised; supporting Hero content starts 390ms into the gates while the headline remains masked
+- after placing the logo in the Header, the same cursor returns through three measured sweeps and reveals `SPORT`, `TAKES` and `SHAPE.` directly beneath its tip
 - teardown occurs only after the Hero title, supporting content, flight path and logo landing have all reached their settled states
 - only after the field drawing reaches 100%, its SVG geometry contracts into a proxy of the authentic Profils Sports logo
 - that same logo proxy and a signal-yellow cursor share a measured SVG Bézier path to the exact header-logo geometry, including compensation for the header's opening transform
