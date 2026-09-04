@@ -1,0 +1,85 @@
+name: Finalize Approach Liquid Inspection
+
+on:
+  push:
+    branches:
+      - feat/approach-liquid-inspection
+    paths:
+      - '.github/workflows/finalize-approach-liquid.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feat/approach-liquid-inspection
+          fetch-depth: 0
+
+      - name: Wire liquid inspection into site
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path('index.html')
+          html = index.read_text()
+          css_anchor = '<link rel="stylesheet" href="catalogue-blueprint-morph.css?v=20260903-5" />'
+          css_line = '<link rel="stylesheet" href="approach-liquid-inspection.css?v=20260904-1" />'
+          if css_line not in html:
+              if css_anchor not in html:
+                  raise SystemExit('CSS insertion anchor missing')
+              html = html.replace(css_anchor, css_anchor + '\n  ' + css_line, 1)
+
+          js_anchor = '<script src="catalogue-blueprint-morph.js?v=20260903-6"></script>'
+          js_line = '<script src="approach-liquid-inspection.js?v=20260904-1"></script>'
+          if js_line not in html:
+              if js_anchor not in html:
+                  raise SystemExit('JS insertion anchor missing')
+              html = html.replace(js_anchor, js_anchor + '\n  ' + js_line, 1)
+          index.write_text(html)
+
+          decisions_path = Path('docs/DECISIONS.md')
+          decisions = decisions_path.read_text()
+          marker = '## 2026-09-04 — Method becomes a liquid engineering inspection surface'
+          if marker not in decisions:
+              entry = '''\n---\n\n## 2026-09-04 — Method becomes a liquid engineering inspection surface\n\nDecision:\n\nAdapt the supplied NOTHIN liquid interaction specifically to the `#approach` Method visual as an inspection metaphor rather than a site-wide decorative effect.\n\nImplementation:\n\n- the existing project photo remains the visible surface\n- a localized transparent Three.js canvas reveals an engineering blueprint only under a viscous SDF membrane driven by the pointer\n- the liquid head uses damped spring motion; deposited trail geometry retracts locally instead of being pulled back toward the cursor\n- a restrained Profils Sports signal-yellow meniscus marks the liquid boundary without a glow treatment\n- each of the five existing Method rows changes the hidden blueprint content and geometry using verified vocabulary only\n- the original blueprint remains unchanged as fallback when WebGL, a fine pointer, desktop layout or motion support is unavailable\n- the renderer is scoped to the Method media, and its RAF loop suspends when off-screen or idle after the liquid trail has expired\n- no touch-specific liquid simulation is enabled; mobile keeps the static authored experience\n\nRationale:\n\nThe reference effect is strongest when interpreted as “revealing what exists beneath the surface.” In the Method section this maps directly to Profils Sports’ positioning: the finished sports environment remains visible while the pointer exposes the engineering, feasibility, delivery and maintenance systems beneath it. Restricting the effect to one chapter preserves the hierarchy of the preloader, Hero, Solutions carousel and Catalogue interactions.\n'''
+              decisions = decisions.replace('\n---\n\n## Future decision logging', entry + '\n---\n\n## Future decision logging', 1)
+              decisions_path.write_text(decisions)
+
+          next_path = Path('docs/NEXT.md')
+          next_text = next_path.read_text()
+          bullet = '- transformed the Method visual into a localized liquid engineering inspection surface: the real project image stays visible while a spring-driven SDF membrane reveals stage-specific technical blueprints beneath the pointer, with static fallback and off-screen/idle RAF suspension'
+          if bullet not in next_text:
+              anchor = '- decluttered the Hero into a title-led editorial composition with one concise project brief and a genuinely clickable project-start action, while preserving the post-preloader cursor reveal geometry unchanged'
+              if anchor in next_text:
+                  next_text = next_text.replace(anchor, anchor + '\n' + bullet, 1)
+              else:
+                  next_text += '\n' + bullet + '\n'
+              next_path.write_text(next_text)
+          PY
+
+      - name: Validate
+        shell: bash
+        run: |
+          node --check approach-liquid-inspection.js
+          grep -q 'approach-liquid-inspection.css?v=20260904-1' index.html
+          grep -q 'approach-liquid-inspection.js?v=20260904-1' index.html
+          grep -q "document.querySelector('#approach')" approach-liquid-inspection.js
+          grep -q "prefers-reduced-motion: reduce" approach-liquid-inspection.js
+          grep -q 'IntersectionObserver' approach-liquid-inspection.js
+          grep -q 'uTrailCount' approach-liquid-inspection.js
+          grep -q 'Method becomes a liquid engineering inspection surface' docs/DECISIONS.md
+          git diff --check
+
+      - name: Commit integration
+        shell: bash
+        run: |
+          git config user.name 'Profils Sports Agent'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html docs/DECISIONS.md docs/NEXT.md
+          git commit -m 'feat: wire liquid inspection into method section'
+          git push origin HEAD:feat/approach-liquid-inspection
