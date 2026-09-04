@@ -441,6 +441,29 @@ The liquid membrane added visual mass and made the Method feel like an effect de
 
 ---
 
+## 2026-09-04 — Every Method drag replays the technical tracer
+
+Decision:
+
+Add a localized signal-yellow drawing cursor to the Method hover + drag inspection. Each new drag gesture starts a fresh drawing pass over the technical geometry of the currently active Method state.
+
+Implementation:
+
+- `pointerdown` resets and starts the tracer from the beginning
+- the tracer follows the actual authored geometry for field, structure, flow, delivery and maintenance states
+- disconnected paths use short curved pen-up transfers so the cursor does not teleport
+- the technical overlay is drawn progressively with SVG stroke-dash animation while the underlying blueprint remains visible
+- releasing or cancelling the drag fades the tracer out and resets it, so the next drag always replays from zero
+- changing Method while dragging rebuilds the route and restarts the tracer for the newly active state
+- the global directional site cursor is not modified
+- mobile and `prefers-reduced-motion` keep the static fallback
+
+Rationale:
+
+The split comparison already communicates project versus engineering. Replaying a precise construction cursor only during active drag adds authored motion and reinforces the engineering metaphor without adding another permanent animation layer.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
