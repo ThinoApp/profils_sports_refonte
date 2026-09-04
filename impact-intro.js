@@ -14,7 +14,10 @@
   const heroVideo = document.querySelector('[data-hero-video]');
   const BUILD_DURATION = 2650;
   const EXIT_DURATION = 1050;
-  const HERO_RELEASE_DELAY = 420;
+  const HERO_RELEASE_DELAY = 470;
+  const BRIDGE_DURATION = 860;
+  const FLIGHT_DELAY = 70;
+  const FLIGHT_DURATION = 720;
   const PHASES = [
     { at: 0, label: 'IMPLANTATION', code: '01' },
     { at: 0.27, label: 'STRUCTURE', code: '02' },
@@ -88,6 +91,15 @@
       <span class="intro-bridge__offset"><b>TAKES</b></span>
       <span class="intro-bridge__signal"><b>SHAPE.</b></span>
     </div>
+    <svg class="intro-flight" data-intro-flight aria-hidden="true">
+      <path class="intro-flight__guide" data-intro-flight-guide></path>
+      <path class="intro-flight__trace" data-intro-flight-trace></path>
+      <circle class="intro-flight__landing" data-intro-flight-landing r="6"></circle>
+      <g class="intro-flight__runner" data-intro-flight-runner>
+        <path d="M-10-6 11 0-10 6-3 0Z"></path>
+        <circle r="2.4"></circle>
+      </g>
+    </svg>
   `;
 
   const count = preloader.querySelector('[data-intro-count]');
@@ -95,6 +107,18 @@
   const phaseCode = preloader.querySelector('[data-intro-phase-code]');
   const mediaLabel = preloader.querySelector('[data-intro-media]');
   const phaseNodes = [...preloader.querySelectorAll('[data-phase-index]')];
+  const wordmarkLines = [...preloader.querySelectorAll('.intro-wordmark > span')];
+  const bridge = preloader.querySelector('.intro-bridge');
+  const bridgeLines = [...preloader.querySelectorAll('.intro-bridge > span')];
+  const heroLines = [...document.querySelectorAll('.hero-title .hero-line')];
+  const flight = preloader.querySelector('[data-intro-flight]');
+  const flightGuide = preloader.querySelector('[data-intro-flight-guide]');
+  const flightTrace = preloader.querySelector('[data-intro-flight-trace]');
+  const flightRunner = preloader.querySelector('[data-intro-flight-runner]');
+  const flightLanding = preloader.querySelector('[data-intro-flight-landing]');
+  const brand = document.querySelector('.brand');
+  const brandLogo = document.querySelector('.brand-logo');
+  const siteHeader = document.querySelector('[data-header]');
   const start = performance.now();
   let currentPhase = -1;
   let opening = false;
@@ -102,6 +126,151 @@
 
   const clamp = value => Math.min(1, Math.max(0, value));
   const ease = value => 1 - Math.pow(1 - value, 3);
+
+  const finalTextBox = line => {
+    const lineBox = line.getBoundingClientRect();
+    const text = line.querySelector('b');
+    let textBox = text?.getBoundingClientRect() || lineBox;
+    if (text?.firstChild) {
+      const range = document.createRange();
+      range.selectNodeContents(text);
+      const glyphBox = range.getBoundingClientRect();
+      if (glyphBox.width) textBox = glyphBox;
+    }
+    return {
+      left: textBox.left,
+      top: lineBox.top,
+      width: Math.max(1, textBox.width),
+      height: Math.max(1, lineBox.height),
+      right: textBox.right,
+      bottom: lineBox.bottom
+    };
+  };
+
+  // The bridge is not positioned with CSS guesses. Each line starts on the
+  // rendered loader word and travels to the measured Hero line box (FLIP).
+  const prepareBridge = () => {
+    if (!bridge || wordmarkLines.length !== 3 || bridgeLines.length !== 3 || heroLines.length !== 3) return [];
+
+    const sourceBoxes = wordmarkLines.map(finalTextBox);
+    const targetBoxes = heroLines.map(finalTextBox);
+    bridge.style.opacity = '1';
+
+    bridgeLines.forEach((line, index) => {
+      const source = sourceBoxes[index];
+      const target = targetBoxes[index];
+      const deltaX = target.left - source.left;
+      const deltaY = target.top - source.top;
+      const scaleX = target.width / source.width;
+      const scaleY = target.height / source.height;
+
+      Object.assign(line.style, {
+        left: `${source.left}px`,
+        top: `${source.top}px`,
+        width: `${source.width}px`,
+        height: `${source.height}px`,
+        paddingLeft: '0',
+        opacity: '1',
+        transform: 'translate3d(0,0,0) scale(1,1)',
+        transformOrigin: '0 0'
+      });
+
+      const finalTransform = `translate3d(${deltaX}px,${deltaY}px,0) scale(${scaleX},${scaleY})`;
+      if (typeof line.animate === 'function') {
+        line.animate([
+          { transform: 'translate3d(0,0,0) scale(1,1)', opacity: 1, offset: 0 },
+          { transform: finalTransform, opacity: 1, offset: .72 },
+          { transform: finalTransform, opacity: 0, offset: 1 }
+        ], {
+          duration: BRIDGE_DURATION,
+          delay: index * 28,
+          easing: 'cubic-bezier(.18,.82,.18,1)',
+          fill: 'forwards'
+        });
+      } else {
+        line.style.transition = `transform ${BRIDGE_DURATION * .72}ms cubic-bezier(.18,.82,.18,1),opacity 240ms ${BRIDGE_DURATION * .72}ms ease`;
+        requestAnimationFrame(() => {
+          line.style.transform = finalTransform;
+          line.style.opacity = '0';
+        });
+      }
+    });
+
+    return sourceBoxes;
+  };
+
+  const cubicEase = value => value < .5
+    ? 4 * value * value * value
+    : 1 - Math.pow(-2 * value + 2, 3) / 2;
+
+  // A signal dart detaches from SHAPE., follows a measured SVG Bézier and
+  // lands at the centre of the actual header logo at every viewport size.
+  const startFlight = sourceBoxes => {
+    if (!flight || !flightGuide || !flightTrace || !flightRunner || !flightLanding || !brandLogo || !sourceBoxes[2]) return;
+
+    const source = sourceBoxes[2];
+    const logoBox = brandLogo.getBoundingClientRect();
+    const headerTransform = siteHeader ? getComputedStyle(siteHeader).transform : 'none';
+    const Matrix = window.DOMMatrixReadOnly || window.DOMMatrix || window.WebKitCSSMatrix;
+    const headerMatrix = headerTransform === 'none' || !Matrix ? null : new Matrix(headerTransform);
+    const origin = {
+      x: Math.min(innerWidth - 18, source.right - Math.min(12, source.width * .025)),
+      y: source.top + source.height * .67
+    };
+    const destination = {
+      x: logoBox.left + logoBox.width * .5 - (headerMatrix?.m41 || 0),
+      y: logoBox.top + logoBox.height * .5 - (headerMatrix?.m42 || 0)
+    };
+    const horizontalSpan = Math.abs(origin.x - destination.x);
+    const controlA = {
+      x: Math.min(innerWidth - 24, origin.x + Math.min(180, horizontalSpan * .22)),
+      y: Math.max(42, origin.y - Math.min(innerHeight * .22, 190))
+    };
+    const controlB = {
+      x: destination.x + Math.min(260, horizontalSpan * .38),
+      y: destination.y + Math.min(innerHeight * .15, 110)
+    };
+    const pathData = `M${origin.x.toFixed(1)} ${origin.y.toFixed(1)}C${controlA.x.toFixed(1)} ${controlA.y.toFixed(1)} ${controlB.x.toFixed(1)} ${controlB.y.toFixed(1)} ${destination.x.toFixed(1)} ${destination.y.toFixed(1)}`;
+
+    flight.setAttribute('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
+    flightGuide.setAttribute('d', pathData);
+    flightTrace.setAttribute('d', pathData);
+    flightLanding.setAttribute('cx', destination.x.toFixed(1));
+    flightLanding.setAttribute('cy', destination.y.toFixed(1));
+
+    const length = flightTrace.getTotalLength();
+    flightTrace.style.strokeDasharray = String(length);
+    flightTrace.style.strokeDashoffset = String(length);
+    flight.classList.add('is-flying');
+
+    const firstPoint = flightTrace.getPointAtLength(0);
+    flightRunner.setAttribute('transform', `translate(${firstPoint.x} ${firstPoint.y})`);
+    const flightStart = performance.now() + FLIGHT_DELAY;
+
+    const animateFlight = now => {
+      const progress = clamp((now - flightStart) / FLIGHT_DURATION);
+      const eased = cubicEase(progress);
+      const travelled = length * eased;
+      const point = flightTrace.getPointAtLength(travelled);
+      const behind = flightTrace.getPointAtLength(Math.max(0, travelled - 2));
+      const ahead = flightTrace.getPointAtLength(Math.min(length, travelled + 2));
+      const angle = Math.atan2(ahead.y - behind.y, ahead.x - behind.x) * 180 / Math.PI;
+
+      flightTrace.style.strokeDashoffset = String(length - travelled);
+      flightRunner.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
+
+      if (progress < 1) {
+        requestAnimationFrame(animateFlight);
+        return;
+      }
+
+      flight.classList.add('is-landed');
+      brand?.classList.add('is-intro-landed');
+      setTimeout(() => brand?.classList.remove('is-intro-landed'), 650);
+    };
+
+    requestAnimationFrame(animateFlight);
+  };
 
   const setMediaReady = () => {
     preloader.classList.add('is-media-ready');
@@ -143,7 +312,12 @@
     if (count) count.textContent = '100';
     updatePhase(1);
 
-    // The Hero starts its own shutters and typography on the exact impact beat.
+    // Measure both rendered scenes before opening alters either geometry.
+    const sourceBoxes = prepareBridge();
+    startFlight(sourceBoxes);
+
+    // The Hero opens under the FLIP bridge; its real type is released only as
+    // the travelling copy reaches the measured destination.
     document.body.classList.add('is-loaded', 'intro-opening');
     preloader.classList.add('is-opening');
 
