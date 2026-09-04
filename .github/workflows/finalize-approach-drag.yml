@@ -1,0 +1,85 @@
+name: Finalize Approach Drag Inspection
+
+on:
+  push:
+    branches:
+      - feat/approach-drag-inspection
+    paths:
+      - '.github/workflows/finalize-approach-drag.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feat/approach-drag-inspection
+          fetch-depth: 0
+
+      - name: Replace liquid inspection with drag inspection
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path('index.html')
+          text = index.read_text()
+          text = text.replace(
+              '<link rel="stylesheet" href="approach-liquid-inspection.css?v=20260904-1" />',
+              '<link rel="stylesheet" href="approach-drag-inspection.css?v=20260904-1" />'
+          )
+          text = text.replace(
+              '<script src="approach-liquid-inspection.js?v=20260904-1"></script>',
+              '<script src="approach-drag-inspection.js?v=20260904-1"></script>'
+          )
+          index.write_text(text)
+
+          decisions_path = Path('docs/DECISIONS.md')
+          decisions = decisions_path.read_text()
+          marker = '## 2026-09-04 — Method inspection uses hover + drag, not liquid'
+          if marker not in decisions:
+              entry = '''\n---\n\n## 2026-09-04 — Method inspection uses hover + drag, not liquid\n\nDecision:\n\nReplace the localized liquid/SDF reveal in the Method / `#approach` visual with a restrained split-surface hover + drag interaction.\n\nImplementation:\n\n- the project photo remains the visible base layer\n- a stage-specific technical drawing occupies a second full-size layer beneath it\n- a one-pixel signal-yellow divider defines the boundary between `PROJET` and `INGÉNIERIE`\n- hover gently previews the interaction without taking over the composition\n- dragging the surface moves the divider directly and leaves the inspection position where the user releases it\n- double-click resets the divider to its initial position\n- each of the five Method rows still updates the technical geometry and verified labels\n- no WebGL, particle simulation, fluid membrane, blur or glow is used\n- reduced-motion, mobile and non-fine-pointer users retain the original static blueprint fallback\n\nRationale:\n\nThe liquid membrane added visual mass and made the Method feel like an effect demo rather than an engineering interface. A direct comparison gesture better communicates the intended idea: visible project on one side, underlying engineering on the other.\n'''
+              decisions = decisions.replace('\n---\n\n## Future decision logging', entry + '\n---\n\n## Future decision logging', 1)
+              decisions_path.write_text(decisions)
+
+          next_path = Path('docs/NEXT.md')
+          next_text = next_path.read_text()
+          old = '- added a localized liquid/SDF engineering inspection to the Method visual, revealing stage-specific technical blueprints beneath the project photo while preserving static fallbacks and suspending rendering when idle/off-screen'
+          if old in next_text:
+              next_text = next_text.replace(old, '- replaced the rejected liquid Method reveal with a precise hover + drag project/engineering split: a signal-yellow divider directly compares the photo with stage-specific technical drawings and keeps the original static fallback')
+          else:
+              bullet = '- replaced the rejected liquid Method reveal with a precise hover + drag project/engineering split: a signal-yellow divider directly compares the photo with stage-specific technical drawings and keeps the original static fallback'
+              anchor = '- decluttered the Hero into a title-led editorial composition with one concise project brief and a genuinely clickable project-start action, while preserving the post-preloader cursor reveal geometry unchanged'
+              if bullet not in next_text:
+                  if anchor in next_text:
+                      next_text = next_text.replace(anchor, anchor + '\n' + bullet, 1)
+                  else:
+                      next_text += '\n' + bullet + '\n'
+          next_path.write_text(next_text)
+          PY
+
+          rm -f approach-liquid-inspection.js approach-liquid-inspection.css
+
+      - name: Validate
+        shell: bash
+        run: |
+          node --check approach-drag-inspection.js
+          grep -q 'approach-drag-inspection.css?v=20260904-1' index.html
+          grep -q 'approach-drag-inspection.js?v=20260904-1' index.html
+          ! grep -q 'approach-liquid-inspection' index.html
+          test ! -e approach-liquid-inspection.js
+          test ! -e approach-liquid-inspection.css
+          grep -q 'Method inspection uses hover + drag, not liquid' docs/DECISIONS.md
+          git diff --check
+
+      - name: Commit replacement
+        shell: bash
+        run: |
+          git config user.name 'Profils Sports Agent'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'feat: replace liquid method reveal with hover drag inspection'
+          git push origin HEAD:feat/approach-drag-inspection
