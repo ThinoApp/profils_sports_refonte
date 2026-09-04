@@ -32,6 +32,7 @@ Primary branch:
 - connected the Hero and “De la conception à l’exploitation” manifesto through a single reversible scroll-driven clip/shared-media transition on desktop
 - replaced the basic preloader with a branded construction-curtain intro: architectural grid, monumental masked type, signal field line and split reveal into the live Hero
 - rebuilt the pre-loader as a deterministic four-phase architectural impact sequence with a field blueprint, monumental `SPORT TAKES SHAPE.` crescendo, four-gate reveal, Hero-synchronised opening and non-blocking video readiness
+- connected the pre-loader and Hero with a shared title geometry and delayed Hero release so the three title lines visibly continue the motion after the gates open
 
 ## Current implementation files
 

@@ -348,6 +348,8 @@ Implementation:
 - the full sequence has a fixed 2.65-second build and a 1.05-second overlapping exit
 - Hero video readiness is surfaced as telemetry but never blocks the opening
 - the Hero shutters and typography begin only when the intro reaches its impact beat
+- a transient typography bridge preserves the exact Hero title geometry above the opening gates
+- the real Hero title is released 420ms into the gate movement so its masked line animation remains visible
 - pointer, Enter, Space or Escape can skip the intro after its opening beat
 - direct hash navigation and `prefers-reduced-motion` skip the intro entirely
 - no additional runtime or media dependency is introduced

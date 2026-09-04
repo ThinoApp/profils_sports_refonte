@@ -14,6 +14,7 @@
   const heroVideo = document.querySelector('[data-hero-video]');
   const BUILD_DURATION = 2650;
   const EXIT_DURATION = 1050;
+  const HERO_RELEASE_DELAY = 420;
   const PHASES = [
     { at: 0, label: 'IMPLANTATION', code: '01' },
     { at: 0.27, label: 'STRUCTURE', code: '02' },
@@ -82,6 +83,11 @@
     </div>
 
     <div class="intro-gates" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="intro-bridge" aria-hidden="true">
+      <span><b>SPORT</b></span>
+      <span class="intro-bridge__offset"><b>TAKES</b></span>
+      <span class="intro-bridge__signal"><b>SHAPE.</b></span>
+    </div>
   `;
 
   const count = preloader.querySelector('[data-intro-count]');
@@ -142,10 +148,15 @@
     preloader.classList.add('is-opening');
 
     setTimeout(() => {
+      document.body.classList.add('intro-hero-release');
+    }, HERO_RELEASE_DELAY);
+
+    setTimeout(() => {
       removeEventListener('keydown', skip);
       preloader.classList.add('is-complete');
       document.body.classList.remove('intro-running', 'intro-opening');
       document.body.classList.add('intro-complete');
+      setTimeout(() => document.body.classList.remove('intro-hero-release'), 900);
     }, EXIT_DURATION);
   };
 
