@@ -499,8 +499,11 @@ Implementation:
 - the supplied 25-second motion reference is translated into a closed Catmull-Rom spline with real perspective depth, tangent page orientation and inertial movement
 - Fitness, Padel, CSP Pro and Canopy School use all 102 verified page images from the authentic catalogue source
 - local 900px WebP derivatives keep the complete sequence deployable on static GitHub Pages at approximately 3.7 MB total
-- only 13 desktop or 9 mobile page planes exist in WebGL at once; textures are loaded lazily, recycled and evicted outside the active neighbourhood
+- only 12 desktop or 10 mobile page planes exist in WebGL at once; they are distributed around the complete closed loop so the ribbon reads as one compact folded object rather than isolated front and rear bands
 - mouse wheel, trackpad, horizontal drag/touch and keyboard arrows drive the same damped motion model
+- drag release carries measured momentum and the longer damping curve preserves the reference's weight
+- 720 trajectory poses are precalculated; animation interpolates cached position/quaternion data instead of rebuilding spline tangents, camera normals and matrices for every page on every frame
+- mipmaps and WebGL multisample antialiasing are disabled, DPR is capped at 1.25 and can adapt down to 0.85 only when sustained frame cost exceeds the motion budget
 - the monumental two-line catalogue title remains a fixed editorial layer behind the ribbon and separates only during the distant orbit phase
 - normal row clicks open the viewer; modified clicks preserve the original external-link behavior
 - the directional global cursor remains above the viewer and its native fallback is not overridden
@@ -508,7 +511,7 @@ Implementation:
 
 Rationale:
 
-The earlier MVP had the right basic spline idea but treated the experience as a fixed 12-project demo, started too low and flat, and could not scale to Fitness's 74 real pages. Virtualizing a small plane pool preserves the depth and continuous movement of the reference without loading the entire catalogue into GPU memory.
+The earlier MVP had the right basic spline idea but treated the experience as a fixed 12-project demo, started too low and flat, and could not scale to Fitness's 74 real pages. The first integration also moved a narrow group around an oversized orbit, producing two broad strips instead of the reference's dense central fold. The compact full-loop distribution and cached motion model preserve the reference silhouette and inertia without loading the entire catalogue into GPU memory.
 
 ---
 

@@ -41,7 +41,7 @@ Primary branch:
 - replaced the rejected liquid Method reveal with a precise hover + drag project/engineering split: a signal-yellow divider directly compares the photo with stage-specific technical drawings and keeps the original static fallback
 - moved the Method tracer from drag to Method-row hover/focus: each row now redraws its technical geometry from a genuinely blank technical substrate, while drag remains dedicated to the photo ↔ engineering split
 - clarified the Method information hierarchy: the five-step list now carries the explanation and expands only the active row, while the technical face is reduced to a quiet grid, split comparison and cursor-drawn figure
-- replaced direct catalogue-page links with a full-screen 3D ribbon viewer calibrated from the supplied motion reference, using all 102 authentic catalogue pages, inertial wheel/drag navigation and a reduced-motion fallback
+- replaced direct catalogue-page links with a full-screen 3D ribbon viewer using all 102 authentic catalogue pages; the second calibration compacts the full closed loop into the reference's central folded shape and precalculates its geometry for smoother inertial motion
 
 ## Current implementation files
 
@@ -136,9 +136,11 @@ The original static catalogue preview is intentionally preserved as the fallback
 
 ### Catalogue detail ribbon
 
-Clicking any of the four catalogue rows opens a full-screen WebGL ribbon built from the authentic page sequence. The closed Catmull-Rom trajectory, perspective depth and inertial wheel/drag motion reproduce the supplied reference while the page pool remains virtualized to 13 desktop planes or 9 mobile planes.
+Clicking any of the four catalogue rows opens a full-screen WebGL ribbon built from the authentic page sequence. The closed Catmull-Rom trajectory, perspective depth and inertial wheel/drag motion reproduce the supplied reference while the page pool remains virtualized to 12 desktop planes or 10 mobile planes. The complete loop is visible at once and folds around a compact centre rather than travelling as two oversized bands.
 
 Keyboard arrows and Page Up/Down move the ribbon, Escape closes it, and the current foreground page can be opened directly. Reduced-motion or unavailable-WebGL environments receive a horizontally scrollable static page rail with the same local assets.
+
+The path is sampled into 720 cached poses, eliminating per-page spline, tangent and camera-normal allocations during animation. Mipmaps and multisample antialiasing are disabled for this full-screen moving surface, device pixel ratio is capped, and an adaptive resolution step protects motion cadence on slower GPUs.
 
 ## Do not change without discussion
 

@@ -7,18 +7,20 @@
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const CONFIG = Object.freeze({
-    cameraFov: 37.5,
-    cameraZ: 11.25,
-    cardHeight: 1.82,
-    ribbonSpacing: .043,
-    orbitSpeed: .075,
-    startOffset: .205,
-    follow: 7.4,
-    wheelFactor: .0032,
-    dragFactor: .006,
-    maxDpr: 1.6,
-    desktopSlots: 13,
-    mobileSlots: 9
+    cameraFov: 38,
+    cameraZ: 9.6,
+    cardHeight: 1.45,
+    startOffset: .2,
+    titleCycleOffset: .06,
+    follow: 3.45,
+    wheelFactor: .003,
+    dragFactor: .0065,
+    dragMomentum: 210,
+    maxDpr: 1.25,
+    minDpr: .85,
+    curveSamples: 720,
+    desktopSlots: 12,
+    mobileSlots: 10
   });
 
   const CATALOGUES = Object.freeze({
@@ -100,6 +102,15 @@
   let group = null;
   let curve = null;
   let textureLoader = null;
+  let curvePosition = null;
+  let curveTangent = null;
+  let cameraNormal = null;
+  let curveUp = null;
+  let curveBasis = null;
+  let curveQuaternionA = null;
+  let curveQuaternionB = null;
+  let curveSamplePositions = null;
+  let curveSampleQuaternions = null;
   let cards = [];
   let textureCache = new Map();
   let texturePending = new Map();
@@ -109,16 +120,22 @@
   let lastFrame = 0;
   let animationFrame = 0;
   let fallbackScrollFrame = 0;
+  let renderDpr = 1;
+  let frameCost = .016;
+  let frameProbe = 0;
   let loadedVisibleCount = 0;
   let frontPageIndex = 0;
   let dragging = false;
   let dragStartX = 0;
   let dragStartTarget = 0;
+  let dragLastX = 0;
+  let dragLastTime = 0;
+  let dragVelocity = 0;
 
   const curveSource = [
-    [-8.2,-2.65,1.6],[-6,-2.1,4.15],[-3.1,-1.65,5.95],[.1,-1.42,6.15],
-    [3.3,-1.04,5.35],[6.35,-.15,3.05],[7.2,1.85,-.35],[5,2.8,-4.15],
-    [1.7,2.86,-5.2],[-1.8,2.55,-5.15],[-5.2,1.72,-3.35],[-7.25,-.15,-.5]
+    [-4.2,-.2,1.15],[-3.1,.25,2.99],[-1.6,.18,4.28],[.05,-.2,4.43],
+    [1.7,-.65,3.85],[3.25,-1.02,2.2],[3.7,.1,-.25],[2.6,1.05,-2.99],
+    [.9,1.4,-3.74],[-.95,1.45,-3.71],[-2.65,1.15,-2.41],[-3.7,.55,-.36]
   ];
 
   const supportsWebGL = () => {
@@ -159,7 +176,7 @@
   const initThree = () => {
     if (renderer || !supportsWebGL()) return Boolean(renderer);
     try {
-      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'high-performance' });
       renderer.setClearColor(0x000000, 0);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       scene = new THREE.Scene();
@@ -171,6 +188,13 @@
       curve = new THREE.CatmullRomCurve3(curveSource.map(point => new THREE.Vector3(...point)), true, 'centripetal', .5);
       curve.arcLengthDivisions = 1000;
       curve.updateArcLengths();
+      curvePosition = new THREE.Vector3();
+      curveTangent = new THREE.Vector3();
+      cameraNormal = new THREE.Vector3();
+      curveUp = new THREE.Vector3();
+      curveBasis = new THREE.Matrix4();
+      curveQuaternionA = new THREE.Quaternion();
+      curveQuaternionB = new THREE.Quaternion();
       textureLoader = new THREE.TextureLoader();
       createCards();
       resize();
@@ -208,8 +232,9 @@
           return;
         }
         texture.colorSpace = THREE.SRGBColorSpace;
-        texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+        texture.generateMipmaps = false;
+        texture.minFilter = THREE.LinearFilter;
         texture.magFilter = THREE.LinearFilter;
         textureCache.set(pageIndex, texture);
         texturePending.delete(pageIndex);
@@ -243,18 +268,44 @@
     });
   };
 
+  const rebuildCurveSamples = () => {
+    if (!curve || !camera) return;
+    const count = CONFIG.curveSamples;
+    curveSamplePositions = new Float32Array(count * 3);
+    curveSampleQuaternions = new Float32Array(count * 4);
+    for (let index = 0; index < count; index += 1) {
+      const u = index / count;
+      curve.getPointAt(u, curvePosition);
+      curve.getTangentAt(u, curveTangent).normalize();
+      cameraNormal.copy(camera.position).sub(curvePosition).normalize();
+      cameraNormal.addScaledVector(curveTangent, -cameraNormal.dot(curveTangent));
+      if (cameraNormal.lengthSq() < 1e-5) cameraNormal.set(0, 0, 1);
+      cameraNormal.normalize();
+      curveUp.crossVectors(cameraNormal, curveTangent).normalize();
+      cameraNormal.crossVectors(curveTangent, curveUp).normalize();
+      curveBasis.makeBasis(curveTangent, curveUp, cameraNormal);
+      curveQuaternionA.setFromRotationMatrix(curveBasis);
+      curveSamplePositions.set([curvePosition.x, curvePosition.y, curvePosition.z], index * 3);
+      curveSampleQuaternions.set([curveQuaternionA.x, curveQuaternionA.y, curveQuaternionA.z, curveQuaternionA.w], index * 4);
+    }
+  };
+
   const positionCard = (mesh, u) => {
-    const position = curve.getPointAt(u);
-    const tangent = curve.getTangentAt(u).normalize();
-    const toCamera = camera.position.clone().sub(position).normalize();
-    const normal = toCamera.addScaledVector(tangent, -toCamera.dot(tangent));
-    if (normal.lengthSq() < 1e-5) normal.set(0, 0, 1);
-    normal.normalize();
-    const up = new THREE.Vector3().crossVectors(normal, tangent).normalize();
-    normal.crossVectors(tangent, up).normalize();
-    const basis = new THREE.Matrix4().makeBasis(tangent, up, normal);
-    mesh.position.copy(position);
-    mesh.quaternion.setFromRotationMatrix(basis);
+    const count = CONFIG.curveSamples;
+    const scaled = mod1(u) * count;
+    const index = Math.floor(scaled) % count;
+    const next = (index + 1) % count;
+    const mix = scaled - Math.floor(scaled);
+    const positionOffset = index * 3;
+    const nextPositionOffset = next * 3;
+    mesh.position.set(
+      curveSamplePositions[positionOffset] + (curveSamplePositions[nextPositionOffset] - curveSamplePositions[positionOffset]) * mix,
+      curveSamplePositions[positionOffset + 1] + (curveSamplePositions[nextPositionOffset + 1] - curveSamplePositions[positionOffset + 1]) * mix,
+      curveSamplePositions[positionOffset + 2] + (curveSamplePositions[nextPositionOffset + 2] - curveSamplePositions[positionOffset + 2]) * mix
+    );
+    curveQuaternionA.fromArray(curveSampleQuaternions, index * 4);
+    curveQuaternionB.fromArray(curveSampleQuaternions, next * 4);
+    mesh.quaternion.slerpQuaternions(curveQuaternionA, curveQuaternionB, mix);
     mesh.scale.set(CONFIG.cardHeight * activeCatalogue.ratio, CONFIG.cardHeight, 1);
   };
 
@@ -284,6 +335,7 @@
   const updateCards = () => {
     if (!cards.length) return;
     const slotCount = cards.length;
+    const pageSpacing = 1 / slotCount;
     const before = Math.floor(slotCount / 2);
     const firstAbsolutePage = Math.floor(currentPosition) - before;
     let cardIndex = 0;
@@ -291,13 +343,13 @@
       const mesh = cards[mod(absolutePage, slotCount)];
       assignPage(mesh, absolutePage);
       const relative = absolutePage - currentPosition;
-      const u = mod1(CONFIG.startOffset + relative * CONFIG.ribbonSpacing + currentPosition * CONFIG.orbitSpeed);
+      const u = mod1(CONFIG.startOffset + relative * pageSpacing);
       positionCard(mesh, u);
       mesh.renderOrder = cardIndex;
       cardIndex += 1;
     }
-    const titlePhase = mod1(CONFIG.startOffset + currentPosition * CONFIG.orbitSpeed);
-    const split = smoothPulse(titlePhase, .44, .54, .73, .84);
+    const titlePhase = mod1(CONFIG.titleCycleOffset + currentPosition / slotCount);
+    const split = smoothPulse(titlePhase, .2, .35, .62, .78);
     overlay.style.setProperty('--ribbon-title-split', split.toFixed(4));
     updateMeta();
   };
@@ -322,6 +374,15 @@
     currentPosition += (targetPosition - currentPosition) * alpha;
     updateCards();
     renderer.render(scene, camera);
+    frameCost += (dt - frameCost) * .08;
+    frameProbe += 1;
+    if (frameProbe >= 45 && frameCost > .025 && renderDpr > CONFIG.minDpr) {
+      renderDpr = Math.max(CONFIG.minDpr, renderDpr - .15);
+      renderer.setPixelRatio(renderDpr);
+      renderer.setSize(innerWidth, innerHeight, false);
+      frameCost = .016;
+      frameProbe = 0;
+    }
     if (Math.abs(targetPosition - currentPosition) < .001) evictDistantTextures();
     animationFrame = requestAnimationFrame(render);
   };
@@ -333,8 +394,12 @@
     camera.fov = mobile ? 47 : CONFIG.cameraFov;
     camera.position.z = mobile ? CONFIG.cameraZ + 1.15 : CONFIG.cameraZ;
     camera.updateProjectionMatrix();
+    rebuildCurveSamples();
     renderer.setSize(innerWidth, innerHeight, false);
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, CONFIG.maxDpr));
+    renderDpr = Math.min(devicePixelRatio || 1, CONFIG.maxDpr);
+    renderer.setPixelRatio(renderDpr);
+    frameCost = .016;
+    frameProbe = 0;
     const desiredSlots = mobile ? CONFIG.mobileSlots : CONFIG.desktopSlots;
     if (cards.length && cards.length !== desiredSlots) createCards();
   }
@@ -436,7 +501,8 @@
       fallback.scrollLeft += delta;
       return;
     }
-    targetPosition += delta * CONFIG.wheelFactor;
+    const deltaScale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1;
+    targetPosition += clamp(delta * deltaScale * CONFIG.wheelFactor, -1.15, 1.15);
   }, { passive: false });
 
   fallback.addEventListener('scroll', () => {
@@ -461,15 +527,25 @@
     dragging = true;
     dragStartX = event.clientX;
     dragStartTarget = targetPosition;
+    dragLastX = event.clientX;
+    dragLastTime = event.timeStamp;
+    dragVelocity = 0;
     canvas.setPointerCapture?.(event.pointerId);
   });
   canvas.addEventListener('pointermove', event => {
     if (!dragging) return;
+    const elapsed = Math.max(8, event.timeStamp - dragLastTime);
+    const instantVelocity = (dragLastX - event.clientX) * CONFIG.dragFactor / elapsed;
+    dragVelocity += (instantVelocity - dragVelocity) * .32;
     targetPosition = dragStartTarget + (dragStartX - event.clientX) * CONFIG.dragFactor;
+    dragLastX = event.clientX;
+    dragLastTime = event.timeStamp;
   });
   const endDrag = event => {
     if (!dragging) return;
     dragging = false;
+    targetPosition += clamp(dragVelocity * CONFIG.dragMomentum, -1.65, 1.65);
+    dragVelocity = 0;
     canvas.releasePointerCapture?.(event.pointerId);
   };
   canvas.addEventListener('pointerup', endDrag);
