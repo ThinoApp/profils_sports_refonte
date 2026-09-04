@@ -345,11 +345,13 @@ The pre-loader is a short, four-beat construction sequence: implantation, struct
 
 Implementation:
 
-- the full sequence has a fixed 2.65-second build and a 1.05-second overlapping exit
+- the full sequence has a fixed 2.65-second build and a 1.4-second overlapping exit
 - Hero video readiness is surfaced as telemetry but never blocks the opening
 - the Hero shutters and typography begin only when the intro reaches its impact beat
 - a transient typography bridge measures the rendered glyph bounds of every intro and Hero line, then uses a FLIP transform to preserve exact geometry above the opening gates
-- the real Hero title is released 470ms into the gate movement so its masked line animation remains visible beneath the travelling copy
+- the pre-loader root becomes transparent and non-interactive on the impact beat, allowing the opening gates to progressively expose the live Hero instead of hiding it behind an opaque root until teardown
+- the pre-loader and Hero shutter timings are synchronised, and the real Hero title is released 390ms into the gate movement so its masked line animation remains visible beneath the travelling copy
+- teardown occurs only after the Hero title, supporting content, flight path and logo landing have all reached their settled states
 - a signal-yellow SVG Bézier path detaches from the final `SHAPE.` line and lands at the measured centre of the header logo, including compensation for the header's opening transform
 - pointer, Enter, Space or Escape can skip the intro after its opening beat
 - direct hash navigation and `prefers-reduced-motion` skip the intro entirely

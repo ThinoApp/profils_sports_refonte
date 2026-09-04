@@ -33,6 +33,7 @@ Primary branch:
 - replaced the basic preloader with a branded construction-curtain intro: architectural grid, monumental masked type, signal field line and split reveal into the live Hero
 - rebuilt the pre-loader as a deterministic four-phase architectural impact sequence with a field blueprint, monumental `SPORT TAKES SHAPE.` crescendo, four-gate reveal, Hero-synchronised opening and non-blocking video readiness
 - replaced the pre-loader/Hero title handoff with a runtime-measured FLIP bridge: all three glyph boxes land exactly on the Hero title, while a signal-yellow SVG flight path leaves `SHAPE.` and lands on the real header logo
+- removed the abrupt final Hero cut by making the pre-loader root transparent during its opening, synchronising both shutter systems and keeping the overlay mounted until every visible Hero/brand motion has settled
 
 ## Current implementation files
 

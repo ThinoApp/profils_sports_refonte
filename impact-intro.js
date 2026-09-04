@@ -13,9 +13,9 @@
 
   const heroVideo = document.querySelector('[data-hero-video]');
   const BUILD_DURATION = 2650;
-  const EXIT_DURATION = 1050;
-  const HERO_RELEASE_DELAY = 470;
-  const BRIDGE_DURATION = 860;
+  const EXIT_DURATION = 1400;
+  const HERO_RELEASE_DELAY = 390;
+  const BRIDGE_DURATION = 900;
   const FLIGHT_DELAY = 70;
   const FLIGHT_DURATION = 720;
   const PHASES = [
@@ -325,12 +325,13 @@
       document.body.classList.add('intro-hero-release');
     }, HERO_RELEASE_DELAY);
 
+    // The overlay stays mounted until the longest visible Hero/brand motion is
+    // settled. Its root is transparent and non-interactive during this phase.
     setTimeout(() => {
       removeEventListener('keydown', skip);
       preloader.classList.add('is-complete');
-      document.body.classList.remove('intro-running', 'intro-opening');
+      document.body.classList.remove('intro-running', 'intro-opening', 'intro-hero-release');
       document.body.classList.add('intro-complete');
-      setTimeout(() => document.body.classList.remove('intro-hero-release'), 900);
     }, EXIT_DURATION);
   };
 

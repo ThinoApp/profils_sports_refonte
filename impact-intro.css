@@ -15,6 +15,7 @@
   transition: none !important;
   isolation: isolate;
 }
+.preloader.intro-upgraded.is-opening { background:transparent; pointer-events:none !important; }
 
 body.intro-running { overflow: hidden; }
 body.intro-running .site-header { opacity: 0; transform: translateY(-16px); }
@@ -120,6 +121,13 @@ body.intro-opening .site-header { opacity:1; transform:none; }
 .intro-flight.is-landed .intro-flight__landing { animation:introFlightLanding .44s cubic-bezier(.18,.82,.18,1) both; }
 .brand.is-intro-landed .brand-logo { animation:introLogoLanding .56s cubic-bezier(.18,.82,.18,1) both; }
 body.intro-opening:not(.intro-hero-release) .hero-line b { transform:translateY(115%); transition:none !important; }
+body.intro-opening.is-loaded .hero-shutters i { transition-duration:.92s; transition-timing-function:cubic-bezier(.7,0,.15,1); }
+body.intro-opening.is-loaded .hero-shutters i:nth-child(2) { transition-delay:.04s; }
+body.intro-opening.is-loaded .hero-shutters i:nth-child(3) { transition-delay:.08s; }
+body.intro-opening.is-loaded .hero-shutters i:nth-child(4) { transition-delay:.12s; }
+body.intro-opening.intro-hero-release .hero-line b { transition-duration:.62s !important; transition-timing-function:cubic-bezier(.18,.82,.18,1) !important; }
+body.intro-opening.intro-hero-release .hero-line:nth-child(2) b { transition-delay:.06s !important; }
+body.intro-opening.intro-hero-release .hero-line:nth-child(3) b { transition-delay:.12s !important; }
 body.intro-opening:not(.intro-hero-release) .hero-tagline,
 body.intro-opening:not(.intro-hero-release) .hero-bottom,
 body.intro-opening:not(.intro-hero-release) .hero-coordinate,
@@ -127,7 +135,7 @@ body.intro-opening:not(.intro-hero-release) .hero-proof { opacity:0 !important; 
 body.intro-opening.intro-hero-release .hero-tagline,
 body.intro-opening.intro-hero-release .hero-bottom,
 body.intro-opening.intro-hero-release .hero-coordinate,
-body.intro-opening.intro-hero-release .hero-proof { transition:opacity .72s .18s ease,transform .82s .18s cubic-bezier(.18,.82,.18,1) !important; }
+body.intro-opening.intro-hero-release .hero-proof { transition:opacity .58s .08s ease,transform .66s .08s cubic-bezier(.18,.82,.18,1) !important; }
 .intro-upgraded.is-opening .intro-impact-line { animation:introImpact .54s cubic-bezier(.18,.82,.18,1) both; }
 .intro-upgraded.is-opening .intro-stage { animation:introStageImpact .72s cubic-bezier(.2,.72,.16,1) both; }
 .intro-upgraded.is-opening .intro-gates span:nth-child(1),.intro-upgraded.is-opening .intro-gates span:nth-child(3) { animation:introGateUp .94s .08s cubic-bezier(.7,0,.15,1) both; }
