@@ -41,7 +41,7 @@ Primary branch:
 - replaced the rejected liquid Method reveal with a precise hover + drag project/engineering split: a signal-yellow divider directly compares the photo with stage-specific technical drawings and keeps the original static fallback
 - moved the Method tracer from drag to Method-row hover/focus: each row now redraws its technical geometry from a genuinely blank technical substrate, while drag remains dedicated to the photo ↔ engineering split
 - clarified the Method information hierarchy: the five-step list now carries the explanation and expands only the active row, while the technical face is reduced to a quiet grid, split comparison and cursor-drawn figure
-- replaced direct catalogue-page links with a full-screen 3D ribbon viewer using all 102 authentic catalogue pages; the second calibration compacts the full closed loop into the reference's central folded shape and precalculates its geometry for smoother inertial motion
+- replaced direct catalogue-page links with a full-screen 3D helical ribbon viewer using all 102 authentic catalogue pages; every page is now a subdivided, double-sided surface whose vertices bend around the same vertical helix
 
 ## Current implementation files
 
@@ -136,11 +136,11 @@ The original static catalogue preview is intentionally preserved as the fallback
 
 ### Catalogue detail ribbon
 
-Clicking any of the four catalogue rows opens a full-screen WebGL ribbon built from the authentic page sequence. Its open Catmull-Rom trajectory now forms a shallow serpentine `S`: pages approach the camera, fold through the centre and recede without drawing a circular orbit. The infinite recycle happens beyond two off-screen endpoints, while the page pool remains virtualized to 10 desktop planes or 8 mobile planes.
+Clicking any of the four catalogue rows opens a full-screen WebGL ribbon built from the authentic page sequence. The trajectory is a vertical helix around an invisible axis: pages travel from the front to profile, rear, opposite profile and front again while progressing vertically. The active page occupies the central front of the helix and grows by up to 24% through a continuous focus influence.
 
-Keyboard arrows and Page Up/Down move the ribbon, Escape closes it, and the current foreground page can be opened directly. Reduced-motion or unavailable-WebGL environments receive a horizontally scrollable static page rail with the same local assets.
+The pages are not rigid planes placed on a path. Each mesh uses a 32 × 4 subdivided surface and every vertex is analytically projected onto the helix, so the image itself curves with the ribbon. One double-sided shader displays the authentic image on both faces and corrects the rear UV orientation to prevent mirrored text.
 
-The open path is sampled into 721 cached poses, eliminating per-page spline, tangent and camera-normal allocations during animation. Mipmaps and multisample antialiasing are disabled for this full-screen moving surface, device pixel ratio is capped, and an adaptive resolution step protects motion cadence on slower GPUs.
+Wheel, trackpad, vertical/horizontal drag, touch and keyboard all advance one shared inertial progress value. Wheel and drag settle through a soft snap to the nearest central page, while far page meshes recycle above or below the viewport to create an infinite sequence. The pool uses 15 desktop or 17 mobile surfaces; mipmaps and multisample antialiasing remain disabled, device pixel ratio is capped, and adaptive resolution protects motion cadence on slower GPUs. Reduced-motion or unavailable-WebGL environments retain the horizontal static page rail.
 
 ## Do not change without discussion
 
