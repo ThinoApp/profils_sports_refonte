@@ -136,11 +136,11 @@ The original static catalogue preview is intentionally preserved as the fallback
 
 ### Catalogue detail ribbon
 
-Clicking any of the four catalogue rows opens a full-screen WebGL ribbon built from the authentic page sequence. The closed Catmull-Rom trajectory, perspective depth and inertial wheel/drag motion reproduce the supplied reference while the page pool remains virtualized to 12 desktop planes or 10 mobile planes. The complete loop is visible at once and folds around a compact centre rather than travelling as two oversized bands.
+Clicking any of the four catalogue rows opens a full-screen WebGL ribbon built from the authentic page sequence. Its open Catmull-Rom trajectory now forms a shallow serpentine `S`: pages approach the camera, fold through the centre and recede without drawing a circular orbit. The infinite recycle happens beyond two off-screen endpoints, while the page pool remains virtualized to 10 desktop planes or 8 mobile planes.
 
 Keyboard arrows and Page Up/Down move the ribbon, Escape closes it, and the current foreground page can be opened directly. Reduced-motion or unavailable-WebGL environments receive a horizontally scrollable static page rail with the same local assets.
 
-The path is sampled into 720 cached poses, eliminating per-page spline, tangent and camera-normal allocations during animation. Mipmaps and multisample antialiasing are disabled for this full-screen moving surface, device pixel ratio is capped, and an adaptive resolution step protects motion cadence on slower GPUs.
+The open path is sampled into 721 cached poses, eliminating per-page spline, tangent and camera-normal allocations during animation. Mipmaps and multisample antialiasing are disabled for this full-screen moving surface, device pixel ratio is capped, and an adaptive resolution step protects motion cadence on slower GPUs.
 
 ## Do not change without discussion
 

@@ -9,8 +9,8 @@
   const CONFIG = Object.freeze({
     cameraFov: 38,
     cameraZ: 9.6,
-    cardHeight: 1.45,
-    startOffset: .2,
+    cardHeight: 1.55,
+    startOffset: .4,
     titleCycleOffset: .06,
     follow: 3.45,
     wheelFactor: .003,
@@ -19,8 +19,8 @@
     maxDpr: 1.25,
     minDpr: .85,
     curveSamples: 720,
-    desktopSlots: 12,
-    mobileSlots: 10
+    desktopSlots: 10,
+    mobileSlots: 8
   });
 
   const CATALOGUES = Object.freeze({
@@ -133,9 +133,9 @@
   let dragVelocity = 0;
 
   const curveSource = [
-    [-4.2,-.2,1.15],[-3.1,.25,2.99],[-1.6,.18,4.28],[.05,-.2,4.43],
-    [1.7,-.65,3.85],[3.25,-1.02,2.2],[3.7,.1,-.25],[2.6,1.05,-2.99],
-    [.9,1.4,-3.74],[-.95,1.45,-3.71],[-2.65,1.15,-2.41],[-3.7,.55,-.36]
+    [-10.5,.62,-5.4],[-6.7,.78,-3.05],[-4.45,.08,-.72],[-2.45,-.58,2.08],
+    [-.62,-.34,2.92],[1.38,.38,.92],[3.28,.82,2.42],[5.12,.2,.34],
+    [7.08,-.58,-2.75],[10.5,-.16,-5.4]
   ];
 
   const supportsWebGL = () => {
@@ -185,7 +185,7 @@
       camera.lookAt(0, 0, 0);
       group = new THREE.Group();
       scene.add(group);
-      curve = new THREE.CatmullRomCurve3(curveSource.map(point => new THREE.Vector3(...point)), true, 'centripetal', .5);
+      curve = new THREE.CatmullRomCurve3(curveSource.map(point => new THREE.Vector3(...point)), false, 'centripetal', .5);
       curve.arcLengthDivisions = 1000;
       curve.updateArcLengths();
       curvePosition = new THREE.Vector3();
@@ -271,9 +271,9 @@
   const rebuildCurveSamples = () => {
     if (!curve || !camera) return;
     const count = CONFIG.curveSamples;
-    curveSamplePositions = new Float32Array(count * 3);
-    curveSampleQuaternions = new Float32Array(count * 4);
-    for (let index = 0; index < count; index += 1) {
+    curveSamplePositions = new Float32Array((count + 1) * 3);
+    curveSampleQuaternions = new Float32Array((count + 1) * 4);
+    for (let index = 0; index <= count; index += 1) {
       const u = index / count;
       curve.getPointAt(u, curvePosition);
       curve.getTangentAt(u, curveTangent).normalize();
@@ -293,8 +293,8 @@
   const positionCard = (mesh, u) => {
     const count = CONFIG.curveSamples;
     const scaled = mod1(u) * count;
-    const index = Math.floor(scaled) % count;
-    const next = (index + 1) % count;
+    const index = Math.min(count - 1, Math.floor(scaled));
+    const next = index + 1;
     const mix = scaled - Math.floor(scaled);
     const positionOffset = index * 3;
     const nextPositionOffset = next * 3;
