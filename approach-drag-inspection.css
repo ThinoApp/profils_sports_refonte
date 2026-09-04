@@ -255,3 +255,241 @@
     display: none !important;
   }
 }
+
+
+/* Method editorial hierarchy — figure first, explanation in the list. */
+.project-system__summary {
+  align-self: end;
+  display: grid;
+  gap: 16px;
+  max-width: 590px;
+}
+
+.project-system__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  color: #efe158;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.project-system__eyebrow::before {
+  content: "";
+  width: 30px;
+  height: 1px;
+  background: currentColor;
+}
+
+.project-system__summary p {
+  margin: 0 !important;
+  max-width: 48ch !important;
+  color: rgba(255,255,255,.76) !important;
+  font-size: clamp(14px,1.12vw,17px);
+  line-height: 1.55 !important;
+}
+
+.project-system__summary small {
+  max-width: 44ch;
+  color: rgba(255,255,255,.42);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+#approach [data-blueprint].approach-drag-ready .blueprint-photo {
+  inset: 0 !important;
+}
+
+#approach [data-blueprint].approach-drag-ready .blueprint-photo::after {
+  background: linear-gradient(90deg,rgba(9,21,33,.22),rgba(9,21,33,.05) 58%,transparent 78%);
+}
+
+.approach-drag-ui__photo,
+.approach-drag-ui__technical {
+  top: 16px;
+  font-size: 6px;
+  letter-spacing: .16em;
+  opacity: .64;
+}
+
+.approach-drag-ui__photo { left: 16px; }
+.approach-drag-ui__technical { right: 16px; }
+
+.approach-drag-stage,
+.approach-drag-hint {
+  display: none !important;
+}
+
+.approach-drag-divider {
+  background: rgba(239,225,88,.74);
+  transition: background .2s ease;
+}
+
+#approach [data-blueprint].is-dragging .approach-drag-divider {
+  background: rgba(239,225,88,.98);
+}
+
+.approach-drag-divider::before,
+.approach-drag-divider::after {
+  display: none;
+}
+
+.approach-drag-handle {
+  min-width: 42px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  gap: 3px;
+  border-color: rgba(239,225,88,.48);
+  background: rgba(9,21,33,.88);
+  font-size: 0;
+}
+
+.approach-drag-handle::before,
+.approach-drag-handle::after {
+  font-size: 10px;
+}
+
+@media (min-width:900px) and (prefers-reduced-motion:no-preference) {
+  #approach:has([data-blueprint].approach-drag-ready) .approach-shell {
+    grid-template-columns: minmax(350px,.78fr) minmax(0,1.22fr);
+    gap: clamp(52px,6.5vw,104px);
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-list {
+    position: relative;
+    border-top: 0;
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-list::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 29px;
+    bottom: 29px;
+    width: 1px;
+    background: rgba(255,255,255,.13);
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row {
+    position: relative;
+    min-height: 88px;
+    display: grid;
+    grid-template-columns: 30px minmax(0,1fr);
+    gap: 0 18px;
+    align-items: start;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(255,255,255,.13);
+    background: transparent !important;
+    transition: padding .32s cubic-bezier(.18,.82,.18,1);
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:first-child {
+    border-top: 1px solid rgba(255,255,255,.13);
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 21px;
+    bottom: 21px;
+    width: 2px;
+    background: #efe158;
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform .3s cubic-bezier(.18,.82,.18,1);
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row > span {
+    position: relative;
+    z-index: 1;
+    width: 29px;
+    height: 29px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.22);
+    background: #091521;
+    color: rgba(255,255,255,.52);
+    font-size: 8px;
+    transition: background .28s ease,color .28s ease,border-color .28s ease;
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row h3 {
+    align-self: center;
+    margin: 1px 0 0;
+    max-width: 18ch;
+    color: rgba(255,255,255,.72);
+    font-size: clamp(29px,2.4vw,41px);
+    line-height: .92;
+    transition: color .28s ease,transform .32s cubic-bezier(.18,.82,.18,1);
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row p {
+    grid-column: 2;
+    max-width: 43ch;
+    max-height: 0;
+    margin: 0;
+    overflow: hidden;
+    color: rgba(255,255,255,.58);
+    font-size: 12px;
+    line-height: 1.55;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: max-height .38s cubic-bezier(.18,.82,.18,1),opacity .22s ease,transform .32s cubic-bezier(.18,.82,.18,1),margin .32s ease;
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row.is-active,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:hover,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:focus-within {
+    padding: 26px 0 28px 14px;
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row.is-active::before,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:hover::before,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:focus-within::before {
+    transform: scaleY(1);
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row.is-active > span,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:hover > span,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:focus-within > span {
+    background: #efe158;
+    border-color: #efe158;
+    color: #091521;
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row.is-active h3,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:hover h3,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:focus-within h3 {
+    color: #fff;
+    transform: translateX(2px);
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row.is-active p,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:hover p,
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:focus-within p {
+    max-height: 92px;
+    margin-top: 13px;
+    opacity: 1;
+    transform: none;
+  }
+
+  #approach:has([data-blueprint].approach-drag-ready) .approach-row:focus-visible {
+    outline: 1px solid rgba(239,225,88,.55);
+    outline-offset: 5px;
+  }
+}
+
+@media (max-width:899px) {
+  .project-system__summary {
+    margin-top: 28px;
+  }
+}

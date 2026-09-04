@@ -512,6 +512,30 @@ The earlier MVP had the right basic spline idea but treated the experience as a 
 
 ---
 
+## 2026-09-04 — Method content lives in the list; the drawing face stays quiet
+
+Decision:
+
+Make the Method section understandable at a glance by separating explanation from visualisation. The list owns hierarchy and explanatory copy; the technical media owns the drawing.
+
+Implementation:
+
+- replace the prototype/meta lead paragraph with a concise verified summary of the five-stage project cycle and put the hover instruction beside that copy, outside the technical media
+- turn the Method list into a visible 01→05 sequence with a restrained connecting rail
+- inactive rows show only number + title; the active/hovered/focused row expands its existing verified explanatory sentence
+- make Method rows keyboard-focusable so the same active state and drawing trigger can be reached without hover
+- remove the canvas title, stage counter and six technical keyword labels from the engineering face
+- remove the large repeated active-stage title and interaction hint from the media overlay
+- retain only micro `PROJET` / `INGÉNIERIE` labels, the split line, compact drag handle, faint grid and cursor-drawn geometry
+- make the project image full-bleed within the comparison frame so project and engineering read as two states of the same surface
+- keep drag behaviour, hover-triggered tracer geometry, mobile fallback and reduced-motion fallback unchanged
+
+Rationale:
+
+The previous media repeated the active title, instruction, metadata and technical vocabulary on top of the animated figure. That made the user decode an interface before understanding the idea. The revised hierarchy makes the concept immediate: choose one of five project phases on the left and watch its technical system construct itself on the right.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
