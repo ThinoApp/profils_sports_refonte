@@ -8,8 +8,13 @@
 
   addEventListener('load', () => {
     setTimeout(() => {
-      q('[data-preloader]')?.classList.add('is-done');
-      document.body.classList.add('is-loaded');
+      const preloader = q('[data-preloader]');
+      // The upgraded intro owns the Hero reveal beat. This remains only as a
+      // resilient fallback when that enhancement did not initialise.
+      if (!preloader?.classList.contains('intro-upgraded')) {
+        preloader?.classList.add('is-done');
+        document.body.classList.add('is-loaded');
+      }
     }, reduced ? 0 : 850);
   });
 

@@ -337,6 +337,27 @@ The intro should establish the brand world immediately rather than behave like a
 
 ---
 
+## 2026-09-04 — Intro becomes a deterministic architectural impact sequence
+
+Decision:
+
+The pre-loader is a short, four-beat construction sequence: implantation, structure, equipment and opening play. It culminates in the same `SPORT TAKES SHAPE.` typography as the Hero, then opens through four alternating architectural gates while triggering the Hero reveal on the impact beat.
+
+Implementation:
+
+- the full sequence has a fixed 2.65-second build and a 1.05-second overlapping exit
+- Hero video readiness is surfaced as telemetry but never blocks the opening
+- the Hero shutters and typography begin only when the intro reaches its impact beat
+- pointer, Enter, Space or Escape can skip the intro after its opening beat
+- direct hash navigation and `prefers-reduced-motion` skip the intro entirely
+- no additional runtime or media dependency is introduced
+
+Rationale:
+
+The previous intro waited for video readiness and could block the page for almost ten seconds. Its slow progress also allowed the Hero animation to finish invisibly underneath it. The deterministic sequence is more spectacular, more coherent with the technical visual language and materially faster.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:

@@ -1,6 +1,6 @@
 # Current State / Next — Profils Sports Refonte
 
-Last updated: 2026-09-03
+Last updated: 2026-09-04
 
 ## Current version
 
@@ -31,6 +31,7 @@ Primary branch:
 - replaced catalogue blueprint SVG swapping with one continuous spring-morphed SVG geometry that redirects from its current intermediate state on rapid hover changes
 - connected the Hero and “De la conception à l’exploitation” manifesto through a single reversible scroll-driven clip/shared-media transition on desktop
 - replaced the basic preloader with a branded construction-curtain intro: architectural grid, monumental masked type, signal field line and split reveal into the live Hero
+- rebuilt the pre-loader as a deterministic four-phase architectural impact sequence with a field blueprint, monumental `SPORT TAKES SHAPE.` crescendo, four-gate reveal, Hero-synchronised opening and non-blocking video readiness
 
 ## Current implementation files
 
@@ -47,6 +48,21 @@ Primary branch:
 4. Build a richer Catalogue detail / browsing experience using the real catalogue page sequences.
 5. Continue replacing generic/legacy media with verified Profils Sports project imagery when available.
 6. Evolve the current single-page prototype toward the final site information architecture.
+
+## Deferred audit recommendations — 2026-09-04
+
+Keep these items in the roadmap, but do not mix them into focused visual iterations unless requested:
+
+- restore pointer interaction on the desktop Hero CTA inside the shared transition
+- make direct section anchors reliable after dynamic Hero / manifesto recomposition
+- complete and harden FR / EN translation, including runtime-injected content
+- add keyboard focus styles, a skip link and robust mobile-menu focus handling
+- make the custom cursor fallback safe even if JavaScript fails to initialise
+- optimise and durably host the heavy external media assets
+- suspend continuous cursor, SVG and WebGL animation loops when off-screen
+- turn solution-panel arrows into real navigation and catalogue links into a full browsing experience
+- replace prototype SEO metadata and add favicon, canonical, social metadata, legal pages and a branded 404
+- remove the duplication between `repo-data.json` and hardcoded page content
 
 ## Proposed future page architecture
 
