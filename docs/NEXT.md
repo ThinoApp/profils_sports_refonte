@@ -40,6 +40,7 @@ Primary branch:
 - decluttered the Hero into a title-led editorial composition with one concise project brief and a genuinely clickable project-start action, while preserving the post-preloader cursor reveal geometry unchanged
 - replaced the rejected liquid Method reveal with a precise hover + drag project/engineering split: a signal-yellow divider directly compares the photo with stage-specific technical drawings and keeps the original static fallback
 - moved the Method tracer from drag to Method-row hover/focus: each row now redraws its technical geometry from a genuinely blank technical substrate, while drag remains dedicated to the photo ↔ engineering split
+- clarified the Method information hierarchy: the five-step list now carries the explanation and expands only the active row, while the technical face is reduced to a quiet grid, split comparison and cursor-drawn figure
 - replaced direct catalogue-page links with a full-screen 3D ribbon viewer calibrated from the supplied motion reference, using all 102 authentic catalogue pages, inertial wheel/drag navigation and a reduced-motion fallback
 
 ## Current implementation files
