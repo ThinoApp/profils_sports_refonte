@@ -394,6 +394,29 @@ The previous Hero combined video, monumental type, stadium drawing, tagline, rep
 
 ---
 
+## 2026-09-04 — Method becomes a liquid engineering inspection surface
+
+Decision:
+
+Adapt the supplied NOTHIN liquid interaction specifically to the `#approach` Method visual as an inspection metaphor rather than a site-wide decorative effect.
+
+Implementation:
+
+- the existing project photo remains the visible surface
+- a localized transparent Three.js canvas reveals an engineering blueprint only under a viscous SDF membrane driven by the pointer
+- the liquid head uses damped spring motion; deposited trail geometry retracts locally instead of being pulled back toward the cursor
+- a restrained Profils Sports signal-yellow meniscus marks the liquid boundary without a glow treatment
+- each of the five existing Method rows changes the hidden blueprint content and geometry using verified vocabulary only
+- the original blueprint remains unchanged as fallback when WebGL, a fine pointer, desktop layout or motion support is unavailable
+- the renderer is scoped to the Method media, and its RAF loop suspends when off-screen or idle after the liquid trail has expired
+- no touch-specific liquid simulation is enabled; mobile keeps the static authored experience
+
+Rationale:
+
+The reference effect is strongest when interpreted as “revealing what exists beneath the surface.” In the Method section this maps directly to Profils Sports’ positioning: the finished sports environment remains visible while the pointer exposes the engineering, feasibility, delivery and maintenance systems beneath it. Restricting the effect to one chapter preserves the hierarchy of the preloader, Hero, Solutions carousel and Catalogue interactions.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
