@@ -11,6 +11,57 @@
 
   if (!hero || !manifesto) return;
 
+  // ---------------------------------------------------------------------------
+  // Hero editorial compaction. Keep the title DOM completely intact because the
+  // pre-loader measures `.hero-title .hero-line b` at runtime for its cursor sweep.
+  // Only secondary content and decorative layers are simplified here.
+  // ---------------------------------------------------------------------------
+  hero.classList.add('hero--editorial');
+
+  if (!document.querySelector('link[data-hero-editorial]')) {
+    const editorialStyles = document.createElement('link');
+    editorialStyles.rel = 'stylesheet';
+    editorialStyles.href = 'hero-editorial.css?v=20260904-hero1';
+    editorialStyles.dataset.heroEditorial = '';
+    document.head.appendChild(editorialStyles);
+  }
+
+  const heroTagline = hero.querySelector('.hero-tagline');
+  if (heroTagline) {
+    heroTagline.innerHTML = `
+      <span>SPORTING EXCELLENCE</span>
+      <span data-fr="Design & Construction" data-en="Design & Construction">DESIGN & CONSTRUCTION</span>
+    `;
+  }
+
+  const heroBottom = hero.querySelector('.hero-bottom');
+  if (heroBottom) {
+    heroBottom.innerHTML = `
+      <div class="hero-brief">
+        <span class="hero-brief__eyebrow" data-fr="De la faisabilité à l'exploitation" data-en="From feasibility to operations">DE LA FAISABILITÉ À L'EXPLOITATION</span>
+        <p data-fr="Conception, ingénierie, installation et maintenance d'infrastructures sportives." data-en="Design, engineering, installation and maintenance of sports infrastructure.">Conception, ingénierie, installation et maintenance d'infrastructures sportives.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="hero-command" href="#contact">
+          <span><small data-fr="Démarrer" data-en="Start">DÉMARRER</small><strong data-fr="Cadrer le projet" data-en="Frame the project">CADRER LE PROJET</strong></span>
+          <b aria-hidden="true">↗</b>
+        </a>
+        <a class="hero-solutions-link" href="#solutions" data-fr="Voir les solutions" data-en="View solutions">VOIR LES SOLUTIONS <span aria-hidden="true">↓</span></a>
+      </div>
+    `;
+
+    heroBottom.querySelectorAll('a').forEach(link => {
+      link.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      link.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+  }
+
+  // These elements were competing with the video, title and action hierarchy.
+  // Technical drawing language returns intentionally during the scroll transition.
+  hero.querySelector('.stadium-plan')?.remove();
+  hero.querySelector('.hero-coordinate')?.remove();
+  hero.querySelector('.hero-proof')?.remove();
+
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const desktop = matchMedia('(min-width: 900px)').matches;
   if (reduced || !desktop) return;
