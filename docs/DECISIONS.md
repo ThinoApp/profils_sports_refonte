@@ -464,6 +464,30 @@ The split comparison already communicates project versus engineering. Replaying 
 
 ---
 
+## 2026-09-04 — Method tracer is hover-driven and geometry starts blank
+
+Decision:
+
+Trigger the Method technical drawing animation from each Method list item rather than from the comparison drag gesture, and remove the pre-drawn technical figure before animation.
+
+Implementation:
+
+- entering or focusing any of the five Method rows resets and starts that row's tracer immediately
+- re-entering the currently active row also replays its drawing from zero
+- switching quickly between rows cancels the previous tracer and starts the new geometry cleanly
+- the engineering canvas keeps only its grid, frame, metadata and verified labels before the animation; the main field/structure/flow/delivery/maintenance figure is no longer painted underneath
+- the signal-yellow SVG tracer is therefore the only source of the primary technical geometry on enhanced desktop
+- completed geometry remains visible after the drawing pass until another Method is activated or the view is reset
+- dragging continues to control only the photo ↔ engineering split and no longer starts, stops or resets the tracer
+- keyboard focus mirrors hover for a usable non-pointer path
+- mobile and `prefers-reduced-motion` retain the original static blueprint fallback
+
+Rationale:
+
+The Method list itself is the semantic control for choosing a project phase, so the construction animation should respond to that choice directly. Removing the pre-drawn figure makes the tracer feel causal: the technical form genuinely appears because it is being constructed rather than being highlighted over an already finished drawing.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
