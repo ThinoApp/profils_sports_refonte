@@ -40,6 +40,7 @@ Primary branch:
 - decluttered the Hero into a title-led editorial composition with one concise project brief and a genuinely clickable project-start action, while preserving the post-preloader cursor reveal geometry unchanged
 - replaced the rejected liquid Method reveal with a precise hover + drag project/engineering split: a signal-yellow divider directly compares the photo with stage-specific technical drawings and keeps the original static fallback
 - moved the Method tracer from drag to Method-row hover/focus: each row now redraws its technical geometry from a genuinely blank technical substrate, while drag remains dedicated to the photo ↔ engineering split
+- replaced direct catalogue-page links with a full-screen 3D ribbon viewer calibrated from the supplied motion reference, using all 102 authentic catalogue pages, inertial wheel/drag navigation and a reduced-motion fallback
 
 ## Current implementation files
 
@@ -53,9 +54,8 @@ Primary branch:
 1. Validate the directional cursor visually against the reference video on the live GitHub Pages build.
 2. Polish responsive behavior, especially the horizontal carousel and large typography on tablet/mobile.
 3. Build a proper Project / Reference page template ready for real verified projects.
-4. Build a richer Catalogue detail / browsing experience using the real catalogue page sequences.
-5. Continue replacing generic/legacy media with verified Profils Sports project imagery when available.
-6. Evolve the current single-page prototype toward the final site information architecture.
+4. Continue replacing generic/legacy media with verified Profils Sports project imagery when available.
+5. Evolve the current single-page prototype toward the final site information architecture.
 
 ## Deferred audit recommendations — 2026-09-04
 
@@ -116,6 +116,8 @@ A future production hardening step should decide whether to:
 - copy approved assets into the refonte repository, or
 - move them to a durable CDN / asset host.
 
+The 102 pages used by the catalogue ribbon are now optimized WebP derivatives stored locally under `assets/catalogue-ribbon/`; they no longer depend on the legacy domain at runtime.
+
 ### Data quality
 
 Do not reuse obvious demo data from legacy pages such as fictional references, partners, awards, budgets or satisfaction metrics.
@@ -130,6 +132,12 @@ Desktop fine-pointer users get a floating WebGL preview while hovering Fitness, 
 The current tuning is based on the written reverse-engineering specification only. Exact size, offset, particle density, scatter radius, duration and easing still need frame-by-frame calibration once the specific reference video is available.
 
 The original static catalogue preview is intentionally preserved as the fallback.
+
+### Catalogue detail ribbon
+
+Clicking any of the four catalogue rows opens a full-screen WebGL ribbon built from the authentic page sequence. The closed Catmull-Rom trajectory, perspective depth and inertial wheel/drag motion reproduce the supplied reference while the page pool remains virtualized to 13 desktop planes or 9 mobile planes.
+
+Keyboard arrows and Page Up/Down move the ribbon, Escape closes it, and the current foreground page can be opened directly. Reduced-motion or unavailable-WebGL environments receive a horizontally scrollable static page rail with the same local assets.
 
 ## Do not change without discussion
 

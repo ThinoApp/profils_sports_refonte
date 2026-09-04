@@ -488,6 +488,30 @@ The Method list itself is the semantic control for choosing a project phase, so 
 
 ---
 
+## 2026-09-04 — Catalogue details use a virtualized 3D page ribbon
+
+Decision:
+
+Open each catalogue as a full-screen, reference-calibrated 3D ribbon instead of sending the visitor directly to a single catalogue image.
+
+Implementation:
+
+- the supplied 25-second motion reference is translated into a closed Catmull-Rom spline with real perspective depth, tangent page orientation and inertial movement
+- Fitness, Padel, CSP Pro and Canopy School use all 102 verified page images from the authentic catalogue source
+- local 900px WebP derivatives keep the complete sequence deployable on static GitHub Pages at approximately 3.7 MB total
+- only 13 desktop or 9 mobile page planes exist in WebGL at once; textures are loaded lazily, recycled and evicted outside the active neighbourhood
+- mouse wheel, trackpad, horizontal drag/touch and keyboard arrows drive the same damped motion model
+- the monumental two-line catalogue title remains a fixed editorial layer behind the ribbon and separates only during the distant orbit phase
+- normal row clicks open the viewer; modified clicks preserve the original external-link behavior
+- the directional global cursor remains above the viewer and its native fallback is not overridden
+- reduced-motion and unavailable-WebGL environments receive a horizontally scrollable image rail with live page metadata
+
+Rationale:
+
+The earlier MVP had the right basic spline idea but treated the experience as a fixed 12-project demo, started too low and flat, and could not scale to Fitness's 74 real pages. Virtualizing a small plane pool preserves the depth and continuous movement of the reference without loading the entire catalogue into GPU memory.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
