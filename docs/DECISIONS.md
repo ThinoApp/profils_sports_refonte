@@ -563,6 +563,30 @@ The reveal gives long editorial chapters a clearer arrival and reinforces the si
 
 ---
 
+## 2026-09-05 — Extend construction gestures across the existing site
+
+Decision:
+
+Strengthen motion throughout the V3 composition, with the Solutions rail and catalogue helix as the main interaction improvements. Preserve the existing typography, palette, verified content and opening choreography.
+
+Implementation:
+
+- one owner for horizontal translation, measured from panel layout rather than transformed scroll bounds; exponential time-based following gives controlled inertia and stops at rest
+- subtle counter-motion in real solution photos, a front-panel emphasis and eight keyboard-accessible, bilingual chapter controls
+- catalogue opening/closing masks originate at the selected row; page surfaces arrive together and textures crossfade into them
+- the enlarged front page pushes adjacent angular positions apart to eliminate surface intersection artifacts while retaining the continuous helix
+- previous/next controls, wheel, drag and keyboard share the same page state; static fallback controls also update real page selection
+- the visual viewport defines the overlay and renderer size on mobile, keeping Close and navigation in view
+- settled or background ribbon render loops sleep; new texture requests use priority fetch/bitmap decode instead of competing with pending remote Hero imagery
+- chapter rows and separators arrive in short sequences, Method imagery is uncovered, and Contact's yellow pen draws its geometry with a continuous curved transfer between strokes
+- reduced-motion bypasses the added choreography, focus returns to the catalogue source row, and translations preserve Contact's two-color composition
+
+Validation:
+
+Chromium browser checks cover first/last/reverse Solutions navigation, real WebGL textures, page controls, wheel, drag, keyboard, idle rendering, modal focus restoration, mobile visual viewport, FR/EN rebuilds and reduced-motion static pages. Visual captures confirm the original helix silhouette and new spacing. No framework or additional runtime library was introduced.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:

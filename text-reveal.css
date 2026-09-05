@@ -9,7 +9,7 @@
 
 [data-text-reveal] .text-reveal-line {
   display:block;
-  overflow:hidden;
+  overflow:visible;
   padding-bottom:.12em;
   margin-bottom:-.12em;
   backface-visibility:hidden;
@@ -19,6 +19,12 @@
 
 [data-text-reveal].text-reveal-complete .text-reveal-line {
   will-change:auto;
+}
+
+/* Tight editorial leading must still leave room for French accents. */
+[data-text-reveal] .text-reveal-line-mask {
+  overflow:visible !important;
+  clip-path:inset(-.18em 0 0);
 }
 
 @media (prefers-reduced-motion:reduce) {

@@ -1,6 +1,6 @@
 # Current State / Next — Profils Sports Refonte
 
-Last updated: 2026-09-04
+Last updated: 2026-09-05
 
 ## Current version
 
@@ -15,6 +15,10 @@ Primary branch:
 `main`
 
 ## Recently completed
+
+- coordinated site-wide motion around construction and wayfinding: the Solutions rail now has frame-rate-independent easing, measured photo parallax and eight accessible chapter controls; Catalogue opens from its selected row and returns to it; chapter rows, media masks and the Contact drawing have authored entrance sequences
+- corrected ribbon page intersections around the enlarged front page, added previous/next controls to both WebGL and static modes, suspended settled/hidden ribbon rendering, and anchored its controls to the visual viewport on mobile
+- prioritized local catalogue texture fetch/decode independently of pending remote media, preserved Contact's signal-yellow typography after FR/EN switches, and allowed French accents above the text-reveal masks
 
 - moved the active redesign workflow to `ThinoApp/profils_sports_refonte`
 - configured GitHub Pages deployment through GitHub Actions
@@ -148,6 +152,14 @@ Wheel, trackpad, vertical/horizontal drag, touch and keyboard all advance one sh
 The primary headings and a limited set of editorial summaries reveal line by line through real text masks when they enter the viewport. The Hero and manifesto remain excluded because their motion already belongs to the pre-loader and shared-media sequence.
 
 GSAP 3.15.0, ScrollTrigger and SplitText are vendored locally. Line wrapping is recalculated after responsive layout changes and after every FR / EN switch. If the motion libraries are unavailable, when printing, or when `prefers-reduced-motion` is active, the original semantic text remains immediately visible.
+
+### Site-wide motion — September 5
+
+`site-motion.js` / `site-motion.css` enhance the existing composition. The Solutions track has one motion owner selected through `data-motion-track`; `script.js` keeps the baseline when that enhancement is absent. Its travel comes from untransformed panel geometry and real viewport width, including trailing padding. Eight numbered controls navigate the actual scroll positions and retain a vertical reading flow on mobile/reduced motion.
+
+Catalogue/Client/Performance rows reveal with drawn separators, Method media enters through a measured mask, discipline icons arrive in sequence, and a yellow pen draws Contact's circle and axis with a curved pen-up transfer. The approved pre-loader, Hero title and Hero/manifesto choreography retain their existing ownership.
+
+The ribbon keeps its analytic helix. Extra spacing around the enlarged front page prevents intersecting surfaces. Drag uses a faster response than wheel input, with stale drag momentum discarded. Rendering sleeps when settled and wakes on navigation, pointer motion, viewport changes or texture arrival; hidden tabs do not render. Local textures use priority fetch and bitmap decoding with a TextureLoader compatibility path. Desktop/touch, FR/EN, keyboard navigation, reverse rail navigation, idle rendering, focus restoration and reduced-motion static controls were exercised in Chromium. Physical Safari/iOS smoothness still merits user validation; external legacy media remains a separate dependency.
 
 ## Do not change without discussion
 

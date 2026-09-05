@@ -57,7 +57,7 @@
       heroTitle.style.transform = `translate3d(${p * -2.5}vw,${p * 3.8}vh,0) scale(${1 - p * .045})`;
     }
 
-    if (horizontal && horizontalTrack && innerWidth > 720 && !reduced) {
+    if (horizontal && horizontalTrack && !horizontal.hasAttribute('data-motion-track') && innerWidth > 720 && !reduced) {
       const r = horizontal.getBoundingClientRect();
       const scrollable = horizontal.offsetHeight - innerHeight;
       const local = clamp(-r.top, 0, scrollable);

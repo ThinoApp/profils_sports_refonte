@@ -19,7 +19,7 @@
     cardGap: 1.04,
     surfaceColumns: 32,
     surfaceRows: 4,
-    follow: 4.1,
+    follow: 7.2,
     wheelFactor: .00235,
     dragFactor: .0048,
     dragMomentum: 150,
@@ -70,6 +70,10 @@
       <div class="catalogue-ribbon__instruction" aria-hidden="true">
         <span data-ribbon-instruction>FAITES DÉFILER</span><span class="catalogue-ribbon__meter"><i data-ribbon-meter></i></span><span>↕</span>
       </div>
+      <div class="catalogue-ribbon__navigation">
+        <button type="button" data-ribbon-prev aria-label="Page précédente">←</button>
+        <button type="button" data-ribbon-next aria-label="Page suivante">→</button>
+      </div>
       <a class="catalogue-ribbon__page-link" data-ribbon-page-link href="#" target="_blank" rel="noreferrer">OUVRIR LA PAGE <span>↗</span></a>
     </footer>
     <div class="catalogue-ribbon__loading" role="status"><i></i><span>CHARGEMENT DU RUBAN</span></div>
@@ -88,6 +92,8 @@
   const meter = overlay.querySelector('[data-ribbon-meter]');
   const pageLink = overlay.querySelector('[data-ribbon-page-link]');
   const instruction = overlay.querySelector('[data-ribbon-instruction]');
+  const previousButton = overlay.querySelector('[data-ribbon-prev]');
+  const nextButton = overlay.querySelector('[data-ribbon-next]');
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const mod = (value, length) => ((value % length) + length) % length;
@@ -130,6 +136,37 @@
   let dragLastTime = 0;
   let dragVelocity = 0;
   let snapAt = 0;
+  let openTime = 0;
+  let closeTimer = 0;
+  let pointerX = 0;
+  let pointerY = 0;
+  let cameraX = 0;
+  let cameraY = 0;
+  let textureFading = false;
+  let backgroundState = [];
+
+  const viewport = () => ({
+    width:window.visualViewport?.width || document.documentElement.clientWidth,
+    height:window.visualViewport?.height || innerHeight,
+    top:window.visualViewport?.offsetTop || 0,
+    left:window.visualViewport?.offsetLeft || 0
+  });
+  const syncViewport = () => {
+    const box = viewport();
+    Object.entries(box).forEach(([key, value]) => overlay.style.setProperty(`--ribbon-${key}`, `${value}px`));
+    return box;
+  };
+  const setOrigin = row => {
+    const box = syncViewport();
+    const source = row.getBoundingClientRect();
+    overlay.style.setProperty('--ribbon-origin', `${clamp(source.top - box.top, 0, box.height)}px ${Math.max(0, box.width - source.right + box.left)}px ${Math.max(0, box.height - source.bottom + box.top)}px ${Math.max(0, source.left - box.left)}px`);
+  };
+
+  function requestRender() {
+    if (isOpen && renderer && !document.hidden && !animationFrame) {
+      animationFrame = requestAnimationFrame(render);
+    }
+  }
 
   const supportsWebGL = () => {
     if (!window.THREE || reduced) return false;
@@ -236,6 +273,7 @@
     cards.forEach(mesh => {
       mesh.material.uniforms.uMap.value = placeholderTexture;
       mesh.material.uniforms.uHasTexture.value = 0;
+      mesh.userData.textureReady = false;
       mesh.userData.absolutePage = Number.NaN;
     });
   };
@@ -245,12 +283,24 @@
     if (textureCache.has(pageIndex)) return Promise.resolve(textureCache.get(pageIndex));
     if (texturePending.has(pageIndex)) return texturePending.get(pageIndex);
     const requestGeneration = generation;
-    const request = new Promise(resolve => {
-      textureLoader.load(pageUrl(activeKey, pageIndex), texture => {
+    // Fetch local pages explicitly: detached ImageLoader requests may be held
+    // behind the legacy hero media while the document is still loading.
+    const source = typeof createImageBitmap === 'function'
+      ? fetch(pageUrl(activeKey, pageIndex), { priority:'high' })
+        .then(response => { if (!response.ok) throw new Error('Catalogue page unavailable'); return response.blob(); })
+        .then(blob => createImageBitmap(blob, { imageOrientation:'flipY' }))
+        .then(bitmap => {
+          const texture = new THREE.Texture(bitmap);
+          texture.flipY = false;
+          texture.needsUpdate = true;
+          texture.addEventListener('dispose', () => bitmap.close());
+          return texture;
+        })
+      : new Promise((resolve, reject) => textureLoader.load(pageUrl(activeKey, pageIndex), resolve, undefined, reject));
+    const request = source.then(texture => {
         if (requestGeneration !== generation) {
           texture.dispose();
-          resolve(null);
-          return;
+          return null;
         }
         texture.colorSpace = THREE.SRGBColorSpace;
         texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
@@ -259,11 +309,10 @@
         texture.magFilter = THREE.LinearFilter;
         textureCache.set(pageIndex, texture);
         texturePending.delete(pageIndex);
-        resolve(texture);
-      }, undefined, () => {
-        texturePending.delete(pageIndex);
-        resolve(null);
-      });
+        return texture;
+    }).catch(() => {
+        if (requestGeneration === generation) texturePending.delete(pageIndex);
+        return null;
     });
     texturePending.set(pageIndex, request);
     return request;
@@ -275,15 +324,18 @@
     mesh.userData.absolutePage = absolutePage;
     mesh.userData.pageIndex = pageIndex;
     const cached = textureCache.get(pageIndex);
+    mesh.userData.textureReady = Boolean(cached);
     mesh.material.uniforms.uMap.value = cached || placeholderTexture;
     mesh.material.uniforms.uHasTexture.value = cached ? 1 : 0;
     if (cached) return;
     loadTexture(pageIndex).then(texture => {
       if (!texture || mesh.userData.absolutePage !== absolutePage) return;
       mesh.material.uniforms.uMap.value = texture;
-      mesh.material.uniforms.uHasTexture.value = 1;
+      mesh.material.uniforms.uHasTexture.value = 0;
+      mesh.userData.textureReady = true;
       loadedVisibleCount += 1;
       if (loadedVisibleCount >= Math.min(5, cards.length)) overlay.classList.add('is-ready');
+      requestRender();
     });
   };
 
@@ -301,7 +353,10 @@
   const deformCard = (mesh, relativePage, metrics) => {
     const activeInfluence = Math.exp(-Math.pow(relativePage / .72, 2));
     const surfaceScale = 1 + activeInfluence * CONFIG.activeScale;
-    const centreAngle = relativePage * metrics.spacingAngle;
+    // Make physical room around the enlarged front page: scaling its width
+    // alone makes neighbouring coplanar surfaces intersect and flicker.
+    const focusSpacing = metrics.angularSpan * CONFIG.activeScale * .62 * Math.tanh(relativePage * 1.8);
+    const centreAngle = relativePage * metrics.spacingAngle + focusSpacing;
     const depthInfluence = (Math.cos(centreAngle) + 1) * .5;
     const position = mesh.geometry.attributes.position;
     const vertices = position.array;
@@ -339,18 +394,24 @@
 
   const updateMeta = () => setActivePage(Math.round(currentPosition));
 
-  const updateCards = () => {
+  const updateCards = (dt = .016) => {
     if (!cards.length) return;
     const slotCount = cards.length;
     const before = Math.floor(slotCount / 2);
     const firstAbsolutePage = Math.round(currentPosition) - before;
     const metrics = helixMetrics();
     let cardIndex = 0;
+    textureFading = false;
     for (let absolutePage = firstAbsolutePage; absolutePage < firstAbsolutePage + slotCount; absolutePage += 1) {
       const mesh = cards[mod(absolutePage, slotCount)];
       assignPage(mesh, absolutePage);
       const relative = absolutePage - currentPosition;
       deformCard(mesh, relative, metrics);
+      if (mesh.userData.textureReady && mesh.material.uniforms.uHasTexture.value < 1) {
+        const uniform = mesh.material.uniforms.uHasTexture;
+        uniform.value = Math.min(1, uniform.value + dt * 4);
+        textureFading = uniform.value < 1 || textureFading;
+      }
       mesh.renderOrder = cardIndex;
       cardIndex += 1;
     }
@@ -372,44 +433,60 @@
   };
 
   const render = time => {
-    if (!isOpen || !renderer) return;
+    animationFrame = 0;
+    if (!isOpen || !renderer || document.hidden) { lastFrame = 0; return; }
     const dt = lastFrame ? Math.min(.05, Math.max(.001, (time - lastFrame) / 1000)) : .016;
     lastFrame = time;
     if (!dragging && snapAt && time >= snapAt) {
       targetPosition = Math.round(targetPosition);
       snapAt = 0;
     }
-    const alpha = 1 - Math.exp(-CONFIG.follow * dt);
+    const alpha = 1 - Math.exp(-(dragging ? 18 : CONFIG.follow) * dt);
     currentPosition += (targetPosition - currentPosition) * alpha;
-    updateCards();
+    const settled = Math.abs(targetPosition - currentPosition) < .0005;
+    if (settled) currentPosition = targetPosition;
+    const opening = clamp((time - openTime) / 1100, 0, 1);
+    const arrival = 1 - Math.pow(1 - opening, 3);
+    group.scale.setScalar(.88 + arrival * .12);
+    cameraX += (pointerX - cameraX) * (1 - Math.exp(-4 * dt));
+    cameraY += (pointerY - cameraY) * (1 - Math.exp(-4 * dt));
+    if (Math.abs(pointerX - cameraX) < .0001) cameraX = pointerX;
+    if (Math.abs(pointerY - cameraY) < .0001) cameraY = pointerY;
+    group.rotation.y = cameraX * .035;
+    group.rotation.x = cameraY * .022;
+    updateCards(dt);
     renderer.render(scene, camera);
     frameCost += (dt - frameCost) * .08;
     frameProbe += 1;
     if (frameProbe >= 45 && frameCost > .025 && renderDpr > CONFIG.minDpr) {
       renderDpr = Math.max(CONFIG.minDpr, renderDpr - .15);
       renderer.setPixelRatio(renderDpr);
-      renderer.setSize(innerWidth, innerHeight, false);
+      const box = viewport();
+      renderer.setSize(box.width, box.height, false);
       frameCost = .016;
       frameProbe = 0;
     }
-    if (Math.abs(targetPosition - currentPosition) < .001) evictDistantTextures();
-    animationFrame = requestAnimationFrame(render);
+    if (settled) evictDistantTextures();
+    if (!settled || opening < 1 || snapAt || textureFading || cameraX !== pointerX || cameraY !== pointerY) requestRender();
+    else lastFrame = 0;
   };
 
   function resize() {
+    const box = syncViewport();
     if (!renderer || !camera) return;
     const mobile = innerWidth < 760;
-    camera.aspect = innerWidth / innerHeight;
+    camera.aspect = box.width / box.height;
     camera.fov = mobile ? 48 : CONFIG.cameraFov;
     camera.position.z = mobile ? CONFIG.cameraZ + .75 : CONFIG.cameraZ;
     camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight, false);
+    renderer.setSize(box.width, box.height, false);
     renderDpr = Math.min(devicePixelRatio || 1, CONFIG.maxDpr);
     renderer.setPixelRatio(renderDpr);
     frameCost = .016;
     frameProbe = 0;
     const desiredSlots = mobile ? CONFIG.mobileSlots : CONFIG.desktopSlots;
     if (cards.length && cards.length !== desiredSlots) createCards();
+    requestRender();
   }
 
   const buildFallback = () => {
@@ -437,9 +514,14 @@
     pageLink.firstChild.textContent = english ? 'OPEN PAGE ' : 'OUVRIR LA PAGE ';
     closeButton.firstChild.textContent = english ? 'CLOSE  ' : 'FERMER  ';
     closeButton.setAttribute('aria-label', english ? 'Close catalogue' : 'Fermer le catalogue');
+    previousButton.setAttribute('aria-label', english ? 'Previous page' : 'Page précédente');
+    nextButton.setAttribute('aria-label', english ? 'Next page' : 'Page suivante');
+    overlay.querySelector('.catalogue-ribbon__loading span').textContent = english ? 'LOADING THE CATALOGUE' : 'CHARGEMENT DU CATALOGUE';
   };
 
   const open = row => {
+    clearTimeout(closeTimer);
+    setOrigin(row);
     activeKey = CATALOGUES[row.dataset.catalogue] ? row.dataset.catalogue : 'fitness';
     activeCatalogue = CATALOGUES[activeKey];
     previousFocus = row;
@@ -448,6 +530,8 @@
     snapAt = 0;
     frontPageIndex = -1;
     loadedVisibleCount = 0;
+    openTime = performance.now();
+    pointerX = pointerY = cameraX = cameraY = 0;
     disposeTextures();
     updateCopy();
     overlay.hidden = false;
@@ -455,13 +539,19 @@
     overlay.classList.remove('is-closing', 'is-ready', 'is-fallback');
     document.body.classList.add('catalogue-ribbon-open');
     isOpen = true;
+    if (!backgroundState.length) {
+      backgroundState = [...document.body.children].filter(element => element !== overlay && element.tagName !== 'SCRIPT')
+        .map(element => ({ element, inert:element.inert }));
+      backgroundState.forEach(({ element }) => { element.inert = true; });
+    }
 
     if (initThree()) {
       updateCards();
       renderer.render(scene, camera);
       lastFrame = 0;
       cancelAnimationFrame(animationFrame);
-      animationFrame = requestAnimationFrame(render);
+      animationFrame = 0;
+      requestRender();
     } else {
       overlay.classList.add('is-fallback', 'is-ready');
       buildFallback();
@@ -471,8 +561,9 @@
       });
     }
 
-    requestAnimationFrame(() => overlay.classList.add('is-open'));
-    setTimeout(() => closeButton.focus({ preventScroll: true }), 120);
+    void overlay.offsetWidth;
+    requestAnimationFrame(() => { if (isOpen) overlay.classList.add('is-open'); });
+    setTimeout(() => { if (isOpen) closeButton.focus({ preventScroll: true }); }, 120);
   };
 
   const close = () => {
@@ -480,12 +571,17 @@
     isOpen = false;
     dragging = false;
     cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
     cancelAnimationFrame(fallbackScrollFrame);
     overlay.classList.add('is-closing');
     overlay.classList.remove('is-open');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('catalogue-ribbon-open');
-    setTimeout(() => {
+    if (previousFocus) setOrigin(previousFocus);
+    backgroundState.forEach(({ element, inert }) => { element.inert = inert; });
+    backgroundState = [];
+    previousFocus?.focus({ preventScroll:true });
+    closeTimer = setTimeout(() => {
       if (isOpen) return;
       overlay.hidden = true;
       overlay.classList.remove('is-closing');
@@ -502,6 +598,22 @@
   });
 
   closeButton.addEventListener('click', close);
+  const step = direction => {
+    if (overlay.classList.contains('is-fallback')) {
+      const index = mod(frontPageIndex + direction, activeCatalogue.pages);
+      const image = fallback.querySelectorAll('img')[index];
+      if (image) {
+        fallback.scrollTo({ left:image.offsetLeft - (fallback.clientWidth - image.offsetWidth) / 2, behavior:reduced ? 'instant' : 'smooth' });
+        setActivePage(index);
+      }
+    } else {
+      targetPosition = Math.round(targetPosition) + direction;
+      snapAt = 0;
+      requestRender();
+    }
+  };
+  previousButton.addEventListener('click', () => step(-1));
+  nextButton.addEventListener('click', () => step(1));
   overlay.addEventListener('wheel', event => {
     if (!isOpen) return;
     event.preventDefault();
@@ -513,6 +625,7 @@
     const deltaScale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1;
     targetPosition += clamp(delta * deltaScale * CONFIG.wheelFactor, -1.15, 1.15);
     snapAt = performance.now() + CONFIG.snapDelay;
+    requestRender();
   }, { passive: false });
 
   fallback.addEventListener('scroll', () => {
@@ -533,7 +646,7 @@
   }, { passive: true });
 
   canvas.addEventListener('pointerdown', event => {
-    if (!isOpen) return;
+    if (!isOpen || event.button !== 0) return;
     dragging = true;
     dragStartX = event.clientX;
     dragStartY = event.clientY;
@@ -544,8 +657,15 @@
     dragVelocity = 0;
     snapAt = 0;
     canvas.setPointerCapture?.(event.pointerId);
+    overlay.classList.add('is-dragging');
+    requestRender();
   });
   canvas.addEventListener('pointermove', event => {
+    if (isOpen && event.pointerType === 'mouse' && innerWidth >= 760) {
+      pointerX = (event.clientX / innerWidth - .5) * 2;
+      pointerY = (event.clientY / innerHeight - .5) * 2;
+      requestRender();
+    }
     if (!dragging) return;
     const elapsed = Math.max(8, event.timeStamp - dragLastTime);
     const delta = (dragLastY - event.clientY) + (dragLastX - event.clientX) * .55;
@@ -556,14 +676,19 @@
     dragLastX = event.clientX;
     dragLastY = event.clientY;
     dragLastTime = event.timeStamp;
+    requestRender();
   });
+  canvas.addEventListener('pointerleave', () => { pointerX = pointerY = 0; requestRender(); });
   const endDrag = event => {
     if (!dragging) return;
     dragging = false;
+    overlay.classList.remove('is-dragging');
+    if (performance.now() - dragLastTime > 100 || event.type === 'pointercancel') dragVelocity = 0;
     targetPosition += clamp(dragVelocity * CONFIG.dragMomentum, -1.65, 1.65);
     dragVelocity = 0;
     snapAt = performance.now() + CONFIG.snapDelay;
     canvas.releasePointerCapture?.(event.pointerId);
+    requestRender();
   };
   canvas.addEventListener('pointerup', endDrag);
   canvas.addEventListener('pointercancel', endDrag);
@@ -575,14 +700,12 @@
       close();
     } else if (event.key === 'ArrowRight' || event.key === 'ArrowDown' || event.key === 'PageDown') {
       event.preventDefault();
-      targetPosition = Math.round(targetPosition) + 1;
-      snapAt = 0;
+      step(1);
     } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp' || event.key === 'PageUp') {
       event.preventDefault();
-      targetPosition = Math.round(targetPosition) - 1;
-      snapAt = 0;
+      step(-1);
     } else if (event.key === 'Tab') {
-      const focusables = [closeButton, pageLink];
+      const focusables = [closeButton, previousButton, nextButton, pageLink];
       const index = focusables.indexOf(document.activeElement);
       const nextIndex = event.shiftKey ? mod(index - 1, focusables.length) : mod(index + 1, focusables.length);
       event.preventDefault();
@@ -594,4 +717,12 @@
     resize();
     if (isOpen) updateCopy();
   }, { passive: true });
+  window.visualViewport?.addEventListener('resize', resize, { passive:true });
+  window.visualViewport?.addEventListener('scroll', syncViewport, { passive:true });
+  document.addEventListener('visibilitychange', () => {
+    cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+    lastFrame = 0;
+    if (!document.hidden) requestRender();
+  });
 })();
