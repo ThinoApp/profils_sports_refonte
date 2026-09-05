@@ -158,7 +158,7 @@
       });
       reveal(element);
     });
-    qa('.discipline-rail figure').forEach((element, index) => reveal(element, { delay:index * .055 }));
+    qa('.discipline-rail:not(.brand-emblem) figure').forEach((element, index) => reveal(element, { delay:index * .055 }));
     qa('.approach-row').forEach((element, index) => reveal(element, { delay:index * .035 }));
     qa('.catalogue-preview,.project-blueprint').forEach(element => {
       gsap.fromTo(element, { clipPath:'inset(0 0 100% 0)' }, {

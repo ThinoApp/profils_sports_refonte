@@ -1,0 +1,77 @@
+.brand-emblem { position:relative; isolation:isolate; scroll-margin-top:100px; }
+.brand-emblem [hidden] { display:none !important; }
+.brand-emblem[data-emblem-pending], .brand-emblem[data-emblem-ready] {
+  height:clamp(580px, 55vw, 820px); padding:0; overflow:hidden; background:#091521;
+}
+.brand-emblem__stage { position:absolute; inset:0; touch-action:pan-y; outline-offset:-7px; }
+.brand-emblem__stage:focus-visible { outline:1px solid #efe158; }
+.brand-emblem__canvas { display:block; width:100%; height:100%; opacity:0; transition:opacity .65s; }
+.brand-emblem[data-emblem-ready] .brand-emblem__canvas { opacity:1; }
+.brand-emblem__toolbar {
+  position:absolute; z-index:3; top:30px; left:var(--pad); right:var(--pad);
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+}
+.brand-emblem__toolbar p { margin:0; font-size:10px; font-weight:700; letter-spacing:.16em; color:#f1efe6; }
+.brand-emblem__controls { display:flex; gap:8px; }
+.brand-emblem__controls button {
+  display:grid; place-items:center; width:44px; height:44px; padding:0;
+  border:1px solid #f1efe633; border-radius:50%; background:#091521; color:#f1efe6;
+  font-size:18px; cursor:pointer; transition:color .2s,border-color .2s;
+}
+.brand-emblem__controls button:hover { color:#efe158; border-color:#efe158; }
+.brand-emblem__controls button:focus-visible, .brand-emblem__action:focus-visible {
+  outline:2px solid #efe158; outline-offset:5px;
+}
+.brand-emblem[data-emblem-ready] .discipline-rail__track {
+  position:absolute; inset:0; width:100%; min-height:0; display:block; pointer-events:none;
+}
+.brand-emblem[data-emblem-ready] figure {
+  position:absolute; top:0; left:0; width:140px; height:130px; padding:0; margin:0;
+  border:0; background:none; gap:9px; pointer-events:auto; transition:opacity .25s;
+  will-change:transform;
+}
+.brand-emblem[data-emblem-ready] figure:first-child { border:0; }
+.brand-emblem[data-emblem-ready] figure:hover { background:none; }
+.brand-emblem[data-emblem-ready] figure img {
+  width:84px; height:84px; filter:none; opacity:.72; transition:opacity .25s,transform .25s;
+}
+.brand-emblem[data-emblem-ready] figure[data-active] img { opacity:1; transform:scale(1.1); }
+.brand-emblem[data-emblem-ready] figure figcaption { color:#f1efe6; font-size:9px; }
+.brand-emblem[data-emblem-ready] figure[data-active] figcaption { color:#efe158; }
+.brand-emblem__node {
+  position:absolute; inset:0; border:0; padding:0; background:none; cursor:pointer;
+}
+.brand-emblem__node:focus-visible { outline:1px solid #efe158; outline-offset:5px; }
+.brand-emblem__bottom {
+  position:absolute; z-index:3; left:var(--pad); right:var(--pad); bottom:24px;
+  display:flex; justify-content:space-between; align-items:end; gap:20px; pointer-events:none;
+}
+.brand-emblem__bottom p {
+  max-width:190px; margin:0; font-size:9px; line-height:1.7; letter-spacing:.1em;
+  text-transform:uppercase; color:#f1efe699;
+}
+.brand-emblem__action {
+  padding:12px 0; border-bottom:1px solid #efe158; color:#efe158; background:#091521ed;
+  font-size:11px; font-weight:700; letter-spacing:.06em; pointer-events:auto;
+}
+@media (max-width:720px) {
+  .brand-emblem[data-emblem-pending], .brand-emblem[data-emblem-ready] { height:550px; }
+  .brand-emblem__toolbar { top:22px; gap:10px; }
+  .brand-emblem__toolbar p { max-width:135px; font-size:9px; line-height:1.6; }
+  .brand-emblem__controls { gap:5px; }
+  .brand-emblem[data-emblem-ready] figure { width:100px; height:105px; gap:6px; }
+  .brand-emblem[data-emblem-ready] figure img { width:64px; height:64px; }
+  .brand-emblem[data-emblem-ready] figure figcaption { font-size:7px; letter-spacing:.1em; }
+  .brand-emblem__bottom { bottom:18px; flex-direction:column; align-items:center; gap:8px; }
+  .brand-emblem__bottom p { max-width:none; font-size:8px; }
+  .brand-emblem__action { font-size:10px; padding:10px 4px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .brand-emblem__canvas, .brand-emblem figure, .brand-emblem figure img, .brand-emblem__controls button { transition:none !important; }
+}
+@media print {
+  .brand-emblem[data-emblem-ready], .brand-emblem[data-emblem-pending] { height:auto; }
+  .brand-emblem__stage, .brand-emblem__toolbar, .brand-emblem__bottom { display:none !important; }
+  .brand-emblem[data-emblem-ready] .discipline-rail__track { position:static; display:grid; grid-template-columns:repeat(4,1fr); }
+  .brand-emblem[data-emblem-ready] figure { position:static; transform:none !important; visibility:visible !important; }
+}

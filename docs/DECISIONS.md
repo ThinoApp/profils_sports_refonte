@@ -587,6 +587,29 @@ Chromium browser checks cover first/last/reverse Solutions navigation, real WebG
 
 ---
 
+## 2026-09-05 — The authentic logo becomes an openwork discipline rotor, not a new section
+
+Decision:
+
+Use a real Three.js version of the supplied Profils Sports logo in the existing discipline strip below the catalogues. The user explicitly rejected a raster 3D rendering, a simple circular plaque and a separate signature section. Preserve the rest of the page and its catalogue ribbon.
+
+Implementation:
+
+- derive bevelled, indexed solids from the original logo's yellow and charcoal contours, retaining letter counters and sports pictograms; use signal-yellow enamel and pale metal for dark-background contrast
+- retain open negative space: no cylinder, backing disk, face texture or generated logo image
+- use the legacy NosCatalogues rotor's eight positions and 45-degree navigation; project upright discipline controls around the same genuinely rotating 3D coordinate system
+- crop the large logo from the lower edge on desktop, with a mobile-specific composition in the same strip
+- offer slow interruptible rotation, previous/next, drag, keyboard and pause/resume; respect reduced motion and suspend work outside the visible interaction
+- preserve the original discipline order and explicit catalogue mappings from the legacy source, without copying unverified “soon” labels
+- keep the existing full-screen page ribbon and give the discipline CTA a proper opening origin and focus return
+- generate geometry in a worker, share the already vendored Three.js runtime and restore the original rail if enhancement fails
+
+Rationale:
+
+The purpose is a branded navigation mechanism, not a decorative coin or another full-page section. The logo itself supplies the moving geometry; the reference's cropped rotor and upright discipline icons supply the interaction model.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:

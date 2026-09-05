@@ -16,6 +16,7 @@ Primary branch:
 
 ## Recently completed
 
+- replaced the existing eight-discipline strip with a genuine Three.js openwork logo rotor in the same location: the authentic logo and discipline orbit turn together, with upright icons, pause/resume, drag, keyboard and 45-degree navigation; no separate brand section was added
 - coordinated site-wide motion around construction and wayfinding: the Solutions rail now has frame-rate-independent easing, measured photo parallax and eight accessible chapter controls; Catalogue opens from its selected row and returns to it; chapter rows, media masks and the Contact drawing have authored entrance sequences
 - corrected ribbon page intersections around the enlarged front page, added previous/next controls to both WebGL and static modes, suspended settled/hidden ribbon rendering, and anchored its controls to the visual viewport on mobile
 - prioritized local catalogue texture fetch/decode independently of pending remote media, preserved Contact's signal-yellow typography after FR/EN switches, and allowed French accents above the text-reveal masks
@@ -170,6 +171,20 @@ The ribbon keeps its analytic helix. Extra spacing around the enlarged front pag
 - directional dart cursor concept
 - technical blueprint / engineering language
 - repository-backed content integrity rule
+
+### Three.js discipline rotor — September 5
+
+The requested placement is the existing `.discipline-rail` at the bottom of Catalogues, not a new section before Contact and not a redesign of the catalogue page ribbon. `brand-emblem.js`, `brand-emblem-worker.js` and `brand-emblem.css` enhance that rail only. The initial standalone medallion experiment was discarded before publication.
+
+The logo is real geometry: 138 contours with 71 holes traced from the user's original `image jaune.png`, extruded into four indexed relief meshes (73,910 vertices), with a smooth perimeter and no backing disk, logo texture or generated image. Original lettering, orientations and sports pictograms come from the authentic raster artwork; raster contours are simplified for web use. The original is preserved at `assets/brand/profils-sports-emblem-source.png`. `scripts/build-logo-geometry.mjs` regenerates the 97 KB contour asset with the original PNG and a tooling-only Playwright module path as arguments. The visitor only receives the contour JSON and the existing local Three.js runtime; triangulation runs in a short-lived worker.
+
+The rotation/navigation reproduces the legacy `src/pages/Accueil/NosCatalogues/NosCatalogues.tsx` mechanism: eight positions, 45-degree steps, a common rotor and upright icons. Here the icons are projected from actual world coordinates while the ajouré logo has physically lit bevels, thickness and subtle perspective. Desktop crops the large lower half as requested; mobile fits the logo and keeps controls outside its lettering. The eight authentic icon assets are now local.
+
+Catalogue mappings follow the legacy code: Fitness → Fitness, Padel → Padel, Soccer → Canopy School, Street Workout → CSP Pro. The action explicitly names the real catalogue. Other disciplines offer a contact email rather than invented “soon” availability. The original catalogue rows, particle preview, blueprint and page ribbon remain; the new action opens that same ribbon with its own transition origin and focus restoration.
+
+Slow autoplay can be paused; selecting, dragging or using the keyboard pauses it. Reduced-motion has no autoplay or eased rotation. Rendering suspends off-screen, in background tabs and behind the catalogue modal. Missing geometry, failed worker or lost WebGL restores the original eight-discipline strip. Existing site-wide figure reveals exclude the rotor to avoid competing transform owners.
+
+Chromium checks passed for true indexed geometry without a face texture/disk, real rotation, pause/idle sleep, stepping, drag, keyboard, FR/EN, catalogue opening/focus restoration, off-screen suspension, mobile touch controls, reduced motion and missing-geometry fallback. The broader Solutions/ribbon regression also passed without JavaScript exceptions. Validate the visual feel on physical Safari/iPhone; the pre-existing mobile page-width/anchor issues outside the rotor remain separate.
 
 ## Handoff instructions for a new conversation
 

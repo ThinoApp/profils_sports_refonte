@@ -519,10 +519,10 @@
     overlay.querySelector('.catalogue-ribbon__loading span').textContent = english ? 'LOADING THE CATALOGUE' : 'CHARGEMENT DU CATALOGUE';
   };
 
-  const open = row => {
+  const open = (row, key = row.dataset.catalogue) => {
     clearTimeout(closeTimer);
     setOrigin(row);
-    activeKey = CATALOGUES[row.dataset.catalogue] ? row.dataset.catalogue : 'fitness';
+    activeKey = CATALOGUES[key] ? key : 'fitness';
     activeCatalogue = CATALOGUES[activeKey];
     previousFocus = row;
     currentPosition = 0;
@@ -598,6 +598,13 @@
   });
 
   closeButton.addEventListener('click', close);
+  // The discipline rotor uses the same viewer and returns focus to its own CTA.
+  document.addEventListener('click', event => {
+    const source = event.target.closest('[data-catalogue-trigger]');
+    if (!source || !CATALOGUES[source.dataset.catalogueTrigger] || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    open(source, source.dataset.catalogueTrigger);
+  });
   const step = direction => {
     if (overlay.classList.contains('is-fallback')) {
       const index = mod(frontPageIndex + direction, activeCatalogue.pages);
