@@ -190,7 +190,9 @@
           alphaTest:.025, depthWrite:false, side:THREE.DoubleSide
         }));
         const detail = new THREE.Mesh(keep(new THREE.PlaneGeometry(4.4, 4.4)), detailMaterial);
-        detail.position.z = .116;
+        // ExtrudeGeometry's bevel extends past the nominal depth; keep the
+        // detail just above that front cap to avoid depth shimmer on edges.
+        detail.position.z = .145;
         detail.name = 'HD face detail — not the 3D base';
         emblem.add(detail);
       } catch (error) {
