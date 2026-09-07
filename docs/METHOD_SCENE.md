@@ -50,3 +50,5 @@ node scripts/check-method.mjs
 Variables optionnelles : `PLAYWRIGHT_MODULE` (module Playwright absolu), `CHROME_PATH`, `METHOD_URL` et `METHOD_CAPTURES`. Le test injecte uniquement dans son navigateur l'instrumentation de comptage des images et d'inspection de la scène ; aucun état de diagnostic global n'est exposé par le site.
 
 Couverture : les cinq étapes, interruption de l'assemblage, sources lumineuses, préférence d'éclairage conservée, clavier, FR/EN, pause au repos et derrière le catalogue, repli et restauration de contexte, mobile, mouvement réduit, WebGL absent et JavaScript désactivé. Le rendu et la fluidité sur Safari/iPhone physique restent à valider sur appareil.
+
+Résultat du 7 septembre : contrôles Chromium réussis sur ordinateur et mobile simulé. L'extinction termine exactement à zéro ; le retour vers le plan conserve la rotation courante avant de se recentrer ; une perte de contexte annule la transition en cours avant reconstruction. Les captures de vérification sont enregistrées dans le dossier temporaire indiqué par le script.

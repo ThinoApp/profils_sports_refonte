@@ -157,7 +157,7 @@
   listen(canvas,'webglcontextlost',e=>{e.preventDefault();fail();});
   listen(canvas,'webglcontextrestored',()=>{failed=false;loading=false;initialize();});
   function fail(){
-    stop();engine?.dispose();engine?.renderer.dispose();engine=null;loading=false;failed=true;
+    stop();transition=null;drag=null;engine?.dispose();engine?.renderer.dispose();engine=null;loading=false;failed=true;
     canvas.hidden=true;fallback.hidden=false;labels.forEach(l=>l.el.hidden=true);copy();
   }
   let modelPromise;
@@ -229,9 +229,10 @@
     }
     const follow=reduced.matches?1:1-Math.exp(-7*dt);
     yaw=mix(yaw,yawTarget,follow);if(Math.abs(yaw-yawTarget)>.0001)moving=true;
-    engine.root.rotation.y=active===0?0:yaw;
+    engine.root.rotation.y=yaw;
     const desiredNight=lightsOn&&active!==0?1:0;
-    night=mix(night,desiredNight,follow);if(Math.abs(night-desiredNight)>.001)moving=true;
+    night=mix(night,desiredNight,follow);
+    if(Math.abs(night-desiredNight)>.001)moving=true;else night=desiredNight;
     engine.ambient.intensity=mix(1.8,.7,night);engine.key.intensity=mix(2.6,.7,night);engine.rim.intensity=mix(1.2,.42,night);
     engine.grid.material.opacity=mix(.5,.18,night);
     engine.spots.forEach(light=>light.intensity=night*110);

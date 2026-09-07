@@ -48,11 +48,20 @@ try {
   assert.ok(await p.evaluate(()=>window.__methodModel.root.rotation.y>.1),'keyboard rotation');
   await p.keyboard.press('Home');await p.waitForTimeout(1200);
   assert.ok(await p.evaluate(()=>Math.abs(window.__methodModel.root.rotation.y)<.001),'keyboard reset');
+  await p.keyboard.press('ArrowRight');
+  await p.waitForFunction(()=>window.__methodModel.root.rotation.y>.1);
+  const rotation=await p.evaluate(()=>{
+    const before=window.__methodModel.root.rotation.y;
+    document.querySelector('[data-method-step="0"]').click();
+    return [before,window.__methodModel.root.rotation.y];
+  });
+  assert.equal(rotation[0],rotation[1],'return to plan must not jump after manual rotation');
   await stage(p,0);assert.equal(await p.locator('[data-method-light]').getAttribute('aria-pressed'),'true');
   assert.equal(await p.locator('[data-method-light]').isDisabled(),true);
   await stage(p,3);assert.equal(await p.locator('[data-method-light]').getAttribute('aria-pressed'),'true');
-  await p.locator('[data-method-light]').click();await p.waitForTimeout(1600);
-  assert.ok(await p.evaluate(()=>window.__methodModel.spots.every(l=>l.intensity<.1)),'lights switch off');
+  await p.locator('[data-method-light]').click();
+  await p.waitForFunction(()=>window.__methodModel.spots.every(l=>l.intensity===0));
+  assert.ok(await p.evaluate(()=>window.__methodModel.spots.every(l=>l.intensity===0)),'lights switch off exactly');
   const frames=await p.evaluate(()=>window.__methodFrames);await p.waitForTimeout(500);
   assert.equal(await p.evaluate(()=>window.__methodFrames),frames,'settled renderer sleeps');
   // Interrupt an in-flight assembly and finish on the requested state.
@@ -61,7 +70,7 @@ try {
   await p.locator('[data-method-step]').nth(3).evaluate(el=>el.click());
   const after=await p.evaluate(()=>window.__methodModel.groups.panels.position.y);
   assert.ok(Math.abs(before-after)<.2,'interruption must not reset geometry');
-  await p.waitForTimeout(2300);assert.ok(await p.evaluate(()=>Math.abs(window.__methodModel.groups.panels.position.y)<.001));
+  await p.waitForFunction(()=>Math.abs(window.__methodModel.groups.panels.position.y)<.001);
   await p.locator('[data-language]').evaluate(el=>el.click());
   assert.match(await p.locator('[data-method-light]').innerText(),/Lighting/);
   await stage(p,4);await p.locator('[data-method-part="lighting"]').click();

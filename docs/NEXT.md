@@ -17,6 +17,7 @@ Primary branch:
 ## Recently completed
 
 - integrated the approved architectural Method model into the normal page: five stages, interruptible assembly, selectable work packages/inspection components, real switchable floodlights, FR/EN, keyboard/touch and local static fallback; the approved study remains on `codex/method-three-views` at `aa6b44e`, outside main
+- passed Method browser regression checks, including exact-zero light extinction, smooth return from manual rotation to plan, static fallback and context restoration; integration is on `codex/method-integration`, not yet deployed to main
 
 - restored the discipline rotor to a full-HD 2D logo at the user's request, with upright icons, pause/resume, drag, keyboard and catalogue links; recorded a future architectural 3D direction for the existing Method visual in docs/3D_DIRECTION.md
 - coordinated site-wide motion around construction and wayfinding: the Solutions rail now has frame-rate-independent easing, measured photo parallax and eight accessible chapter controls; Catalogue opens from its selected row and returns to it; chapter rows, media masks and the Contact drawing have authored entrance sequences
