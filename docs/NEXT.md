@@ -1,6 +1,6 @@
 # Current State / Next — Profils Sports Refonte
 
-Last updated: 2026-09-05
+Last updated: 2026-09-07
 
 ## Current version
 
@@ -16,7 +16,7 @@ Primary branch:
 
 ## Recently completed
 
-- replaced the existing eight-discipline strip with a genuine Three.js openwork logo rotor in the same location: the authentic logo and discipline orbit turn together, with upright icons, pause/resume, drag, keyboard and 45-degree navigation; no separate brand section was added
+- restored the discipline rotor to a full-HD 2D logo at the user's request, with upright icons, pause/resume, drag, keyboard and catalogue links; recorded a future architectural 3D direction for the existing Method visual in docs/3D_DIRECTION.md
 - coordinated site-wide motion around construction and wayfinding: the Solutions rail now has frame-rate-independent easing, measured photo parallax and eight accessible chapter controls; Catalogue opens from its selected row and returns to it; chapter rows, media masks and the Contact drawing have authored entrance sequences
 - corrected ribbon page intersections around the enlarged front page, added previous/next controls to both WebGL and static modes, suspended settled/hidden ribbon rendering, and anchored its controls to the visual viewport on mobile
 - prioritized local catalogue texture fetch/decode independently of pending remote media, preserved Contact's signal-yellow typography after FR/EN switches, and allowed French accents above the text-reveal masks
@@ -172,19 +172,19 @@ The ribbon keeps its analytic helix. Extra spacing around the enlarged front pag
 - technical blueprint / engineering language
 - repository-backed content integrity rule
 
-### Three.js discipline rotor — September 5
+### 2D discipline rotor — September 7
 
-The requested placement is the existing `.discipline-rail` at the bottom of Catalogues, not a new section before Contact and not a redesign of the catalogue page ribbon. `brand-emblem.js`, `brand-emblem-worker.js` and `brand-emblem.css` enhance that rail only. The initial standalone medallion experiment was discarded before publication.
+The user's latest decision supersedes the former Three.js rotor: keep the logo flat and sharp in the existing discipline strip. `brand-emblem.js` now animates a native image and upright discipline nodes using one planar rotation. There is no rotor canvas, geometry fetch, texture decal or worker. The 3D catalogue page ribbon remains independent and unchanged.
 
-The logo is real geometry: 138 contours with 71 holes traced from the user's original `image jaune.png`, extruded into four indexed relief meshes (92,468 vertices after the premium-depth pass), with a smooth perimeter and no backing disk. A separate 3072px alpha-preserving face-detail decal from that same original artwork restores fine lettering and pictograms at display size; it does not provide the volume or the sides. Original lettering, orientations and sports pictograms come from the authentic raster artwork; raster contours are simplified for web use. The original is preserved at `assets/brand/profils-sports-emblem-source.png`. `scripts/build-logo-geometry.mjs` and `scripts/build-logo-face.mjs` regenerate the contour and detail assets with the original PNG and tooling-only Playwright module path as arguments. The visitor receives the contour JSON, the local detail WebP and the existing local Three.js runtime; triangulation runs in a short-lived worker.
+The original supplied image is preserved as `assets/brand/profils-sports-emblem-source.png`. The two lossless PNG derivatives `profils-sports-rotor-hd.png` (3072px) and `profils-sports-rotor-1024.png` keep its colors and alpha; responsive image selection avoids decoding the 8651px source during browsing. Regenerate with `sips -Z 3072 SOURCE --out OUTPUT` (or 1024). Old extrusion files are no longer used by the rotor.
 
-The rotation/navigation reproduces the legacy `src/pages/Accueil/NosCatalogues/NosCatalogues.tsx` mechanism: eight positions, 45-degree steps, a common rotor and upright icons. Here the icons are projected from actual world coordinates while the ajouré logo has physically lit bevels, thickness, a high-definition face and subtle perspective. Desktop crops the large lower half as requested; mobile fits the logo and keeps controls outside its lettering. The eight authentic icon assets are now local.
+The rotor preserves eight positions, 45-degree navigation, slow pauseable rotation, drag, keyboard, bilingual actions and explicit mappings: Fitness → Fitness, Padel → Padel, Soccer → Canopy School, Street Workout → CSP Pro. Other disciplines offer a contact email. The existing ribbon opens from the action and restores its focus on close.
 
-Catalogue mappings follow the legacy code: Fitness → Fitness, Padel → Padel, Soccer → Canopy School, Street Workout → CSP Pro. The action explicitly names the real catalogue. Other disciplines offer a contact email rather than invented “soon” availability. The original catalogue rows, particle preview, blueprint and page ribbon remain; the new action opens that same ribbon with its own transition origin and focus restoration.
+Reduced motion disables autoplay/easing; the rotor sleeps off-screen, in hidden tabs and behind the catalogue modal. An image failure restores the original discipline rail. The logo uses scoped image styles so the older icon dimensions and grayscale filter cannot affect it.
 
-Slow autoplay can be paused; selecting, dragging or using the keyboard pauses it. Reduced-motion has no autoplay or eased rotation. Rendering suspends off-screen, in background tabs and behind the catalogue modal. Missing geometry, failed worker or lost WebGL restores the original eight-discipline strip. Existing site-wide figure reveals exclude the rotor to avoid competing transform owners.
+The next 3D direction is an analysis only: see `docs/3D_DIRECTION.md`. First choice is a persistent architectural maquette in the current Method media, transitioning through the existing five stages. No new 3D scene or change to Method was made. A verified model/technical reference is needed for a faithful equipment representation.
 
-Chromium checks passed for true indexed geometry without a face texture/disk, real rotation, pause/idle sleep, stepping, drag, keyboard, FR/EN, catalogue opening/focus restoration, off-screen suspension, mobile touch controls, reduced motion and missing-geometry fallback. The broader Solutions/ribbon regression also passed without JavaScript exceptions. Validate the visual feel on physical Safari/iPhone; the pre-existing mobile page-width/anchor issues outside the rotor remain separate.
+Validation: Chromium desktop at DPR 2 loads the actual 3072px image with square geometry and no color filter; pause, keyboard, drag, Padel ribbon opening/focus return, FR/EN and contact actions pass. Touch/reduced-motion viewports at 390px and 720px retain all eight steps and contain the full logo. Blocking Three.js does not affect the rotor; blocking the logo restores the original rail. The broader Solutions/catalogue ribbon regression passes without JavaScript exceptions. Physical Safari/iPhone rendering remains to be checked on-device.
 
 ## Handoff instructions for a new conversation
 

@@ -611,6 +611,18 @@ The purpose is a branded navigation mechanism, not a decorative coin or another 
 
 ---
 
+## 2026-09-07 — Restore the discipline rotor to 2D; reserve 3D for explanatory content
+
+The user rejected the 3D logo's usefulness and requested a full-HD 2D rotor. This supersedes the September 5 openwork-rotor decision.
+
+The existing rotor now uses a native transparent image, with 3072px and 1024px PNG derivatives of the original supplied logo. CSS rotation and shared planar coordinates keep the eight discipline buttons upright. Original colors and artwork remain intact; no metallic materials, face decal, perspective, WebGL context or geometry worker are used by the rotor.
+
+Keep pause/resume, drag, keyboard, catalogue mappings, FR/EN, reduced motion, off-screen suspension and the original rail fallback if the image fails. The independent catalogue page ribbon retains its 3D presentation. The former extrusion assets and build tools are retained as unused historical sources.
+
+The requested design analysis is recorded in `docs/3D_DIRECTION.md`. It recommends an architectural assembly model in the existing Method visual as a future proposal, not a new implementation or section in this iteration. The Method comparison and tracer remain unchanged.
+
+---
+
 ## Future decision logging
 
 When making a change that significantly affects any of the following, add a dated entry here:
