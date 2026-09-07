@@ -625,6 +625,16 @@ The requested design analysis is recorded in `docs/3D_DIRECTION.md`. It recommen
 
 ## Future decision logging
 
+### 2026-09-07 — Integrate the approved architectural Method scene
+
+The user validated the three-view study (`codex/method-three-views`, `aa6b44e`), then approved its integration into all five Method stages with switchable lighting. Replace the old photo/blueprint comparison only inside Method; preserve the Hero, Solutions rail, catalogue ribbon and 2D rotor. The prototype itself stays on its review branch and is not shipped.
+
+One detailed illustrative model persists through the stages: ground plan, exploded engineering, coordinated work packages, staggered assembly and component inspection. Keep the existing verified service text; use localized explanatory annotations without dimensions, budget data or manufacturer performance claims. Changes interrupt from current transforms. Pilotage highlights three lots once, then stops; explicit selection always takes over.
+
+The lighting switch controls four real Three.js spotlights and their emissive lenses. Ambient/key lighting decreases moderately to reveal their effect. The on/off choice persists across phases; the control is unavailable in the flat plan. It is an illustrative presentation, not a lighting calculation.
+
+Native step/part buttons and canvas arrow/Home controls support keyboard and touch. The local model module loads near the section and reuses the vendored Three.js runtime. Rendering stops at rest, outside the viewport, in hidden tabs and behind the catalogue modal. Reduced motion applies final states immediately. Local stills preserve phase navigation without WebGL; without JavaScript, all five explanations remain visible. Context loss returns to the still and restoration rebuilds the model.
+
 When making a change that significantly affects any of the following, add a dated entry here:
 
 - information architecture

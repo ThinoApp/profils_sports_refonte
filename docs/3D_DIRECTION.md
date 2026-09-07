@@ -1,5 +1,7 @@
 # Où la 3D est utile — analyse du 7 septembre 2026
 
+Mise à jour : cette proposition a été validée puis intégrée à la Méthode. L'analyse ci-dessous conserve le raisonnement d'origine ; l'état livré est décrit dans `METHOD_SCENE.md`. Le rotor reste en 2D.
+
 ## Décision actuelle
 
 Le rotor des disciplines revient en 2D à la demande de l'utilisateur. Le logo original est affiché comme une image PNG transparente, déclinée en 3072 px et 1024 px sans recoloration ni reconstruction de ses contours. Sa rotation, les huit disciplines et les liens vers les catalogues restent fonctionnels. Cette itération n'ajoute aucune nouvelle scène 3D.

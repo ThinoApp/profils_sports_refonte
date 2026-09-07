@@ -16,6 +16,8 @@ Primary branch:
 
 ## Recently completed
 
+- integrated the approved architectural Method model into the normal page: five stages, interruptible assembly, selectable work packages/inspection components, real switchable floodlights, FR/EN, keyboard/touch and local static fallback; the approved study remains on `codex/method-three-views` at `aa6b44e`, outside main
+
 - restored the discipline rotor to a full-HD 2D logo at the user's request, with upright icons, pause/resume, drag, keyboard and catalogue links; recorded a future architectural 3D direction for the existing Method visual in docs/3D_DIRECTION.md
 - coordinated site-wide motion around construction and wayfinding: the Solutions rail now has frame-rate-independent easing, measured photo parallax and eight accessible chapter controls; Catalogue opens from its selected row and returns to it; chapter rows, media masks and the Contact drawing have authored entrance sequences
 - corrected ribbon page intersections around the enlarged front page, added previous/next controls to both WebGL and static modes, suspended settled/hidden ribbon rendering, and anchored its controls to the visual viewport on mobile
@@ -182,7 +184,7 @@ The rotor preserves eight positions, 45-degree navigation, slow pauseable rotati
 
 Reduced motion disables autoplay/easing; the rotor sleeps off-screen, in hidden tabs and behind the catalogue modal. An image failure restores the original discipline rail. The logo uses scoped image styles so the older icon dimensions and grayscale filter cannot affect it.
 
-The next 3D direction is an analysis only: see `docs/3D_DIRECTION.md`. First choice is a persistent architectural maquette in the current Method media, transitioning through the existing five stages. No new 3D scene or change to Method was made. A verified model/technical reference is needed for a faithful equipment representation.
+The initial analysis in `docs/3D_DIRECTION.md` led to the approved Method maquette, now integrated into the existing section. See `docs/METHOD_SCENE.md`. It is explicitly illustrative rather than a manufacturer replica or photometric study. The 2D rotor and catalogue ribbon remain separate and unchanged.
 
 Validation: Chromium desktop at DPR 2 loads the actual 3072px image with square geometry and no color filter; pause, keyboard, drag, Padel ribbon opening/focus return, FR/EN and contact actions pass. Touch/reduced-motion viewports at 390px and 720px retain all eight steps and contain the full logo. Blocking Three.js does not affect the rotor; blocking the logo restores the original rail. The broader Solutions/catalogue ribbon regression passes without JavaScript exceptions. Physical Safari/iPhone rendering remains to be checked on-device.
 
