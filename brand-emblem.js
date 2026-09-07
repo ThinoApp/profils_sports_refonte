@@ -23,6 +23,7 @@
   let initialized = false, initializing = false, failed = false, visible = false;
   let raf = 0, lastTime = 0, phase = 2, targetPhase = 2, selected = -1;
   let pitch = .13, yaw = -.12, pointerX = 0, pointerY = 0, scrollTilt = 0;
+  let dragPitch = pitch, dragYaw = yaw;
   let pointer = null, playing = !reduced.matches, width = 1, height = 1;
   let modalOpen = document.body.classList.contains('catalogue-ribbon-open');
   const resources = new Set();
@@ -33,7 +34,7 @@
 
   function buildGeometry(contours) {
     return new Promise((resolve, reject) => {
-      const worker = new Worker('brand-emblem-worker.js?v=20260905-2');
+      const worker = new Worker('brand-emblem-worker.js?v=20260907-1');
       const timeout = setTimeout(() => { worker.terminate(); reject(new Error('Logo geometry timed out')); }, 15000);
       worker.onmessage = ({ data }) => {
         clearTimeout(timeout); worker.terminate();
@@ -134,8 +135,8 @@
       const response = await fetch('assets/brand/profils-sports-emblem-contours.json');
       if (!response.ok) throw new Error('Logo geometry HTTP ' + response.status);
       const relief = await buildGeometry(await response.json());
-      renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true, powerPreference:'low-power' });
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+      renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true, powerPreference:'high-performance' });
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.12;
@@ -150,11 +151,20 @@
       key.position.set(-3, 5, 7); scene.add(key);
       const rim = new THREE.DirectionalLight(0xcbdcea, 1.6);
       rim.position.set(4, -1, 3); scene.add(rim);
-      const silver = keep(new THREE.MeshStandardMaterial({ color:0xe4e2d5, metalness:.8, roughness:.23 }));
-      const yellow = keep(new THREE.MeshPhysicalMaterial({ color:0xefe158, metalness:.42, roughness:.24, clearcoat:.65, clearcoatRoughness:.22 }));
+      const silver = keep(new THREE.MeshPhysicalMaterial({
+        color:0xe4e2d5, metalness:.78, roughness:.2,
+        clearcoat:.58, clearcoatRoughness:.18, reflectivity:.8
+      }));
+      const yellow = keep(new THREE.MeshPhysicalMaterial({
+        color:0xefe158, metalness:.5, roughness:.2,
+        clearcoat:.78, clearcoatRoughness:.18, reflectivity:.72
+      }));
       emblem = new THREE.Group();
       emblem.name = 'Profils Sports — openwork rotating logo';
-      // Open negative space: NO cylinder, disk, face plane, logo texture or image.
+      emblem.rotation.order = 'YXZ';
+      // Open negative space: no cylinder or backing disk. The small HD face
+      // layer below only restores fine artwork; volume and silhouette remain
+      // the indexed Three.js relief meshes built in the worker.
       for (const data of relief) {
         const geometry = keep(new THREE.BufferGeometry());
         geometry.setAttribute('position', new THREE.BufferAttribute(data.positions, 3));
@@ -164,6 +174,27 @@
         const mesh = new THREE.Mesh(geometry, data.color === 'yellow' ? yellow : silver);
         mesh.name = 'Authentic ' + data.color + (data.major ? ' lettering' : ' inscriptions and pictograms');
         emblem.add(mesh);
+      }
+      // The face detail is a 3072px alpha-preserving decal derived from the
+      // original logo. It restores fine lettering and pictograms while the
+      // extruded meshes provide the actual depth, bevel and edge highlights.
+      try {
+        const texture = await new THREE.TextureLoader().loadAsync('assets/brand/profils-sports-emblem-face.webp?v=20260907-1');
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+        texture.needsUpdate = true;
+        keep(texture);
+        const detailMaterial = keep(new THREE.MeshPhysicalMaterial({
+          map:texture, color:0xffffff, metalness:.28, roughness:.25,
+          clearcoat:.45, clearcoatRoughness:.22, transparent:true,
+          alphaTest:.025, depthWrite:false, side:THREE.DoubleSide
+        }));
+        const detail = new THREE.Mesh(keep(new THREE.PlaneGeometry(4.4, 4.4)), detailMaterial);
+        detail.position.z = .116;
+        detail.name = 'HD face detail — not the 3D base';
+        emblem.add(detail);
+      } catch (error) {
+        console.warn('Profils Sports rotor: HD face detail unavailable; relief retained.', error);
       }
       const outline = new THREE.Mesh(keep(new THREE.TorusGeometry(2.2, .013, 8, 192)), silver);
       outline.name = 'Original logo perimeter'; emblem.add(outline);
@@ -232,8 +263,13 @@
     if (playing && !reduced.matches && !pointer) targetPhase += dt * .09;
     const follow = reduced.matches ? 1 : 1 - Math.exp(-8 * dt);
     phase += (targetPhase - phase) * follow;
-    const tx = reduced.matches ? .1 : .13 + pointerY * .06 + scrollTilt;
-    const ty = reduced.matches ? -.1 : -.12 + pointerX * .1 + clamp(targetPhase - phase, -.8, .8) * .12;
+    // Keep the face readable, but give every step a restrained yaw/pitch
+    // reveal so the bevels and thickness catch the light in 3D.
+    const spin = phase * step;
+    const autoPitch = .17 + Math.cos(spin) * .045;
+    const autoYaw = -.25 + Math.sin(spin) * .12;
+    const tx = pointer ? dragPitch : (reduced.matches ? .1 : autoPitch + pointerY * .06 + scrollTilt);
+    const ty = pointer ? dragYaw : (reduced.matches ? -.1 : autoYaw + pointerX * .1 + clamp(targetPhase - phase, -.8, .8) * .12);
     pitch += (tx - pitch) * follow; yaw += (ty - yaw) * follow;
     emblem.rotation.set(pitch, yaw, (phase - 2) * step);
     projectNodes(); updateCopy(); renderer.render(scene, camera);
@@ -250,7 +286,7 @@
   stage.addEventListener('pointerdown', event => {
     if (!initialized || event.button !== 0 || pointer) return;
     playing = false; updatePlaybackCopy();
-    pointer = { id:event.pointerId, x:event.clientX, y:event.clientY, phase:targetPhase, touch:event.pointerType === 'touch', captured:false };
+    pointer = { id:event.pointerId, x:event.clientX, y:event.clientY, phase:targetPhase, pitch, yaw, touch:event.pointerType === 'touch', captured:false };
     if (!pointer.touch) { stage.setPointerCapture(event.pointerId); pointer.captured = true; }
   });
   stage.addEventListener('pointermove', event => {
@@ -263,6 +299,8 @@
         stage.setPointerCapture(event.pointerId); pointer.captured = true;
       }
       targetPhase = pointer.phase - dx / Math.max(80, width * .13);
+      dragYaw = clamp(pointer.yaw - dx * .0026, -.72, .72);
+      dragPitch = clamp(pointer.pitch + dy * .0035, -.62, .62);
       wake();
     } else if (fine.matches && !reduced.matches) {
       const rect = stage.getBoundingClientRect();

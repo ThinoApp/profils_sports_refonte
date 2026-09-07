@@ -18,12 +18,16 @@ self.onmessage = ({ data }) => {
         return shape;
       });
       const geometry = new THREE.ExtrudeGeometry(shapes, {
-        depth: major ? (color === 'yellow' ? .055 : .04) : .012,
-        steps: 1, bevelEnabled: true, bevelThickness: major ? .007 : .0018,
-        bevelSize: major ? .005 : .0012, bevelSegments: 2, curveSegments: 1
+        // The first pass was only a few hundredths deep and read as a flat
+        // print at the rotor's display size. Give the letterforms a readable
+        // machined edge while keeping the emblem lightweight in the worker.
+        depth: major ? (color === 'yellow' ? .105 : .08) : .028,
+        steps: 1, bevelEnabled: true, bevelThickness: major ? .014 : .004,
+        bevelSize: major ? .009 : .0025, bevelSegments: 3, curveSegments: 1
       });
       // Smooth the bevel/side contour normals to remove raster stair-step facets,
-      // but isolate the planar caps. UVs are unnecessary: there is no image map.
+      // but isolate the planar caps. The relief geometry carries no image map;
+      // the transparent high-definition face detail is a separate front layer.
       const position = geometry.attributes.position.array;
       const normal = geometry.attributes.normal.array;
       const unique = new Map(), positions = [], indices = [];

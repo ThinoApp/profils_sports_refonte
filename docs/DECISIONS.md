@@ -595,8 +595,9 @@ Use a real Three.js version of the supplied Profils Sports logo in the existing 
 
 Implementation:
 
-- derive bevelled, indexed solids from the original logo's yellow and charcoal contours, retaining letter counters and sports pictograms; use signal-yellow enamel and pale metal for dark-background contrast
-- retain open negative space: no cylinder, backing disk, face texture or generated logo image
+- derive bevelled, indexed solids from the original logo's yellow and charcoal contours, retaining letter counters and sports pictograms; use signal-yellow enamel and pale metal for dark-background contrast, with enough depth for a readable machined edge rather than a flat coin
+- add a high-definition alpha-preserving face detail from the same original asset only to recover fine raster detail; the decal carries no thickness, rotation or silhouette logic
+- retain open negative space: no cylinder or backing disk; the transparent face detail is not used as the volume or silhouette, and no generated logo image replaces the relief
 - use the legacy NosCatalogues rotor's eight positions and 45-degree navigation; project upright discipline controls around the same genuinely rotating 3D coordinate system
 - crop the large logo from the lower edge on desktop, with a mobile-specific composition in the same strip
 - offer slow interruptible rotation, previous/next, drag, keyboard and pause/resume; respect reduced motion and suspend work outside the visible interaction
@@ -606,7 +607,7 @@ Implementation:
 
 Rationale:
 
-The purpose is a branded navigation mechanism, not a decorative coin or another full-page section. The logo itself supplies the moving geometry; the reference's cropped rotor and upright discipline icons supply the interaction model.
+The purpose is a branded navigation mechanism, not a decorative coin or another full-page section. The logo itself supplies the moving geometry; the reference's cropped rotor and upright discipline icons supply the interaction model. The face detail is an intentional production compromise: it keeps the original brand artwork sharp while the actual 3D relief remains visible on every edge and in perspective.
 
 ---
 
