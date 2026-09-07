@@ -305,6 +305,14 @@
     document.dispatchEvent(new CustomEvent('site:language-will-change'));
     lang = lang === 'fr' ? 'en' : 'fr';
     document.documentElement.lang = lang;
+    document.title = lang === 'fr' ? 'Profils Sports International — Vos espaces sportifs' : 'Profils Sports International — Your sports spaces';
+    q('meta[name="description"]')?.setAttribute('content', lang === 'fr'
+      ? 'Conception, équipement, installation et maintenance d’espaces sportifs. Découvrez les services et catalogues de Profils Sports International pour préparer votre projet.'
+      : 'Design, equipment, installation and maintenance for sports spaces. Explore Profils Sports International services and catalogues to plan your project.');
+    q('.brand')?.setAttribute('aria-label', lang === 'fr' ? 'Profils Sports International — accueil' : 'Profils Sports International — home');
+    q('.desktop-nav')?.setAttribute('aria-label', lang === 'fr' ? 'Navigation principale' : 'Main navigation');
+    q('[data-language]')?.setAttribute('aria-label', lang === 'fr' ? 'Switch to English' : 'Passer en français');
+    q('[data-menu-toggle]')?.setAttribute('aria-label', lang === 'fr' ? 'Ouvrir le menu' : 'Open menu');
     qa('[data-fr][data-en]').forEach(el => {
       const value = el.dataset[lang];
       if (!value) return;
@@ -324,6 +332,7 @@
   const menu = q('[data-mobile-menu]');
   const setMenu = open => {
     menuButton?.setAttribute('aria-expanded', String(open));
+    menuButton?.setAttribute('aria-label', lang === 'fr' ? (open ? 'Fermer le menu' : 'Ouvrir le menu') : (open ? 'Close menu' : 'Open menu'));
     menu?.setAttribute('aria-hidden', String(!open));
     menu?.classList.toggle('is-open', open);
     document.body.style.overflow = open ? 'hidden' : '';

@@ -16,6 +16,9 @@ Primary branch:
 
 ## Recently completed
 
+- Visitor-focused FR/EN copy across the hero, manifesto, services, catalogues, Method, audiences, overview and contact. Removed development commentary and unexplained acronyms; retained verified counts, catalogue names and the illustrative-model disclaimer. Metadata and Method helpers follow the same editorial direction. Existing animations and catalogue interactions are unchanged.
+  - Verification: desktop (1440px, animated hero) and mobile (390px, reduced motion), FR/EN rendered-copy parity, no horizontal page overflow, checked paragraph/heading widths, contact text at 200% zoom, no browser exceptions. The existing Method regression suite passes. Mobile language rendering was tested programmatically because the existing mobile header hides the language switch; exposing it is a remaining navigation improvement.
+
 - integrated the approved architectural Method model into the normal page: five stages, interruptible assembly, selectable work packages/inspection components, real switchable floodlights, FR/EN, keyboard/touch and local static fallback; the approved study remains on `codex/method-three-views` at `aa6b44e`, outside main
 - passed Method browser regression checks, including exact-zero light extinction, smooth return from manual rotation to plan, static fallback and context restoration; the user approved integration into `main`, which now includes the validated Method implementation
 

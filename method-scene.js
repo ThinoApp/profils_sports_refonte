@@ -18,19 +18,19 @@
   const en=()=>document.documentElement.lang==='en';
   const text=(fr,eng)=>en()?eng:fr;
   const phases=[
-    {fr:'Implantation / vue de dessus',en:'Layout / top view',image:'plan',cam:[0,36,.1],look:[0,0,0],span:27.5,volume:0,explode:0},
-    {fr:'Ingénierie / composants',en:'Engineering / components',image:'engineering',cam:[25,22,30],look:[0,3.9,0],span:29.2,volume:1,explode:1},
-    {fr:'Pilotage / coordination des lots',en:'Steering / work packages',image:'assembled',cam:[25,22,30],look:[0,2,0],span:27,volume:1,explode:.3},
-    {fr:'Travaux / assemblage',en:'Construction / assembly',image:'assembled',cam:[25,22,30],look:[0,1.6,0],span:26.2,volume:1,explode:0},
-    {fr:'Maintenance / inspection',en:'Maintenance / inspection',image:'assembled',cam:[22,21,31],look:[0,1.6,0],span:26.2,volume:1,explode:0}
+    {fr:'Votre terrain / vue de dessus',en:'Your court / top view',image:'plan',cam:[0,36,.1],look:[0,0,0],span:27.5,volume:0,explode:0},
+    {fr:'Les éléments de votre terrain',en:'The parts of your court',image:'engineering',cam:[25,22,30],look:[0,3.9,0],span:29.2,volume:1,explode:1},
+    {fr:'Les travaux à prévoir',en:'Planning the work',image:'assembled',cam:[25,22,30],look:[0,2,0],span:27,volume:1,explode:.3},
+    {fr:'Votre terrain prend forme',en:'Your court takes shape',image:'assembled',cam:[25,22,30],look:[0,1.6,0],span:26.2,volume:1,explode:0},
+    {fr:'Les points à entretenir',en:'Maintenance checkpoints',image:'assembled',cam:[22,21,31],look:[0,1.6,0],span:26.2,volume:1,explode:0}
   ];
   const components=[
     {key:'surface',fr:'Surface',en:'Surface',point:[4.9,.1,8],
       careFr:'Surface de jeu et tracés : repérer les zones à examiner selon les préconisations du fabricant.',careEn:'Playing surface and markings: identify areas to inspect according to manufacturer guidance.',
-      lotFr:'Sol et revêtement : un lot à coordonner avec la structure et les équipements.',lotEn:'Ground and surface: a work package to coordinate with the frame and equipment.'},
+      lotFr:'Sol et revêtement : prévoir leur installation avec celle de la structure et des équipements.',lotEn:'Ground and surface: plan their installation alongside the frame and equipment.'},
     {key:'structure',fr:'Ossature',en:'Frame',point:[-5,3,10],
       careFr:'Ossature et fixations : localiser les points de contrôle de la structure.',careEn:'Frame and fixings: locate the structure’s inspection points.',
-      lotFr:'Ossature : visualiser les interfaces de la structure avec le sol et les parois.',lotEn:'Frame: visualize its interfaces with the ground and panels.'},
+      lotFr:'Structure porteuse : prévoir ses points de fixation au sol et aux parois.',lotEn:'Supporting frame: plan where it attaches to the ground and panels.'},
     {key:'panels',fr:'Parois',en:'Panels',point:[5,3,8.5],
       careFr:'Vitrages et grillages : repérer les parois et leurs attaches pour préparer une inspection.',careEn:'Glass and mesh: locate panels and their fixings to prepare an inspection.',
       lotFr:'Parois : identifier les éléments à coordonner avec l’ossature.',lotEn:'Panels: identify the elements to coordinate with the frame.'},
@@ -38,8 +38,8 @@
       careFr:'Filet et poteaux : distinguer l’équipement de jeu de la structure du terrain.',careEn:'Net and posts: distinguish playing equipment from the court structure.',
       lotFr:'Équipement de jeu : situer le filet et ses supports dans l’installation.',lotEn:'Playing equipment: locate the net and its supports within the installation.'},
     {key:'lighting',fr:'Éclairage',en:'Lighting',point:[-5.55,5.5,-6.7],
-      careFr:'Projecteurs : observer l’effet de l’allumage et localiser les luminaires. Le rendu ne remplace pas une étude photométrique.',careEn:'Floodlights: observe the lighting effect and locate the luminaires. This rendering is not a photometric study.',
-      lotFr:'Éclairage : coordonner les luminaires avec l’ensemble du terrain. Aucun indicateur de coût ou de performance n’est simulé.',lotEn:'Lighting: coordinate luminaires with the court. No cost or performance metrics are simulated.'}
+      careFr:'Projecteurs : allumez l’éclairage pour voir son effet sur la maquette. Cet aperçu ne permet pas de déterminer l’éclairage nécessaire à votre terrain.',careEn:'Floodlights: switch the lights on to see their effect on the model. This preview cannot determine the lighting your court needs.',
+      lotFr:'Éclairage : prévoir la pose des projecteurs avec les autres travaux. La maquette ne fournit ni estimation de prix ni mesure de luminosité.',lotEn:'Lighting: plan the floodlight installation alongside the other work. The model provides neither a price estimate nor light-level measurements.'}
   ];
   const initial=new URLSearchParams(location.search);
   let active=({plan:0,exploded:1,assembled:3})[initial.get('variant')]??0;
@@ -74,7 +74,7 @@
     lightButton.hidden=!engine;lightButton.disabled=active===0;
     lightButton.setAttribute('aria-pressed',String(lightsOn));
     lightButton.querySelector('span').textContent=text('Éclairage : ','Lighting: ')+(lightsOn?text('allumé','on'):text('éteint','off'));
-    lightButton.title=active===0?text('Disponible dans les vues en volume.','Available in the 3D views.'):text('Effet illustratif, pas une étude photométrique.','Illustrative effect, not a photometric study.');
+    lightButton.title=active===0?text('Choisissez une autre étape pour essayer l’éclairage.','Select another stage to try the lights.'):text('Aperçu illustratif, pas une mesure de l’éclairage réel.','Illustrative preview, not a measurement of actual lighting.');
     reset.hidden=!engine;reset.textContent=text('Recentrer','Reset view');
     scope.hidden=![2,4].includes(active);
     parts.setAttribute('aria-label',text('Éléments de la maquette','Model components'));
@@ -85,10 +85,10 @@
     const part=components.find(c=>c.key===selected);
     $('[data-method-detail]').textContent=part[(active===2?'lot':'care')+(en()?'En':'Fr')];
     instructions.hidden=!engine;
-    instructions.textContent=active===4?text('Sélectionnez un élément ci-dessous ou sur la maquette. Glissez pour observer le volume.','Select a component below or on the model. Drag to inspect the volume.'):
-      text('Glissez pour observer le volume. Au clavier : ← → pour tourner, Début pour recentrer.','Drag to inspect the volume. Keyboard: ← → to rotate, Home to reset.');
+    instructions.textContent=active===4?text('Sélectionnez un élément ci-dessous ou sur la maquette. Glissez pour faire tourner le terrain.','Select a component below or on the model. Drag to rotate the court.'):
+      text('Glissez pour faire tourner le terrain. Au clavier : ← → pour tourner, Début pour recentrer.','Drag to rotate the court. Keyboard: ← → to rotate, Home to reset.');
     status.hidden=!failed;
-    status.textContent=text('Aperçu statique : la 3D est indisponible. Les cinq étapes restent consultables.','Static preview: 3D is unavailable. All five stages remain accessible.');
+    status.textContent=text('La vue interactive est indisponible. Parcourez les cinq étapes avec les images.','The interactive view is unavailable. Explore the five stages with the images.');
     measureLabels();
   }
   function measureLabels(){labels.forEach(l=>{const hidden=l.el.hidden;l.el.hidden=false;l.w=l.el.offsetWidth;l.h=l.el.offsetHeight;l.el.hidden=hidden;});}

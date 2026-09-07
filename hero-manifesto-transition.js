@@ -30,7 +30,7 @@
   if (heroTagline) {
     heroTagline.innerHTML = `
       <span>SPORTING EXCELLENCE</span>
-      <span data-fr="Design & Construction" data-en="Design & Construction">DESIGN & CONSTRUCTION</span>
+      <span data-fr="Vos espaces sportifs" data-en="Your sports spaces">VOS ESPACES SPORTIFS</span>
     `;
   }
 
@@ -38,12 +38,12 @@
   if (heroBottom) {
     heroBottom.innerHTML = `
       <div class="hero-brief">
-        <span class="hero-brief__eyebrow" data-fr="De la faisabilité à l'exploitation" data-en="From feasibility to operations">DE LA FAISABILITÉ À L'EXPLOITATION</span>
-        <p data-fr="Conception, ingénierie, installation et maintenance d'infrastructures sportives." data-en="Design, engineering, installation and maintenance of sports infrastructure.">Conception, ingénierie, installation et maintenance d'infrastructures sportives.</p>
+        <span class="hero-brief__eyebrow" data-fr="De votre idée au terrain" data-en="From your idea to the field">DE VOTRE IDÉE AU TERRAIN</span>
+        <p data-fr="Un espace à créer, des équipements à installer ou à entretenir : donnons forme à votre projet sportif." data-en="A space to build, equipment to install or maintain: let’s bring your sports project to life.">Un espace à créer, des équipements à installer ou à entretenir : donnons forme à votre projet sportif.</p>
       </div>
       <div class="hero-actions">
         <a class="hero-command" href="#contact">
-          <span><small data-fr="Démarrer" data-en="Start">DÉMARRER</small><strong data-fr="Cadrer le projet" data-en="Frame the project">CADRER LE PROJET</strong></span>
+          <span><small data-fr="Premier échange" data-en="Let’s talk">PREMIER ÉCHANGE</small><strong data-fr="Parler de votre projet" data-en="Discuss your project">PARLER DE VOTRE PROJET</strong></span>
           <b aria-hidden="true">↗</b>
         </a>
         <a class="hero-solutions-link" href="#solutions" data-fr="Voir les solutions" data-en="View solutions">VOIR LES SOLUTIONS <span aria-hidden="true">↓</span></a>
@@ -131,8 +131,8 @@
     </div>
     <div class="manifesto-transition-media__scan"></div>
     <div class="manifesto-transition-media__meta">
-      <span>PROFILS SPORTS / PROJECT SYSTEM</span>
-      <span>DESIGN → DELIVERY</span>
+      <span>PROFILS SPORTS INTERNATIONAL</span>
+      <span data-fr="VOTRE IDÉE → VOTRE TERRAIN" data-en="YOUR IDEA → YOUR SPORTS SPACE">VOTRE IDÉE → VOTRE TERRAIN</span>
     </div>
   `;
 
@@ -141,18 +141,18 @@
   right.innerHTML = `
     <article class="manifesto-transition-item">
       <span>01</span>
-      <strong>CONCEVOIR</strong>
-      <p>Faisabilité · Architecture · ERP · Accessibilité</p>
+      <strong data-fr="CONCEVOIR" data-en="DESIGN">CONCEVOIR</strong>
+      <p data-fr="Vos besoins · Votre site · Un espace adapté" data-en="Your needs · Your site · A space that fits">Vos besoins · Votre site · Un espace adapté</p>
     </article>
     <article class="manifesto-transition-item">
       <span>02</span>
-      <strong>RÉALISER</strong>
-      <p>Ingénierie · Eurocodes · Installation · Qualité</p>
+      <strong data-fr="INSTALLER" data-en="INSTALL">INSTALLER</strong>
+      <p data-fr="Équipements · Travaux · Contrôles de sécurité" data-en="Equipment · Construction · Safety checks">Équipements · Travaux · Contrôles de sécurité</p>
     </article>
     <article class="manifesto-transition-item">
       <span>03</span>
-      <strong>EXPLOITER</strong>
-      <p>Maintenance · HSE · Réception · DOE</p>
+      <strong data-fr="ENTRETENIR" data-en="MAINTAIN">ENTRETENIR</strong>
+      <p data-fr="Suivi des installations · Entretien des équipements" data-en="Facility care · Equipment maintenance">Suivi des installations · Entretien des équipements</p>
     </article>
   `;
 

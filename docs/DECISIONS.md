@@ -2,6 +2,10 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-07 — Write for project owners, not developers
+
+Public FR/EN copy now explains visitor needs, available services and the next action. Remove references to repositories, versions, assets and implementation mechanics from visible copy. Explain real construction topics in ordinary language rather than acronym lists. Preserve authentic service/catalogue names and verified counts; counts describe available content or categories, never completed projects or satisfied clients. The Method remains an illustrative example, not a construction plan, price estimate or lighting calculation. Preserve the approved visual language, hero title, animations and interactions.
+
 ## 2026-09-03 — `profils_sports_refonte` becomes the source of truth
 
 Decision:
