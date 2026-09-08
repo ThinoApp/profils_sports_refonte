@@ -122,14 +122,6 @@
   media.setAttribute('aria-hidden', 'true');
   media.innerHTML = `
     <div class="manifesto-transition-media__photo"></div>
-    <div class="manifesto-transition-media__grid"></div>
-    <div class="manifesto-transition-media__pitch">
-      <i class="manifesto-transition-media__axis manifesto-transition-media__axis--x"></i>
-      <i class="manifesto-transition-media__axis manifesto-transition-media__axis--y"></i>
-      <i class="manifesto-transition-media__circle"></i>
-      <i class="manifesto-transition-media__box"></i>
-    </div>
-    <div class="manifesto-transition-media__scan"></div>
     <div class="manifesto-transition-media__meta">
       <span>PROFILS SPORTS INTERNATIONAL</span>
       <span data-fr="VOTRE IDÉE → VOTRE TERRAIN" data-en="YOUR IDEA → YOUR SPORTS SPACE">VOTRE IDÉE → VOTRE TERRAIN</span>
@@ -158,20 +150,6 @@
 
   shell.append(left, media, right);
   originalLayout?.replaceWith(shell);
-
-  // Technical Hero layer: it belongs to the Hero coordinate system and is
-  // clipped together with the full-size Hero content during the transition.
-  const heroTech = document.createElement('div');
-  heroTech.className = 'hero-transition-tech';
-  heroTech.setAttribute('aria-hidden', 'true');
-  heroTech.innerHTML = `
-    <i class="hero-transition-tech__line hero-transition-tech__line--a"></i>
-    <i class="hero-transition-tech__line hero-transition-tech__line--b"></i>
-    <i class="hero-transition-tech__line hero-transition-tech__line--c"></i>
-    <span class="hero-transition-tech__mark hero-transition-tech__mark--a"></span>
-    <span class="hero-transition-tech__mark hero-transition-tech__mark--b"></span>
-  `;
-  hero.appendChild(heroTech);
 
   const heroVisualLayers = [heroMedia, heroOverlay, stadiumPlan].filter(Boolean);
   const heroSecondary = [
@@ -205,7 +183,6 @@
     const progress = clamp((scrollY - stageTop) / scrollDistance);
     if (!targetBox) measure();
 
-    const internalP = smooth(range(progress, 0.00, 0.20));
     const prepareP = smooth(range(progress, 0.16, 0.34));
     const maskP = smooth(range(progress, 0.20, 0.72));
     const gridP = smooth(range(progress, 0.28, 0.50));
@@ -214,7 +191,6 @@
     const copyP = smooth(range(progress, 0.62, 0.90));
     const itemsP = smooth(range(progress, 0.58, 0.90));
     const mediaSwapP = smooth(range(progress, 0.68, 0.84));
-    const finishP = smooth(range(progress, 0.82, 1.00));
 
     // The final mask is measured from the real media rectangle, keeping the
     // shared-element alignment responsive instead of hardcoding 34vw/16vh.
@@ -228,8 +204,6 @@
     // parallax is neutralised here so the title is cropped, not miniaturised.
     if (heroTitle) heroTitle.style.transform = 'none';
     hero.style.setProperty('--hero-transition-bg-alpha', String(1 - mediaSwapP));
-    heroTech.style.opacity = String(internalP * (1 - finishP));
-    heroTech.style.setProperty('--hero-tech-progress', internalP.toFixed(4));
 
     heroVisualLayers.forEach(layer => {
       layer.style.opacity = String(1 - mediaSwapP);

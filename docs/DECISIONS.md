@@ -2,6 +2,12 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-08 — Icon-origin detail motion and uncluttered Hero transition
+
+The user rejected the square/simple detail-panel appearance. Globe detail panels now expand from the actual icon image bounds, with rounded corners, velocity-dependent duration/stretch and a faster accelerating return to the icon. Web Animations interruptions capture the current visual state; rapid changes let the previous panel retract while the next emerges. Closing remains visible until its animation ends but is inert immediately. Reduced motion bypasses spatial morphing. Preserve catalogue focus return, keyboard/touch and FR/EN.
+
+At the user's explicit request, remove the Hero's animated technical-line layer during the shared scroll transition and the grid, pitch markings and scanning line over the central manifesto photograph. Keep the photograph, title, shared Hero-to-manifesto transition, globe drawings and preloader choreography unchanged.
+
 ## 2026-09-08 — Discipline details and travelling globe cursor
 
 The user approved the globe and requested contextual hover details plus a moving yellow cursor instead of its static yellow orbit. Each native discipline control now opens a non-modal, dismissible FR/EN detail panel on hover/focus/tap. Copy presents a project-oriented introduction, a scoping question and the existing catalogue (with verified page count) or contact action; no invented products, prices or availability. Pointer transfer into the panel, Escape, explicit close and catalogue focus return are supported. Hover stabilises rotation without stopping the travelling cursor; Pause stops both, reduced motion has a static cursor, and hidden/offscreen/modal suspension remains intact. The tracer is real tangent-oriented 3D geometry with a short fading ribbon, not another system cursor or a permanent yellow ring.

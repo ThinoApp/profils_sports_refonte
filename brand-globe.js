@@ -30,6 +30,12 @@
   popup.innerHTML='<button type="button" class="globe-popup__close"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button><h3 id="globe-popup-title"></h3><p class="globe-popup__description"></p><p class="globe-popup__question"></p><small></small><a class="globe-popup__action" rel="noreferrer"></a>';
   section.append(popup);
   let popupIndex=-1,closeTimer=0,suppressFocus=false,traceTime=0;
+  let popupMotion=null,motionIndex=-1,motionVersion=0,pointerSpeed=0,lastPointer=null;
+  section.addEventListener('pointermove',e=>{
+    const now=performance.now();
+    if(lastPointer)pointerSpeed=clamp(Math.hypot(e.clientX-lastPointer.x,e.clientY-lastPointer.y)/Math.max(8,now-lastPointer.t),0,2);
+    lastPointer={x:e.clientX,y:e.clientY,t:now};
+  },{passive:true});
   const canvas=document.createElement('canvas');canvas.className='sports-globe';canvas.setAttribute('aria-hidden','true');stage.prepend(canvas);
   const status=document.createElement('p');status.className='brand-emblem__status';status.setAttribute('role','status');section.append(status);
   let model=null,started=false,failed=false,visible=false,modal=false,raf=0,last=0;
@@ -48,7 +54,7 @@
     const i=popupIndex,english=document.documentElement.lang==='en',row=rows.find(r=>r.dataset.catalogue===catalogues[i]),link=popup.querySelector('a');
     popup.querySelector('h3').textContent=names[i];
     popup.querySelector('.globe-popup__description').textContent=descriptions[i][english?1:0];
-    popup.querySelector('.globe-popup__question').textContent=descriptions[i][english?3:2];
+    popup.querySelector('.globe-popup__question').textContent=descriptions[i][english?3:2].replace(/ ([?!:])/g,'\u00a0$1');
     popup.querySelector('small').textContent=row?text('À explorer : ','Explore: ')+row.querySelector('.catalogue-name').textContent+' · '+row.dataset.pages+text(' pages',' pages'):text('Échangeons sur votre projet','Let’s discuss your project');
     popup.querySelector('button').setAttribute('aria-label',text('Fermer la fiche','Close details'));
     if(row){link.dataset.catalogueTrigger=row.dataset.catalogue;link.href=row.href;link.target='_blank';link.textContent=text('Ouvrir le catalogue','Open catalogue')+' ↗';}
@@ -62,8 +68,51 @@
     popup.style.left=clamp(left,12,Math.max(12,host.width-w-12))+'px';
     popup.style.top=clamp(anchor.top-host.top,Math.max(90,-host.top+85),Math.max(90,Math.min(host.height-20,innerHeight-host.top-12)-h))+'px';
   }
-  function showPopup(i){clearTimeout(closeTimer);popupIndex=i;velocity=0;targetYaw=yaw;targetPitch=pitch;popup.hidden=false;popupCopy();buttons.forEach((b,j)=>b.setAttribute('aria-expanded',String(i===j)));positionPopup();wake();}
-  function hidePopup(restore=false){clearTimeout(closeTimer);const i=popupIndex;popupIndex=-1;popup.hidden=true;buttons.forEach(b=>b.setAttribute('aria-expanded','false'));if(restore&&i>=0){suppressFocus=true;buttons[i].focus({preventScroll:true});suppressFocus=false;}wake();}
+  function iconPose(i,node=popup){
+    const host=section.getBoundingClientRect(),icon=figures[i].querySelector('img').getBoundingClientRect();
+    const x=icon.left-host.left-parseFloat(node.style.left),y=icon.top-host.top-parseFloat(node.style.top);
+    return {transform:`translate(${x}px,${y}px) scale(${icon.width/node.offsetWidth},${icon.height/node.offsetHeight})`,opacity:0,borderRadius:'50%',filter:'blur(3px)'};
+  }
+  const openPose={transform:'translate(0px,0px) scale(1,1)',opacity:1,borderRadius:'18px',filter:'blur(0px)'};
+  function currentPose(){const s=getComputedStyle(popup);return {transform:s.transform,opacity:s.opacity,borderRadius:s.borderRadius,filter:s.filter};}
+  function retractPrevious(i){
+    if(reduced.matches||popup.hidden)return;
+    const ghost=popup.cloneNode(true),pose=currentPose();ghost.removeAttribute('id');ghost.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+    ghost.setAttribute('aria-hidden','true');ghost.inert=true;ghost.style.pointerEvents='none';section.append(ghost);
+    const animation=ghost.animate([pose,iconPose(i,ghost)],{duration:240,easing:'cubic-bezier(.55,0,.85,.35)',fill:'forwards'});
+    animation.onfinish=()=>ghost.remove();
+  }
+  function showPopup(i){
+    clearTimeout(closeTimer);
+    if(popupIndex===i&&!popup.hidden&&!popup.inert)return;
+    const reversing=motionIndex===i&&!popup.hidden,current=reversing?currentPose():null;
+    if(!popup.hidden&&motionIndex!==i&&motionIndex>=0)retractPrevious(motionIndex);
+    popupMotion?.cancel();const version=++motionVersion;motionIndex=i;popupIndex=i;
+    velocity=0;targetYaw=yaw;targetPitch=pitch;popup.hidden=false;popup.inert=false;popupCopy();
+    buttons.forEach((b,j)=>b.setAttribute('aria-expanded',String(i===j)));positionPopup();
+    if(!reduced.matches){
+      const speed=lastPointer&&performance.now()-lastPointer.t<160?pointerSpeed:0;
+      const stretch=1+speed*.025;
+      popup.dataset.motion='opening';
+      popupMotion=popup.animate([
+        {...(current||iconPose(i)),offset:0},
+        {transform:`translate(0px,0px) scale(${stretch},${1/Math.sqrt(stretch)})`,opacity:1,borderRadius:'20px',filter:'blur(0px)',offset:.78},
+        {...openPose,offset:1}
+      ],{duration:540-speed*80,easing:'cubic-bezier(.16,1,.3,1)'});
+      popupMotion.onfinish=()=>{if(version===motionVersion){popupMotion=null;popup.dataset.motion='open';}};
+    }else popup.dataset.motion='open';
+    wake();
+  }
+  function hidePopup(restore=false){
+    clearTimeout(closeTimer);const i=popupIndex;if(i<0)return;
+    const from=currentPose();popupMotion?.cancel();const version=++motionVersion;
+    popupIndex=-1;popup.inert=true;buttons.forEach(b=>b.setAttribute('aria-expanded','false'));
+    if(restore){suppressFocus=true;buttons[i].focus({preventScroll:true});suppressFocus=false;}
+    const finish=()=>{if(version===motionVersion){popup.hidden=true;popup.inert=false;popupMotion?.cancel();popupMotion=null;popup.dataset.motion='closed';}};
+    if(reduced.matches)finish();
+    else{popup.dataset.motion='closing';popupMotion=popup.animate([from,iconPose(i)],{duration:300,easing:'cubic-bezier(.55,0,.85,.35)',fill:'forwards'});popupMotion.onfinish=finish;}
+    wake();
+  }
   function scheduleClose(){clearTimeout(closeTimer);closeTimer=setTimeout(()=>{if(!modal&&!popup.contains(document.activeElement)&&!buttons.includes(document.activeElement))hidePopup();},300);}
   popup.addEventListener('pointerenter',()=>clearTimeout(closeTimer));popup.addEventListener('pointerleave',scheduleClose);
   popup.querySelector('button').addEventListener('click',()=>hidePopup(true));

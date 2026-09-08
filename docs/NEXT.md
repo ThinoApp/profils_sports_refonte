@@ -16,6 +16,8 @@ Primary branch:
 
 ## Recently completed
 
+- Globe detail panels now emerge from and retract into their originating icon with speed-sensitive easing/stretch, rounded surfaces and interruptible entry/exit. Desktop/mobile checks pass for entry/exit timing, reversal during close, catalogue focus return, viewport bounds and reduced motion. Removed the Hero transition's technical-line layer and the yellow grid/pitch/scan overlays on the central manifesto image; the transition and photo remain.
+
 - Added FR/EN discipline detail panels on globe hover, focus and tap, using project questions and authentic catalogue/contact actions. Replaced the static yellow orbit with a tangent-following 3D dart and fading trail. Pause, reduced motion and offscreen/modal suspension remain supported.
   - Desktop (1440px) and touch/mobile (390px) detail-panel checks pass: pointer transfer, viewport bounds, verified page count, catalogue opening and focus return, Escape/close, keyboard activation and English copy. The panel stays mounted behind the catalogue so focus can return to its link. Screenshots inspected; no browser exceptions in these checks.
 
