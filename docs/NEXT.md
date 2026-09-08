@@ -1,6 +1,6 @@
 # Current State / Next — Profils Sports Refonte
 
-Last updated: 2026-09-07
+Last updated: 2026-09-08
 
 ## Current version
 
@@ -15,6 +15,9 @@ Primary branch:
 `main`
 
 ## Recently completed
+
+- Replaced the existing discipline rotor with the user-approved interactive sports globe (`sports-globe.js`, `brand-globe.js`, `sports-globe.css`). Spherical court/running markings, original bevelled logo geometry, eight projected native discipline controls and unchanged catalogue/contact mappings. The former rotor script remains archived in the source tree but is not loaded. See the September 8 decision; it supersedes the 2D-rotor status below.
+  - `scripts/check-globe.mjs` passes: real relief geometry, lazy initialization, mouse drag, actual Chromium touch input, keyboard, pause/idle, bilingual actions, catalogue opening/focus return, modal/offscreen suspension, mobile bounds, reduced motion and missing-3D fallback. Fixed implicit touch-capture transfer cancelling a drag. Desktop/mobile screenshots inspected at DPR 2. The Method regression suite also passes when run sequentially; parallel software-GPU test runs can time out. Physical Safari/iPhone testing remains outstanding. Preview locally before publishing.
 
 - Visitor-focused FR/EN copy across the hero, manifesto, services, catalogues, Method, audiences, overview and contact. Removed development commentary and unexplained acronyms; retained verified counts, catalogue names and the illustrative-model disclaimer. Metadata and Method helpers follow the same editorial direction. Existing animations and catalogue interactions are unchanged.
   - Verification: desktop (1440px, animated hero) and mobile (390px, reduced motion), FR/EN rendered-copy parity, no horizontal page overflow, checked paragraph/heading widths, contact text at 200% zoom, no browser exceptions. The existing Method regression suite passes. Mobile language rendering was tested programmatically because the existing mobile header hides the language switch; exposing it is a remaining navigation improvement.

@@ -2,6 +2,12 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-08 — Approved sports globe replaces the discipline rotor
+
+The user approved an interactive Three.js globe in the existing discipline strip, superseding the 2D rotor decision for this surface only. No new section. Courts and running lanes follow a common spherical surface instead of geographic continents; sparse structural arcs leave the authentic logo visible at its heart. The original logo contours supply real bevelled relief via the existing worker, with a restrained gimbal response to keep the lettering legible. No generated logo or fabricated geographic reach is implied.
+
+Native discipline controls are projected from 3D anchors, remain upright and select the existing catalogue/contact actions. Preserve the verified eight-discipline mapping and the independent catalogue page ribbon. Mouse/touch, keyboard, pause, FR/EN, reduced motion and static discipline fallback are mandatory. Geometry loads near the section; rendering sleeps when paused/settled, offscreen, in hidden tabs and behind the catalogue modal. Retain the old rotor source as historical reference, but do not load both controllers.
+
 ## 2026-09-07 — Write for project owners, not developers
 
 Public FR/EN copy now explains visitor needs, available services and the next action. Remove references to repositories, versions, assets and implementation mechanics from visible copy. Explain real construction topics in ordinary language rather than acronym lists. Preserve authentic service/catalogue names and verified counts; counts describe available content or categories, never completed projects or satisfied clients. The Method remains an illustrative example, not a construction plan, price estimate or lighting calculation. Preserve the approved visual language, hero title, animations and interactions.

@@ -1,0 +1,44 @@
+/* The existing discipline strip becomes a complete globe, not a cropped rotor. */
+.brand-emblem[data-emblem-ready],.brand-emblem[data-emblem-pending] {
+  height:clamp(640px,56vw,840px); background:#091521;
+}
+.sports-globe { display:block; width:100%; height:100%; }
+.brand-emblem__stage { inset:70px 0 90px; cursor:grab; }
+.brand-emblem__stage:active { cursor:grabbing; }
+.brand-emblem__orbit { display:none; }
+.brand-emblem .brand-emblem__logo { width:min(38%,350px); top:50%; left:50%; }
+.brand-emblem[data-emblem-pending] .discipline-rail__track { visibility:hidden; }
+.brand-emblem[data-emblem-ready] .discipline-rail__track { inset:70px 0 90px; height:calc(100% - 160px); }
+.brand-emblem[data-emblem-ready] figure {
+  width:92px; height:110px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  transform-origin:center; transition:opacity .2s; gap:8px;
+}
+.brand-emblem[data-emblem-ready] figure img {
+  width:68px; height:68px; background:#091521; border-radius:50%;
+  opacity:1; filter:sepia(1) saturate(3); padding:3px;
+}
+.brand-emblem[data-emblem-ready] figure figcaption {
+  white-space:nowrap; font-size:9px; background:#091521; padding:4px 7px;
+}
+.brand-emblem[data-emblem-ready] figure:hover img,
+.brand-emblem[data-emblem-ready] figure:focus-within img { transform:scale(1.12); }
+.brand-emblem__status { position:absolute; bottom:80px; left:var(--pad); color:#f1efe6; font-size:12px; }
+.brand-emblem[data-globe-fallback] { display:block; padding:100px 0 90px; }
+.brand-emblem[data-globe-fallback] .discipline-rail__track { display:grid; width:100%; grid-template-columns:repeat(4,1fr); }
+.brand-emblem[data-globe-fallback] figure { position:relative; }
+.brand-emblem[data-globe-fallback] .brand-emblem__status { top:70px; bottom:auto; }
+@media(max-width:720px) {
+  .brand-emblem[data-emblem-ready],.brand-emblem[data-emblem-pending] { height:620px; }
+  .brand-emblem__stage { inset:90px 0 110px; }
+  .brand-emblem[data-emblem-ready] .discipline-rail__track { inset:90px 0 110px; height:calc(100% - 200px); }
+  .brand-emblem[data-emblem-ready] figure { width:64px; height:80px; gap:4px; }
+  .brand-emblem[data-emblem-ready] figure img { width:48px; height:48px; }
+  .brand-emblem[data-emblem-ready] figure figcaption { font-size:7px; padding:3px; }
+  .brand-emblem[data-globe-fallback] .discipline-rail__track { grid-template-columns:repeat(2,1fr); }
+  .brand-emblem__status { font-size:11px; bottom:100px; }
+}
+@media print {
+  .brand-emblem[data-emblem-ready],.brand-emblem[data-emblem-pending] { height:auto; }
+  .brand-emblem[data-emblem-ready] .discipline-rail__track { height:auto; }
+  .brand-emblem[data-emblem-ready] figure { opacity:1!important; }
+}
