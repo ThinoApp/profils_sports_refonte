@@ -16,6 +16,9 @@ Primary branch:
 
 ## Recently completed
 
+- Added FR/EN discipline detail panels on globe hover, focus and tap, using project questions and authentic catalogue/contact actions. Replaced the static yellow orbit with a tangent-following 3D dart and fading trail. Pause, reduced motion and offscreen/modal suspension remain supported.
+  - Desktop (1440px) and touch/mobile (390px) detail-panel checks pass: pointer transfer, viewport bounds, verified page count, catalogue opening and focus return, Escape/close, keyboard activation and English copy. The panel stays mounted behind the catalogue so focus can return to its link. Screenshots inspected; no browser exceptions in these checks.
+
 - Replaced the existing discipline rotor with the user-approved interactive sports globe (`sports-globe.js`, `brand-globe.js`, `sports-globe.css`). Spherical court/running markings, original bevelled logo geometry, eight projected native discipline controls and unchanged catalogue/contact mappings. The former rotor script remains archived in the source tree but is not loaded. See the September 8 decision; it supersedes the 2D-rotor status below.
   - `scripts/check-globe.mjs` passes: real relief geometry, lazy initialization, mouse drag, actual Chromium touch input, keyboard, pause/idle, bilingual actions, catalogue opening/focus return, modal/offscreen suspension, mobile bounds, reduced motion and missing-3D fallback. Fixed implicit touch-capture transfer cancelling a drag. Desktop/mobile screenshots inspected at DPR 2. The Method regression suite also passes when run sequentially; parallel software-GPU test runs can time out. Physical Safari/iPhone testing remains outstanding. Preview locally before publishing.
 

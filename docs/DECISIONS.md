@@ -2,6 +2,10 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-08 — Discipline details and travelling globe cursor
+
+The user approved the globe and requested contextual hover details plus a moving yellow cursor instead of its static yellow orbit. Each native discipline control now opens a non-modal, dismissible FR/EN detail panel on hover/focus/tap. Copy presents a project-oriented introduction, a scoping question and the existing catalogue (with verified page count) or contact action; no invented products, prices or availability. Pointer transfer into the panel, Escape, explicit close and catalogue focus return are supported. Hover stabilises rotation without stopping the travelling cursor; Pause stops both, reduced motion has a static cursor, and hidden/offscreen/modal suspension remains intact. The tracer is real tangent-oriented 3D geometry with a short fading ribbon, not another system cursor or a permanent yellow ring.
+
 ## 2026-09-08 — Approved sports globe replaces the discipline rotor
 
 The user approved an interactive Three.js globe in the existing discipline strip, superseding the 2D rotor decision for this surface only. No new section. Courts and running lanes follow a common spherical surface instead of geographic continents; sparse structural arcs leave the authentic logo visible at its heart. The original logo contours supply real bevelled relief via the existing worker, with a restrained gimbal response to keep the lettering legible. No generated logo or fabricated geographic reach is implied.

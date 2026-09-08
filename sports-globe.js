@@ -39,7 +39,30 @@
     [-.85,0,.85].forEach(lat=>shell.add(new T.Line(new T.BufferGeometry().setFromPoints(
       Array.from({length:129},(_,j)=>v(j/128*Math.PI*2,lat))),line)));
     ring(2.58,.16,.38,quiet,.018);
-    ring(2.82,.42,-.38,yellow,.018);
+    // A travelling dart and a fading ribbon replace the static yellow orbit.
+    const orbitRotation=new T.Euler(.42,0,-.38);
+    const orbitPoint=a=>new T.Vector3(Math.cos(a)*2.82,0,Math.sin(a)*2.82).applyEuler(orbitRotation);
+    const dartShape=new T.Shape();
+    dartShape.moveTo(0,.2);dartShape.lineTo(-.085,-.11);dartShape.lineTo(0,-.055);dartShape.lineTo(.085,-.11);dartShape.closePath();
+    const dart=new T.Mesh(new T.ExtrudeGeometry(dartShape,{depth:.028,bevelEnabled:false}),new T.MeshBasicMaterial({color:0xefe158,side:T.DoubleSide}));
+    shell.add(dart);
+    const trailPositions=new Float32Array(65*2*3),trailColors=new Float32Array(65*2*3),trailIndices=[];
+    for(let i=0;i<65;i++)for(let j=0;j<2;j++){
+      const color=new T.Color(0xefe158).multiplyScalar(Math.pow(1-i/64,1.8));color.toArray(trailColors,(i*2+j)*3);
+      if(i<64&&j===0){const a=i*2;trailIndices.push(a,a+1,a+2,a+1,a+3,a+2);}
+    }
+    const trailGeometry=new T.BufferGeometry();trailGeometry.setAttribute('position',new T.BufferAttribute(trailPositions,3));trailGeometry.setAttribute('color',new T.BufferAttribute(trailColors,3));trailGeometry.setIndex(trailIndices);
+    const trail=new T.Mesh(trailGeometry,new T.MeshBasicMaterial({vertexColors:true,side:T.DoubleSide,transparent:true,blending:T.AdditiveBlending,depthWrite:false}));trail.frustumCulled=false;shell.add(trail);
+    const basis=new T.Matrix4();
+    function trace(time){
+      const a=time*.65,p=orbitPoint(a),tangent=orbitPoint(a+.001).sub(p).normalize(),normal=p.clone().normalize(),right=tangent.clone().cross(normal).normalize();
+      basis.makeBasis(right,tangent,normal);dart.quaternion.setFromRotationMatrix(basis);dart.position.copy(p);
+      for(let i=0;i<65;i++){
+        const q=orbitPoint(a-i/64*.95),t=orbitPoint(a-i/64*.95+.001).sub(q).normalize(),side=t.cross(q.clone().normalize()).normalize().multiplyScalar(.019*(1-i/70));
+        q.clone().add(side).toArray(trailPositions,i*6);q.sub(side).toArray(trailPositions,i*6+3);
+      }
+      trailGeometry.attributes.position.needsUpdate=true;
+    }
     ring(2.71,-.58,.5,quiet,.022);
     function court(lon,lat,type) {
       const parent=new T.Group();shell.add(parent);
@@ -93,9 +116,10 @@
       geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();
     }
     return {
-      renderer,scene,shell,core,anchors,dispose,
+      renderer,scene,shell,core,anchors,dispose,tracer:dart,
       resize(width,height){camera.aspect=width/height;camera.position.z=Math.max(11.2,12.8/camera.aspect);camera.updateProjectionMatrix();renderer.setSize(width,height,false);},
-      draw(yaw,pitch){
+      draw(yaw,pitch,time=0){
+        trace(time);
         shell.rotation.set(pitch,yaw,0,'YXZ');
         // Gimballed signature stays readable, with a small real parallax response.
         core.rotation.set(pitch*.18,Math.sin(yaw)*.14,-.055);

@@ -18,6 +18,8 @@ async function arrive(p){await p.locator('#disciplines').scrollIntoViewIfNeeded(
 try {
   const p=await open();await p.goto(url,{waitUntil:'domcontentloaded'});await p.waitForTimeout(5000);
   assert.equal(await p.evaluate(()=>!!window.__globe),false,'lazy initialization');await arrive(p);
+  const tracerStart=await p.evaluate(()=>window.__globe.tracer.position.toArray());await p.waitForTimeout(250);
+  assert.notDeepEqual(await p.evaluate(()=>window.__globe.tracer.position.toArray()),tracerStart,'yellow cursor travels around the globe');
   await p.locator('[data-emblem-play]').click();await p.waitForTimeout(1800);
   assert.ok(await p.evaluate(()=>window.__globe.core.children.every(m=>m.geometry.attributes.position.count>0)),'real logo geometry');
   const frames=await p.evaluate(()=>window.__globeFrames);await p.waitForTimeout(300);assert.equal(await p.evaluate(()=>window.__globeFrames),frames,'paused renderer sleeps');
