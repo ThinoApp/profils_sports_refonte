@@ -17,10 +17,12 @@
   <link rel="stylesheet" href="sports-globe.css?v=20260908-3" />
   <link rel="stylesheet" href="impact-intro.css?v=20260904-intro10" />
   <link rel="stylesheet" href="hero-manifesto-transition.css?v=20260903-hero1" />
+  <link rel="stylesheet" href="hero-journey.css?v=20260908-1" />
   <link rel="stylesheet" href="catalogue-particle-preview.css?v=20260903-4" data-catalogue-particle-styles />
   <link rel="stylesheet" href="catalogue-blueprint-morph.css?v=20260903-5" />
   <link rel="stylesheet" href="catalogue-ribbon.css?v=20260905-motion1" />
   <link rel="stylesheet" href="method-scene.css?v=20260907-1" />
+  <noscript><style>.preloader,.hero-shutters{display:none!important}.hero-line b{transform:none!important}[data-reveal]{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
   <div class="preloader" data-preloader aria-hidden="true">
@@ -60,11 +62,17 @@
   </div>
 
   <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-media" data-parallax="0.1" aria-hidden="true">
-        <video class="hero-video" data-hero-video autoplay muted loop playsinline preload="metadata" poster="https://www.profilssports.com/assets/img/slide-1.jpeg">
-          <source src="https://www.profilssports.com/assets/video/video3.mp4" type="video/mp4" />
-        </video>
+    <section class="hero hero--journey" aria-labelledby="hero-title">
+      <div class="hero-media" aria-hidden="true">
+        <svg class="hero-journey-still" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+          <g fill="none" stroke="#667979" stroke-width="1.5">
+            <path d="M320 980C1000 660 500 390 1040 380S1380 690 1800 170"/>
+            <path d="M430 980C1110 660 570 404 1050 394S1430 730 1800 210"/>
+            <path d="M650 980C1310 660 710 432 1070 422S1530 810 1800 290"/>
+            <path d="M760 980C1420 660 780 446 1080 436S1580 850 1800 330"/>
+          </g>
+          <path d="M540 980C1210 660 640 418 1060 408S1480 770 1800 250" fill="none" stroke="#EFE158" stroke-width="3"/>
+        </svg>
       </div>
       <div class="hero-shutters" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="hero-overlay" aria-hidden="true"></div>
@@ -101,6 +109,24 @@
         <span><strong>102</strong><small data-fr="pages catalogue" data-en="catalogue pages">pages catalogue</small></span>
         <span><strong>FR / EN</strong><small data-fr="site en deux langues" data-en="bilingual website">site en deux langues</small></span>
       </div>
+    </section>
+
+    <section class="hero-journey-chapters" aria-label="Votre parcours avec Profils Sports" data-journey-chapters>
+      <article class="hero-journey-chapter" data-journey-chapter>
+        <h2 data-fr="TOUT PART DE VOS ENVIES." data-en="IT STARTS WITH YOUR VISION.">TOUT PART DE VOS ENVIES.</h2>
+        <p data-fr="Un lieu pour se retrouver, s’entraîner, se dépasser. Ensemble, dessinons l’espace qui correspond à vos usages et à votre site." data-en="A place to come together, train and push further. Together, let’s shape a space around your activities and your site.">Un lieu pour se retrouver, s’entraîner, se dépasser. Ensemble, dessinons l’espace qui correspond à vos usages et à votre site.</p>
+        <span class="hero-journey-detail" data-fr="Vos pratiques · Votre lieu · Vos priorités" data-en="Your activities · Your place · Your priorities">Vos pratiques · Votre lieu · Vos priorités</span>
+      </article>
+      <article class="hero-journey-chapter" data-journey-chapter>
+        <h2 data-fr="À CHAQUE SPORT, SON TERRAIN." data-en="EVERY SPORT DESERVES ITS SPACE.">À CHAQUE SPORT, SON TERRAIN.</h2>
+        <p data-fr="Du choix du sol aux équipements, chaque élément compte. Explorez les possibilités pour donner forme à votre projet." data-en="From surfaces to equipment, every element matters. Explore the possibilities for bringing your project to life.">Du choix du sol aux équipements, chaque élément compte. Explorez les possibilités pour donner forme à votre projet.</p>
+        <span class="hero-journey-detail" data-fr="Padel · Fitness · Sports collectifs" data-en="Padel · Fitness · Team sports">Padel · Fitness · Sports collectifs</span>
+      </article>
+      <article class="hero-journey-chapter" data-journey-chapter>
+        <h2 data-fr="PLACE AU JEU. POUR LONGTEMPS." data-en="LET THE GAMES BEGIN. AND CONTINUE.">PLACE AU JEU. POUR LONGTEMPS.</h2>
+        <p data-fr="Installer, entretenir, faire évoluer : nous vous accompagnons pour que votre espace sportif reste un lieu de pratique au quotidien." data-en="Install, maintain, evolve: we support you in keeping your sports space a place for everyday activity.">Installer, entretenir, faire évoluer : nous vous accompagnons pour que votre espace sportif reste un lieu de pratique au quotidien.</p>
+        <span class="hero-journey-detail" data-fr="Installation · Entretien · Accompagnement" data-en="Installation · Maintenance · Support">Installation · Entretien · Accompagnement</span>
+      </article>
     </section>
 
     <section class="manifesto section section--paper" id="approach-intro">
@@ -343,8 +369,9 @@
 
   <script src="impact-intro.js?v=20260904-intro10"></script>
   <script src="script.js?v=20260907-copy1"></script>
-  <script src="hero-manifesto-transition.js?v=20260908-clean1"></script>
+  <script src="hero-manifesto-transition.js?v=20260908-journey1"></script>
   <script src="vendor/three.min.js?v=20260903-3"></script>
+  <script src="hero-journey.js?v=20260908-1"></script>
   <script src="catalogue-particle-preview.js?v=20260903-3"></script>
   <script src="catalogue-blueprint-morph.js?v=20260903-6"></script>
   <script src="catalogue-ribbon.js?v=20260905-emblem2"></script>

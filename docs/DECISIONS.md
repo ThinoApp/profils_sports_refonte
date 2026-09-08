@@ -664,3 +664,13 @@ When making a change that significantly affects any of the following, add a date
 - data sourcing rules
 - deployment architecture
 - protected / approved user-facing behavior
+
+## 2026-09-08 — The Hero becomes a continuous sports-lane journey
+
+The user approved adapting the supplied `neon-thread-prototype-3` directly into the existing Hero, with useful elements revealed at successive depths. Replace the background video, not the page's identity or remaining interaction systems.
+
+Five continuous camera-facing ribbon meshes evoke lane markings: one Profils Sports signal-yellow lane, four quieter secondary lanes, a tangent-following dart and a bounded light pulse. Matching vertices morph between the opening perspective, a banked curve, a deep bend and an opening straight. Use the already vendored Three.js runtime; no duplicate version, glow post-processing chain, framework or remote texture dependency. The rendering style is geometric/architectural rather than the prototype's multicolour neon palette.
+
+The three FR/EN chapter texts speak to visitors: their intended uses, the surfaces/equipment, and installation/maintenance. Each has a stable reading interval and a depth-aware entry/exit. Screen-space attenuation clears the lines behind the text without adding opaque cards. One native scroll progress controls the existing desktop shared stage; the old photo crop is retimed after the immersive portion rather than replaced. The Hero title remains the same measured DOM used by the preloader's cursor construction, and the manifesto photograph receives no added yellow diagrams.
+
+Desktop uses 540svh including the original photo handoff, rather than the prototype's 850vh. Mobile uses 420svh, a narrower camera composition and native exit with the last message remaining readable. Chapter buttons seek real scroll positions; Skip transfers focus to the manifesto. Pause stops the autonomous tracer while retaining scroll control. Normal document reading is the intentional fallback for reduced motion, missing WebGL and short viewports. Changing a breakpoint or reduced-motion preference during the visit tears down the pinned scene and restores the original document structure without reloading the page. Context loss retains a static drawing and working chapter text; restoration resumes the renderer. Existing globe, Method and catalogue modules remain independent.

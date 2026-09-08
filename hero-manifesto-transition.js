@@ -164,8 +164,10 @@
   let scrollDistance = 1;
   let frameRequested = false;
   let lastProgress = -1;
+  let restored = false;
 
   const measure = () => {
+    if (restored) return;
     const stageRect = stage.getBoundingClientRect();
     stageTop = scrollY + stageRect.top;
     scrollDistance = Math.max(1, stage.offsetHeight - innerHeight);
@@ -180,7 +182,12 @@
 
   const render = () => {
     frameRequested = false;
-    const progress = clamp((scrollY - stageTop) / scrollDistance);
+    if (restored) return;
+    const journeyProgress = clamp((scrollY - stageTop) / scrollDistance);
+    // One scroll owner. The immersive journey precedes the existing measured
+    // photo crop, so its camera and the manifesto never compete for the Hero.
+    const journeyActive = stage.hasAttribute('data-journey-stage');
+    const progress = journeyActive ? range(journeyProgress, .72, 1) : journeyProgress;
     if (!targetBox) measure();
 
     const prepareP = smooth(range(progress, 0.16, 0.34));
@@ -210,12 +217,13 @@
     });
 
     heroSecondary.forEach(layer => {
-      const fade = 1 - smooth(range(progress, 0.66, 0.88));
+      const fade = journeyActive ? 1 - smooth(range(journeyProgress, .035, .105)) : 1 - smooth(range(progress, 0.66, 0.88));
       layer.style.opacity = String(fade);
+      layer.inert = fade < .05;
     });
 
     if (heroTitle) {
-      const titleFade = 1 - smooth(range(progress, 0.76, 0.94));
+      const titleFade = journeyActive ? 1 - smooth(range(journeyProgress, .035, .115)) : 1 - smooth(range(progress, 0.76, 0.94));
       heroTitle.style.opacity = String(titleFade);
     }
 
@@ -247,6 +255,9 @@
     }
 
     stage.dataset.phase = progress < 0.20 ? 'hero' : progress < 0.72 ? 'mask' : progress < 0.90 ? 'swap' : 'manifesto';
+    if (journeyActive) {
+      stage.dispatchEvent(new CustomEvent('hero:progress', { detail: { progress: journeyProgress } }));
+    }
     lastProgress = progress;
   };
 
@@ -257,6 +268,7 @@
   };
 
   const refresh = () => {
+    if (restored) return;
     measure();
     requestRender();
   };
@@ -267,5 +279,27 @@
 
   // Fonts can slightly change the measured central target box.
   document.fonts?.ready?.then(refresh).catch(() => {});
+  // The journey can gracefully leave its pinned composition after a runtime
+  // accessibility/breakpoint change. Restore the genuine original document.
+  stage.addEventListener('hero:restore-flow', () => {
+    restored = true;
+    removeEventListener('scroll', requestRender);
+    removeEventListener('resize', refresh);
+    removeEventListener('load', refresh);
+    document.body.classList.remove('has-hero-manifesto-transition');
+    hero.classList.remove('hero--transition');
+    manifesto.classList.remove('manifesto--transition');
+    [hero, heroTitle, manifesto, heading, copy, tape, ...heroVisualLayers, ...heroSecondary].filter(Boolean).forEach(element => {
+      element.style.removeProperty('opacity');
+      element.style.removeProperty('transform');
+      element.inert = false;
+    });
+    if (originalLayout) {
+      if (heading) originalLayout.append(heading);
+      if (copy) originalLayout.append(copy);
+      shell.replaceWith(originalLayout);
+    }
+    stage.replaceWith(hero, manifesto);
+  }, { once: true });
   refresh();
 })();

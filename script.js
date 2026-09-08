@@ -52,7 +52,7 @@
     header?.classList.toggle('is-scrolled', y > 70);
 
     if (!reduced && heroMedia) heroMedia.style.transform = `translate3d(0,${y * .08}px,0) scale(1.045)`;
-    if (!reduced && heroTitle && y < innerHeight * 1.1) {
+    if (!reduced && heroTitle && !heroTitle.closest('.hero--journey') && y < innerHeight * 1.1) {
       const p = clamp(y / innerHeight, 0, 1);
       heroTitle.style.transform = `translate3d(${p * -2.5}vw,${p * 3.8}vh,0) scale(${1 - p * .045})`;
     }

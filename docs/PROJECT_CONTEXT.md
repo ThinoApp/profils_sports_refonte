@@ -347,7 +347,7 @@ The redesign currently references the live Profils Sports asset URLs rather than
 
 The current V3 includes:
 
-1. cinematic video hero
+1. cinematic Three.js sports-lane hero with three scroll-driven project chapters (September 8); the original preloader and headline construction remain
 2. repository-backed proof strip
 3. manifesto / positioning section
 4. horizontal sticky solutions carousel
