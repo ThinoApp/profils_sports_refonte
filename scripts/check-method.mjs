@@ -66,10 +66,14 @@ try {
   assert.equal(await p.evaluate(()=>window.__methodFrames),frames,'settled renderer sleeps');
   // Interrupt an in-flight assembly and finish on the requested state.
   await p.locator('[data-method-step]').nth(1).evaluate(el=>el.click());await p.waitForTimeout(200);
-  const before=await p.evaluate(()=>window.__methodModel.groups.panels.position.y);
-  await p.locator('[data-method-step]').nth(3).evaluate(el=>el.click());
-  const after=await p.evaluate(()=>window.__methodModel.groups.panels.position.y);
-  assert.ok(Math.abs(before-after)<.2,'interruption must not reset geometry');
+  // Measure both sides in one JS task: separate browser round-trips let the
+  // animation advance naturally and can falsely report a geometry reset.
+  const [before,after]=await p.evaluate(()=>{
+    const before=window.__methodModel.groups.panels.position.y;
+    document.querySelectorAll('[data-method-step]')[3].click();
+    return [before,window.__methodModel.groups.panels.position.y];
+  });
+  assert.equal(before,after,'interruption must not reset geometry');
   await p.waitForFunction(()=>Math.abs(window.__methodModel.groups.panels.position.y)<.001);
   await p.locator('[data-language]').evaluate(el=>el.click());
   assert.match(await p.locator('[data-method-light]').innerText(),/Lighting/);

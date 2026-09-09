@@ -1,6 +1,6 @@
 # Current State / Next — Profils Sports Refonte
 
-Last updated: 2026-09-08
+Last updated: 2026-09-09
 
 ## Current version
 
@@ -16,9 +16,13 @@ Primary branch:
 
 ## Recently completed
 
+- Replaced the former photo-based horizontal Solutions carousel with the approved large menu-driven Three.js maquette. Eight verified services, a shared architectural base, interruptible component/camera transitions, exploded-to-assembled installation, a bounded maintenance scan, component explanations and a top-view control. No photos, wheel capture or scroll-driven service changes. This explicit September 9 approval supersedes the older carousel-preservation notes below.
+  - `solutions-model.js`, `solutions-scene.js`, `solutions-scene.css`; runtime uses the existing vendored Three.js. Blue/graphite materials, fine structural details and a single transforming yellow thread preserve the V3/Method direction. Reduced motion keeps meaningful static configurations; local model renders retain menu navigation without WebGL. See `docs/SOLUTIONS_SCENE.md` and `scripts/check-solutions.mjs`. Local iteration, not yet published.
+  - Chromium checks pass for the eight persistent configurations, rapid interruption, full installation, inspection, keyboard, FR/EN, top view, native scrolling, idle/modal/offscreen suspension, actual WebGL context loss/recovery, touch/mobile, reduced motion, no WebGL and no JavaScript. Desktop/mobile captures inspected. Hero, globe/catalogue and Method regression suites pass, including Method lighting on/off. The Method interruption test now measures before/after synchronously, eliminating a false failure caused by animation advancing between browser round-trips; no Method runtime change. Physical Safari/iPhone smoothness remains unverified.
+
 - Replaced the Hero video with the approved immersive sports-lane journey (`hero-journey.js` / `.css`). One continuous camera follows five curved lanes; a signal-yellow dart carries the construction gesture. Three FR/EN reading chapters appear at different depths: imagining the space, choosing its equipment, and keeping it in use. Desktop retains the measured crop into the authentic manifesto photograph; mobile has a shorter pinned journey and natural document exit. No yellow overlay is restored on that photograph.
-  - Native scroll, reversible chapter navigation, pause and skip controls. The existing preloader/title geometry, contact action, Solutions carousel, catalogue ribbon, globe and Method are preserved. No new dependency or remote Hero video download. Reduced motion, absent WebGL and short viewports retain a static line drawing with all three chapters in document flow; a live breakpoint/reduced-motion change also restores that reading flow. Canvas work suspends offscreen, in hidden tabs and behind the catalogue. Check `scripts/check-hero-journey.mjs`; physical Safari/iPhone validation remains to be done before publishing.
-  - Chromium checks pass for the real preloader/title handoff, all three reading plateaus, reverse seeking, FR/EN, pause/resume, skip/focus, offscreen suspension, context loss/restoration, mobile ending, breakpoint changes and reduced/no-WebGL fallbacks. Desktop/mobile captures inspected. Existing `check-globe.mjs` (including catalogue opening) and `check-method.mjs` also pass. This iteration is local and not yet published.
+  - Native scroll, reversible chapter navigation, pause and skip controls. The existing preloader/title geometry, contact action, then-current Solutions carousel, catalogue ribbon, globe and Method were preserved. No new dependency or remote Hero video download. Reduced motion, absent WebGL and short viewports retain a static line drawing with all three chapters in document flow; a live breakpoint/reduced-motion change also restores that reading flow. Canvas work suspends offscreen, in hidden tabs and behind the catalogue. Check `scripts/check-hero-journey.mjs`; physical Safari/iPhone validation remains outstanding.
+  - Chromium checks pass for the real preloader/title handoff, all three reading plateaus, reverse seeking, FR/EN, pause/resume, skip/focus, offscreen suspension, context loss/restoration, mobile ending, breakpoint changes and reduced/no-WebGL fallbacks. Desktop/mobile captures inspected. Existing `check-globe.mjs` (including catalogue opening) and `check-method.mjs` also pass. Published at `b85e656a6525b2e74a41b79e624e69d7ef4d75d7`; GitHub Pages workflow `34222791276` succeeded.
 
 - Globe detail panels now emerge from and retract into their originating icon with speed-sensitive easing/stretch, rounded surfaces and interruptible entry/exit. Desktop/mobile checks pass for entry/exit timing, reversal during close, catalogue focus return, viewport bounds and reduced motion. Removed the Hero transition's technical-line layer and the yellow grid/pitch/scan overlays on the central manifesto image; the transition and photo remain.
 
@@ -77,7 +81,7 @@ Primary branch:
 ## Current priorities
 
 1. Validate the directional cursor visually against the reference video on the live GitHub Pages build.
-2. Polish responsive behavior, especially the horizontal carousel and large typography on tablet/mobile.
+2. Validate the new Solutions maquette and large typography on physical tablet/mobile browsers, especially Safari/iOS.
 3. Build a proper Project / Reference page template ready for real verified projects.
 4. Continue replacing generic/legacy media with verified Profils Sports project imagery when available.
 5. Evolve the current single-page prototype toward the final site information architecture.
@@ -174,7 +178,7 @@ GSAP 3.15.0, ScrollTrigger and SplitText are vendored locally. Line wrapping is 
 
 ### Site-wide motion — September 5
 
-`site-motion.js` / `site-motion.css` enhance the existing composition. The Solutions track has one motion owner selected through `data-motion-track`; `script.js` keeps the baseline when that enhancement is absent. Its travel comes from untransformed panel geometry and real viewport width, including trailing padding. Eight numbered controls navigate the actual scroll positions and retain a vertical reading flow on mobile/reduced motion.
+`site-motion.js` / `site-motion.css` enhance the existing composition. Historically, the Solutions track used a single motion owner selected through `data-motion-track`. The September 9 maquette replaces this rail and removes its opt-in DOM attributes, so neither old scroll controller runs for Solutions. The other site-motion enhancements remain active.
 
 Catalogue/Client/Performance rows reveal with drawn separators, Method media enters through a measured mask, discipline icons arrive in sequence, and a yellow pen draws Contact's circle and axis with a curved pen-up transfer. The approved pre-loader, Hero title and Hero/manifesto choreography retain their existing ownership.
 
@@ -185,7 +189,7 @@ The ribbon keeps its analytic helix. Extra spacing around the enlarged front pag
 - V3 overall art direction
 - signal yellow `#EFE158`
 - monumental editorial typography system
-- horizontal sticky solutions carousel
+- menu-driven Solutions maquette (September 9 approval supersedes the former horizontal carousel)
 - directional dart cursor concept
 - technical blueprint / engineering language
 - repository-backed content integrity rule

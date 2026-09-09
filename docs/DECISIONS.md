@@ -2,6 +2,16 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-09 — One menu-driven architectural Solutions model, without photos
+
+The user approved replacing the existing Solutions display with a larger counterpart to the Method maquette, then clarified two requirements: no real project photographs in Solutions and configurations driven by the service menu, not by scroll. This explicit approval supersedes the older protected horizontal-carousel behavior and the photo/scroll suggestions in the supplied concept document.
+
+Keep the eight verified service families and their visitor-facing FR/EN copy. One large Three.js scene uses a shared base, equipment and structural groups. Stadium seating and access, team-sport equipment, outdoor workout/pumptrack, a cutaway sports hall, illustrative ground layers, installation assembly, maintenance inspection and consulting relationships are different configurations of that same model. No model reset or independent scene swap on a direct jump: camera, component transforms and the single yellow path interpolate from the current state. Installation separates the work packages, pauses briefly, then assembles them; inspection/pen motion is bounded, not an endless loop.
+
+Preserve monumental Barlow Condensed, Archivo, architectural blue/graphite and restrained yellow. Avoid photographic textures, glass cards and decorative globe-like rotation. Menu/part/top-view controls are native buttons, FR/EN aware and keyboard/touch accessible. The mobile model remains visible while selecting a service; vertical scrolling continues the page without capturing the wheel. Other sections and their interaction owners remain unchanged.
+
+The geometry is a bespoke illustrative maquette, not a manufacturer replica, built reference, engineering specification or lighting study. State this in the caption and in the ground-layer annotation. Reuse the vendored Three.js runtime, instantiate seats, load the model only near the section and suspend rendering at rest/offscreen/in hidden tabs/behind the catalogue. Reduced motion shows meaningful static configurations, including the exploded installation. Eight local fallback PNGs are browser renders of this same model; they are not real photographs or generated marketing imagery. Without JavaScript all eight explanations remain available.
+
 ## 2026-09-08 — Icon-origin detail motion and uncluttered Hero transition
 
 The user rejected the square/simple detail-panel appearance. Globe detail panels now expand from the actual icon image bounds, with rounded corners, velocity-dependent duration/stretch and a faster accelerating return to the icon. Web Animations interruptions capture the current visual state; rapid changes let the previous panel retract while the next emerges. Closing remains visible until its animation ends but is inert immediately. Reduced motion bypasses spatial morphing. Preserve catalogue focus return, keyboard/touch and FR/EN.

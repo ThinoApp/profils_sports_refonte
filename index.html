@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="impact-intro.css?v=20260904-intro10" />
   <link rel="stylesheet" href="hero-manifesto-transition.css?v=20260903-hero1" />
   <link rel="stylesheet" href="hero-journey.css?v=20260908-1" />
+  <link rel="stylesheet" href="solutions-scene.css?v=20260909-1" />
   <link rel="stylesheet" href="catalogue-particle-preview.css?v=20260903-4" data-catalogue-particle-styles />
   <link rel="stylesheet" href="catalogue-blueprint-morph.css?v=20260903-5" />
   <link rel="stylesheet" href="catalogue-ribbon.css?v=20260905-motion1" />
@@ -145,48 +146,60 @@
       </div>
     </section>
 
-    <section class="worlds" id="solutions" data-horizontal-section>
-      <div class="worlds-sticky">
-        <div class="worlds-head">
-          <h2 class="display-heading display-heading--light" data-text-reveal data-text-reveal-start="top 72%" data-text-reveal-duration=".9" data-fr="DES SOLUTIONS POUR VOTRE TERRAIN." data-en="SOLUTIONS FOR YOUR SPORTS SPACE.">DES SOLUTIONS POUR VOTRE TERRAIN.</h2>
-          <p data-text-reveal data-text-reveal-start="top 82%" data-text-reveal-duration=".7" data-text-reveal-stagger=".06" data-fr="Créer un espace sportif, renouveler un sol ou entretenir vos équipements : découvrez les services qui répondent à votre besoin." data-en="Build a sports space, replace a surface or maintain your equipment: explore the services that match your needs.">Créer un espace sportif, renouveler un sol ou entretenir vos équipements : découvrez les services qui répondent à votre besoin.</p>
-          <div class="worlds-progress" aria-hidden="true"><span></span></div>
+    <section class="solutions-studio" id="solutions" aria-labelledby="solutions-title">
+      <h2 class="solutions-title" id="solutions-title" data-fr="DES SOLUTIONS POUR VOTRE TERRAIN." data-en="SOLUTIONS FOR YOUR SPORTS SPACE.">DES SOLUTIONS POUR VOTRE TERRAIN.</h2>
+      <div class="solutions-layout">
+        <div class="solutions-sidebar">
+          <div class="solutions-menu" aria-label="Choisissez un métier">
+            <article class="solution-entry">
+              <h3><button type="button" data-solution="0" id="solution-button-0" aria-controls="solution-copy-0" disabled><span aria-hidden="true">01</span><strong data-fr="STADES" data-en="STADIUMS">STADES</strong><i aria-hidden="true"></i></button></h3>
+              <p id="solution-copy-0" data-fr="Installation & aménagement · Tribunes · Sièges de stade · Tunnels d’accès" data-en="Installation & setup · Stands · Stadium seats · Access tunnels">Installation & aménagement · Tribunes · Sièges de stade · Tunnels d’accès</p>
+            </article>
+            <article class="solution-entry">
+              <h3><button type="button" data-solution="1" id="solution-button-1" aria-controls="solution-copy-1" disabled><span aria-hidden="true">02</span><strong data-fr="SPORTS COLLECTIFS" data-en="TEAM SPORTS">SPORTS COLLECTIFS</strong><i aria-hidden="true"></i></button></h3>
+              <p id="solution-copy-1" data-fr="Football · Basket-ball · Handball · Rugby · Volley-ball" data-en="Football · Basketball · Handball · Rugby · Volleyball">Football · Basket-ball · Handball · Rugby · Volley-ball</p>
+            </article>
+            <article class="solution-entry">
+              <h3><button type="button" data-solution="2" id="solution-button-2" aria-controls="solution-copy-2" disabled><span aria-hidden="true">03</span><strong data-fr="ACCÈS LIBRE" data-en="OPEN ACCESS">ACCÈS LIBRE</strong><i aria-hidden="true"></i></button></h3>
+              <p id="solution-copy-2" data-fr="Aires de fitness · Street workout · Pumptrack · Skatepark · Terrains multisports" data-en="Fitness areas · Street workout · Pumptrack · Skatepark · Multi-sport spaces">Aires de fitness · Street workout · Pumptrack · Skatepark · Terrains multisports</p>
+            </article>
+            <article class="solution-entry">
+              <h3><button type="button" data-solution="3" id="solution-button-3" aria-controls="solution-copy-3" disabled><span aria-hidden="true">04</span><strong data-fr="GYMNASES" data-en="SPORTS HALLS">GYMNASES</strong><i aria-hidden="true"></i></button></h3>
+              <p id="solution-copy-3" data-fr="Traçage · Tribunes · Installation & aménagement · Maintenance" data-en="Line marking · Stands · Installation & setup · Maintenance">Traçage · Tribunes · Installation & aménagement · Maintenance</p>
+            </article>
+            <article class="solution-entry">
+              <h3><button type="button" data-solution="4" id="solution-button-4" aria-controls="solution-copy-4" disabled><span aria-hidden="true">05</span><strong data-fr="AMÉNAGEMENT DE SOL" data-en="SPORTS SURFACES">AMÉNAGEMENT DE SOL</strong><i aria-hidden="true"></i></button></h3>
+              <p id="solution-copy-4" data-fr="Sols souples · Gazons synthétiques · Fourniture et pose" data-en="Resilient surfaces · Synthetic turf · Supply and installation">Sols souples · Gazons synthétiques · Fourniture et pose</p>
+            </article>
+            <article class="solution-entry">
+              <h3><button type="button" data-solution="5" id="solution-button-5" aria-controls="solution-copy-5" disabled><span aria-hidden="true">06</span><strong data-fr="INSTALLATION & POSE" data-en="INSTALLATION">INSTALLATION & POSE</strong><i aria-hidden="true"></i></button></h3>
+              <p id="solution-copy-5" data-fr="Équipements et aménagements sports & loisirs" data-en="Sports and leisure equipment installation">Équipements et aménagements sports & loisirs</p>
+            </article>
+            <article class="solution-entry">
+              <h3><button type="button" data-solution="6" id="solution-button-6" aria-controls="solution-copy-6" disabled><span aria-hidden="true">07</span><strong data-fr="MAINTENANCE" data-en="MAINTENANCE">MAINTENANCE</strong><i aria-hidden="true"></i></button></h3>
+              <p id="solution-copy-6" data-fr="Aires de jeux · Matériel sports & loisirs · Gymnases & stades" data-en="Playgrounds · Sports & leisure equipment · Sports halls & stadiums">Aires de jeux · Matériel sports & loisirs · Gymnases & stades</p>
+            </article>
+            <article class="solution-entry">
+              <h3><button type="button" data-solution="7" id="solution-button-7" aria-controls="solution-copy-7" disabled><span aria-hidden="true">08</span><strong data-fr="CONSEIL & EXPERTISE" data-en="CONSULTING & EXPERTISE">CONSEIL & EXPERTISE</strong><i aria-hidden="true"></i></button></h3>
+              <p id="solution-copy-7" data-fr="Conseils pour concevoir et faire évoluer vos espaces sportifs" data-en="Advice on designing and developing your sports spaces">Conseils pour concevoir et faire évoluer vos espaces sportifs</p>
+            </article>
+          </div>
+          <a class="solutions-contact" href="#contact" data-fr="Parlons de votre projet ↗" data-en="Let’s discuss your project ↗">Parlons de votre projet ↗</a>
         </div>
-
-        <div class="worlds-track" data-horizontal-track>
-          <article class="world-panel" data-cursor-label="STADES">
-            <div class="world-media" style="--media:url('https://www.profilssports.com/assets/img/slide-1.jpeg')"></div>
-            <div class="world-copy"><span>01</span><div><h3 data-fr="STADES" data-en="STADIUMS">STADES</h3><p data-fr="Installation & aménagement · Tribunes · Sièges de stade · Tunnels d'accès" data-en="Installation & setup · Stands · Stadium seats · Access tunnels">Installation & aménagement · Tribunes · Sièges de stade · Tunnels d'accès</p></div><b>↗</b></div>
-          </article>
-          <article class="world-panel" data-cursor-label="SPORTS COLLECTIFS">
-            <div class="world-media" style="--media:url('https://www.profilssports.com/assets/img/slide-2.jpg')"></div>
-            <div class="world-copy"><span>02</span><div><h3 data-fr="SPORTS COLLECTIFS" data-en="TEAM SPORTS">SPORTS COLLECTIFS</h3><p data-fr="Football · Basket-ball · Handball · Rugby · Volley-ball" data-en="Football · Basketball · Handball · Rugby · Volleyball">Football · Basket-ball · Handball · Rugby · Volley-ball</p></div><b>↗</b></div>
-          </article>
-          <article class="world-panel" data-cursor-label="ACCÈS LIBRE">
-            <div class="world-media" style="--media:url('https://www.profilssports.com/assets/CATALOGUES_THUMBS/CSP%20Pro/CSP%20PRO_page-0001.jpg')"></div>
-            <div class="world-copy"><span>03</span><div><h3 data-fr="ACCÈS LIBRE" data-en="OPEN ACCESS">ACCÈS LIBRE</h3><p data-fr="Aires de fitness · Street workout · Pumptrack · Skatepark · Terrains multisports" data-en="Fitness areas · Street workout · Pumptrack · Skatepark · Multi-sport fields">Aires de fitness · Street workout · Pumptrack · Skatepark · Terrains multisports</p></div><b>↗</b></div>
-          </article>
-          <article class="world-panel" data-cursor-label="GYMNASES">
-            <div class="world-media" style="--media:url('https://www.profilssports.com/assets/img/slide-3.jpeg')"></div>
-            <div class="world-copy"><span>04</span><div><h3 data-fr="GYMNASES" data-en="INDOOR ARENAS">GYMNASES</h3><p data-fr="Traçage · Tribunes · Installation & aménagement · Maintenance" data-en="Line marking · Stands · Installation & setup · Maintenance">Traçage · Tribunes · Installation & aménagement · Maintenance</p></div><b>↗</b></div>
-          </article>
-          <article class="world-panel" data-cursor-label="AMÉNAGEMENT DE SOL">
-            <div class="world-media" style="--media:url('https://www.profilssports.com/assets/images/catalogue1.jpg')"></div>
-            <div class="world-copy"><span>05</span><div><h3 data-fr="AMÉNAGEMENT DE SOL" data-en="GROUND DESIGN">AMÉNAGEMENT DE SOL</h3><p data-fr="Sols souples · Gazons synthétiques · Fourniture et pose" data-en="Resilient surfaces · Synthetic turf · Supply and installation">Sols souples · Gazons synthétiques · Fourniture et pose</p></div><b>↗</b></div>
-          </article>
-          <article class="world-panel" data-cursor-label="INSTALLATION & POSE">
-            <div class="world-media" style="--media:url('https://www.profilssports.com/assets/images/catalogue2.jpg')"></div>
-            <div class="world-copy"><span>06</span><div><h3 data-fr="INSTALLATION & POSE" data-en="INSTALLATION">INSTALLATION & POSE</h3><p data-fr="Équipements et aménagements sports & loisirs" data-en="Sports and leisure equipment installation">Équipements et aménagements sports & loisirs</p></div><b>↗</b></div>
-          </article>
-          <article class="world-panel" data-cursor-label="MAINTENANCE">
-            <div class="world-media" style="--media:url('https://www.profilssports.com/assets/images/catalogue3.jpg')"></div>
-            <div class="world-copy"><span>07</span><div><h3>MAINTENANCE</h3><p data-fr="Aires de jeux · Matériel sports & loisirs · Gymnases & stades" data-en="Playgrounds · Sports & leisure equipment · Arenas & stadiums">Aires de jeux · Matériel sports & loisirs · Gymnases & stades</p></div><b>↗</b></div>
-          </article>
-          <article class="world-panel" data-cursor-label="CONSEIL & EXPERTISE">
-            <div class="world-media" style="--media:url('https://www.profilssports.com/assets/CATALOGUES_THUMBS/Fitness/Fitness_Page_01.jpg')"></div>
-            <div class="world-copy"><span>08</span><div><h3 data-fr="CONSEIL & EXPERTISE" data-en="CONSULTING & EXPERTISE">CONSEIL & EXPERTISE</h3><p data-fr="Conseils pour concevoir et faire évoluer vos espaces sportifs" data-en="Advice on designing and developing your sports spaces">Conseils pour concevoir et faire évoluer vos espaces sportifs</p></div><b>↗</b></div>
-          </article>
-        </div>
+        <figure class="solutions-figure" aria-labelledby="solutions-caption">
+          <div class="solutions-viewport">
+            <canvas class="solutions-canvas" aria-hidden="true" hidden></canvas>
+            <img class="solutions-still" src="assets/solutions/0.png" alt="" loading="lazy" width="900" height="700" />
+            <div class="solutions-scene-label" aria-hidden="true"><span data-solution-count>01 / 08</span><strong data-solution-name>STADES</strong></div>
+            <div class="solutions-annotation" data-solution-annotation role="status" hidden></div>
+            <p class="solutions-status" data-solution-status role="status" hidden></p>
+          </div>
+          <div class="solutions-tools">
+            <div class="solutions-parts" aria-label="Explorer la maquette" data-solution-parts></div>
+            <button class="solutions-plan" type="button" data-solution-plan aria-pressed="false" hidden data-fr="Vue de dessus" data-en="Top view">Vue de dessus</button>
+          </div>
+          <figcaption id="solutions-caption" data-fr="Maquette illustrative. Les configurations et les couches de sol ne constituent pas un plan de construction." data-en="Illustrative model. Configurations and ground layers are not construction specifications.">Maquette illustrative. Les configurations et les couches de sol ne constituent pas un plan de construction.</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -372,6 +385,7 @@
   <script src="hero-manifesto-transition.js?v=20260908-journey1"></script>
   <script src="vendor/three.min.js?v=20260903-3"></script>
   <script src="hero-journey.js?v=20260908-1"></script>
+  <script src="solutions-scene.js?v=20260909-1"></script>
   <script src="catalogue-particle-preview.js?v=20260903-3"></script>
   <script src="catalogue-blueprint-morph.js?v=20260903-6"></script>
   <script src="catalogue-ribbon.js?v=20260905-emblem2"></script>

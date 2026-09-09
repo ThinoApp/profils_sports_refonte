@@ -1,0 +1,62 @@
+.solutions-studio { background: #0b1b27; color: var(--paper); padding: 116px var(--pad) 80px; scroll-margin-top: 65px; }
+.solutions-title { font: 700 clamp(60px, 6.7vw, 104px)/.88 "Barlow Condensed", sans-serif; letter-spacing: -.025em; max-width: 24ch; margin: 0 0 54px; }
+.solutions-layout { display: grid; grid-template-columns: minmax(290px, .9fr) minmax(0, 2fr); gap: clamp(24px, 4vw, 72px); align-items: start; }
+.solutions-sidebar { min-width: 0; }
+.solution-entry { border-top: 1px solid #344752; }
+.solution-entry:last-child { border-bottom: 1px solid #344752; }
+.solution-entry h3 { margin: 0; }
+.solution-entry button { appearance: none; width: 100%; display: grid; grid-template-columns: 25px 1fr 13px; gap: 12px; align-items: center; padding: 17px 0; border: 0; background: none; color: #aebdc4; text-align: left; cursor: pointer; transition: color .25s; }
+.solution-entry button > span { font: 600 10px/1 "Archivo",sans-serif; font-variant-numeric: tabular-nums; }
+.solution-entry button strong { font: 600 clamp(22px, 1.95vw, 30px)/1 "Barlow Condensed",sans-serif; letter-spacing: .005em; }
+.solution-entry button i { width: 7px; height: 7px; border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: rotate(45deg); transition: transform .35s; }
+.solution-entry button[aria-expanded="true"] { color: var(--signal); }
+.solution-entry button[aria-expanded="true"] i { transform: rotate(135deg); }
+.solution-entry button:hover { color: var(--paper); }
+.solution-entry p { margin: 0; padding: 0 16px 23px 37px; color: #b3c1c7; font-size: 13px; line-height: 1.7; }
+.solutions-contact { display: inline-flex; gap: 20px; border-bottom: 1px solid var(--signal); padding: 16px 0 10px; margin-top: 22px; font: 600 12px/1.4 "Archivo",sans-serif; color: var(--signal); }
+.solutions-figure { min-width: 0; margin: -100px -2vw 0 0; position: sticky; top: 90px; }
+.solutions-viewport { position: relative; height: clamp(530px, 52vw, 750px); overflow: hidden; }
+.solutions-canvas, .solutions-still { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+.solutions-canvas { touch-action: pan-y; }
+.solutions-canvas[hidden], .solutions-still[hidden] { display: none; }
+.solutions-still { object-fit: contain; }
+.solutions-scene-label { position: absolute; top: 35px; right: 0; display: flex; align-items: baseline; gap: 15px; pointer-events: none; }
+.solutions-scene-label span { font: 500 11px/1 "Archivo",sans-serif; color: var(--signal); font-variant-numeric: tabular-nums; }
+.solutions-scene-label strong { font: 600 15px/1 "Barlow Condensed",sans-serif; letter-spacing: .06em; }
+.solutions-tools { display: flex; justify-content: space-between; align-items: start; gap: 20px; min-height: 48px; border-top: 1px solid #344752; padding-top: 14px; }
+.solutions-parts { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.solutions-tools button { appearance: none; border: 0; border-bottom: 1px solid transparent; padding: 9px 0; color: #bccad0; background: none; font: 500 11px/1.3 "Archivo",sans-serif; cursor: pointer; }
+.solutions-tools button[aria-pressed="true"], .solutions-tools button:hover { color: var(--signal); border-color: currentColor; }
+.solutions-plan { white-space: nowrap; }
+.solutions-figure figcaption { font-size: 10px; line-height: 1.6; color: #a2b3be; max-width: 65ch; margin-top: 16px; }
+.solutions-annotation { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); padding: 13px 18px; background: var(--paper); color: var(--ink); font-size: 12px; line-height: 1.5; box-shadow: 0 10px 24px #030b1240; pointer-events: none; }
+.solutions-annotation strong { display: block; font: 600 19px/1.2 "Barlow Condensed",sans-serif; text-transform: uppercase; }
+.solutions-status { position: absolute; left: 20px; right: 20px; bottom: 15px; padding: 14px; background: var(--ink); color: var(--paper); font-size: 12px; line-height: 1.5; }
+.solutions-studio :is(a,button):focus-visible { outline: 2px solid var(--signal); outline-offset: 5px; }
+@media (max-width: 1050px) {
+  .solutions-layout { grid-template-columns: minmax(260px, .9fr) minmax(0, 1.5fr); gap: 22px; }
+  .solutions-figure { margin-top: -60px; margin-right: 0; }
+  .solutions-viewport { height: 560px; }
+}
+@media (max-width: 760px) {
+  .solutions-studio { padding-top: 76px; padding-bottom: 60px; }
+  .solutions-title { font-size: clamp(54px, 12vw, 80px); margin-bottom: 28px; }
+  .solutions-layout { display: flex; flex-direction: column; gap: 22px; }
+  .solutions-sidebar { width: 100%; }
+  .solutions-figure { order: -1; width: 100%; margin: 0; position: relative; top: auto; background: #0b1b27; z-index: 2; }
+  .solutions-enabled .solutions-figure { position: sticky; top: 77px; }
+  .solutions-viewport { height: min(45svh, 390px); min-height: 240px; }
+  .solutions-scene-label { top: 12px; right: 8px; gap: 10px; }
+  .solutions-scene-label strong { max-width: 170px; text-align: right; line-height: 1.2; }
+  .solutions-tools { gap: 12px; padding-top: 6px; min-height: 35px; }
+  .solutions-parts { gap: 2px 15px; }
+  .solutions-tools button { font-size: 10px; min-height: 38px; }
+  .solutions-figure figcaption { margin-top: 5px; font-size: 9px; }
+  .solutions-annotation { bottom: 15px; font-size: 11px; }
+  .solution-entry button { padding: 15px 0; }
+  .solution-entry button { scroll-margin-top: calc(100px + min(45svh, 390px) + 90px); }
+  .solution-entry button strong { font-size: 25px; }
+}
+@media (max-height: 660px) and (max-width: 760px) { .solutions-enabled .solutions-figure { position: relative; top: auto; } }
+@media (prefers-reduced-motion: reduce) { .solution-entry button,.solution-entry button i { transition: none; } }
+@media print { .solutions-figure { position: static !important; } .solution-entry p[hidden] { display: block; } }

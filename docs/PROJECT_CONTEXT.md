@@ -29,7 +29,7 @@ The user explicitly wants:
 - direct implementation, not only recommendations
 - authenticity based on real company data and assets
 - avoidance of generic AI-generated visual language
-- preservation of the horizontal carousel introduced in V2
+- preservation of approved interactions; on September 9 the user explicitly replaced the former horizontal Solutions carousel with a menu-driven architectural maquette
 - fast iteration directly through GitHub so ZIP downloads are no longer necessary
 
 ## Brand / art direction
@@ -350,7 +350,7 @@ The current V3 includes:
 1. cinematic Three.js sports-lane hero with three scroll-driven project chapters (September 8); the original preloader and headline construction remain
 2. repository-backed proof strip
 3. manifesto / positioning section
-4. horizontal sticky solutions carousel
+4. large architectural Solutions maquette, transformed by an eight-service menu (September 9)
 5. catalogue section using real catalogue cover assets
 6. discipline / icon content
 7. technical approach / blueprint section
@@ -358,20 +358,20 @@ The current V3 includes:
 9. contact / CTA area
 10. bilingual FR / EN interactions
 
-## Horizontal carousel
+## Solutions maquette — September 9
 
-The horizontal sticky solutions carousel is a protected interaction because the user explicitly likes it.
+The user explicitly approved replacing the former horizontal sticky Solutions carousel. The subsequent clarification takes precedence over the initial concept document: no real photos in this section, and service selection belongs to the menu, not the scroll.
 
 Current behavior:
 
-- section is very tall in document flow
-- inner content is sticky for one viewport
-- vertical scroll drives horizontal translation
-- left-side title / context remains anchored
-- right-side solution panels move horizontally
-- progress line reflects scroll progress
+- eight verified service families remain in a left-hand menu
+- one large Three.js model occupies the right-hand area, with shared base, components and camera
+- menu changes interrupt from current transforms; Installation includes an exploded-to-assembled sequence
+- visitors can inspect components and switch to an animated top view
+- mobile keeps the model above the service menu; the section has ordinary vertical document flow
+- no WebGL: local renders of the same maquette accompany the service descriptions; no JavaScript: every description is visible
 
-Do not casually replace this with a normal slider or a generic card grid.
+The model is illustrative, not a built reference, manufacturer's design or construction specification. Keep the V3 typography, architectural blue and restrained signal yellow. See `docs/SOLUTIONS_SCENE.md`. The independent catalogue ribbon, globe and Method are unchanged.
 
 ## Directional cursor
 
