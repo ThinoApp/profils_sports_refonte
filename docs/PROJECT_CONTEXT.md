@@ -422,7 +422,7 @@ Especially avoid presenting as fact:
 
 ## Current deployment workflow
 
-GitHub Pages is configured using GitHub Actions.
+GitHub Pages remains the automatic development preview. Since September 9, 2026, the official production site is also served from the OVH shared-hosting cluster at `https://profilssports.com/`.
 
 A workflow exists under:
 
@@ -439,6 +439,16 @@ Current working loop:
 5. user refreshes the public preview URL
 
 This replaces the previous ZIP-download workflow.
+
+Official production publication is a separate, explicit step:
+
+1. verify and commit the exact `main` state to publish
+2. back up the existing OVH root files outside `/www`
+3. upload runtime assets, CSS and JavaScript without deleting the legacy `/www/assets` catalogue/media tree
+4. upload `index.html` last for an atomic-enough static-site switch
+5. exercise the public HTTPS site, including WebGL and fallback paths
+
+Do not store FTP credentials in the repository, documentation, scripts or shell history. The September 9 backup is `/backups/pre-refonte-20260909T121545Z` on the OVH account. GitHub Pages compatibility remains required even though it is no longer the only deployed destination.
 
 ## Implementation philosophy
 

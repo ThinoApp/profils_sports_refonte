@@ -2,6 +2,12 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-09 — Official production moves to the OVH-hosted domain
+
+At the user's explicit request, publish the validated static redesign to `https://profilssports.com/` on the existing OVH shared-hosting cluster. GitHub Pages remains the automatic preview for `main`; OVH production publication is an explicit deployment action.
+
+The deployment merges the refonte into `/www` instead of deleting the directory because current catalogue and manifesto URLs use authentic legacy assets already hosted there. Upload versioned/static resources before `index.html`. Back up replaced root files outside the public directory and verify the public HTTPS experience after upload. Never commit or document FTP credentials. The first production backup is `/backups/pre-refonte-20260909T121545Z`.
+
 ## 2026-09-09 — One menu-driven architectural Solutions model, without photos
 
 The user approved replacing the existing Solutions display with a larger counterpart to the Method maquette, then clarified two requirements: no real project photographs in Solutions and configurations driven by the service menu, not by scroll. This explicit approval supersedes the older protected horizontal-carousel behavior and the photo/scroll suggestions in the supplied concept document.

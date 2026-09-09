@@ -1,6 +1,6 @@
 # Solutions — architectural maquette
 
-September 9, 2026. Replaces the approved former horizontal photo carousel only within `#solutions`. Current iteration is local, not yet published.
+September 9, 2026. Replaces the approved former horizontal photo carousel only within `#solutions`. Published on the official OVH-hosted site the same day.
 
 ## Visitor experience
 

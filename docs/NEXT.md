@@ -4,9 +4,13 @@ Last updated: 2026-09-09
 
 ## Current version
 
-V3 redesign deployed on GitHub Pages.
+V3 redesign deployed on GitHub Pages and on the official OVH hosting.
 
-Live preview:
+Official site:
+
+`https://profilssports.com/`
+
+Development preview:
 
 `https://thinoapp.github.io/profils_sports_refonte/`
 
@@ -17,7 +21,7 @@ Primary branch:
 ## Recently completed
 
 - Replaced the former photo-based horizontal Solutions carousel with the approved large menu-driven Three.js maquette. Eight verified services, a shared architectural base, interruptible component/camera transitions, exploded-to-assembled installation, a bounded maintenance scan, component explanations and a top-view control. No photos, wheel capture or scroll-driven service changes. This explicit September 9 approval supersedes the older carousel-preservation notes below.
-  - `solutions-model.js`, `solutions-scene.js`, `solutions-scene.css`; runtime uses the existing vendored Three.js. Blue/graphite materials, fine structural details and a single transforming yellow thread preserve the V3/Method direction. Reduced motion keeps meaningful static configurations; local model renders retain menu navigation without WebGL. See `docs/SOLUTIONS_SCENE.md` and `scripts/check-solutions.mjs`. Local iteration, not yet published.
+  - `solutions-model.js`, `solutions-scene.js`, `solutions-scene.css`; runtime uses the existing vendored Three.js. Blue/graphite materials, fine structural details and a single transforming yellow thread preserve the V3/Method direction. Reduced motion keeps meaningful static configurations; local model renders retain menu navigation without WebGL. See `docs/SOLUTIONS_SCENE.md` and `scripts/check-solutions.mjs`. Published to the official OVH `/www` directory on September 9.
   - Chromium checks pass for the eight persistent configurations, rapid interruption, full installation, inspection, keyboard, FR/EN, top view, native scrolling, idle/modal/offscreen suspension, actual WebGL context loss/recovery, touch/mobile, reduced motion, no WebGL and no JavaScript. Desktop/mobile captures inspected. Hero, globe/catalogue and Method regression suites pass, including Method lighting on/off. The Method interruption test now measures before/after synchronously, eliminating a false failure caused by animation advancing between browser round-trips; no Method runtime change. Physical Safari/iPhone smoothness remains unverified.
 
 - Replaced the Hero video with the approved immersive sports-lane journey (`hero-journey.js` / `.css`). One continuous camera follows five curved lanes; a signal-yellow dart carries the construction gesture. Three FR/EN reading chapters appear at different depths: imagining the space, choosing its equipment, and keeping it in use. Desktop retains the measured crop into the authentic manifesto photograph; mobile has a shorter pinned journey and natural document exit. No yellow overlay is restored on that photograph.
