@@ -438,16 +438,20 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
   top:var(--aqua-ripple-y,50%);
   width:180vmax;
   height:180vmax;
+  border:2px solid rgba(185,246,255,.48);
   border-radius:50%;
   opacity:0;
   transform:translate(-50%,-50%) scale(.012);
   transform-origin:center;
+  box-shadow:
+    0 0 28px rgba(94,226,247,.28),
+    inset 0 0 34px rgba(94,226,247,.16);
   background:
     radial-gradient(circle at center,
       transparent 0 41%,
       rgba(96,224,246,.08) 44%,
-      rgba(207,250,255,.36) 47%,
-      rgba(105,229,246,.22) 49%,
+      rgba(225,253,255,.58) 47%,
+      rgba(105,229,246,.34) 49%,
       rgba(59,192,221,.08) 52%,
       transparent 56%),
     radial-gradient(circle at center,
@@ -464,9 +468,9 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 }
 @keyframes aquaEntryRipple {
   0% { opacity:0; transform:translate(-50%,-50%) scale(.012); }
-  8% { opacity:.92; }
-  44% { opacity:.72; }
-  76% { opacity:.32; }
+  8% { opacity:.98; }
+  44% { opacity:.84; }
+  76% { opacity:.42; }
   100% { opacity:0; transform:translate(-50%,-50%) scale(1); }
 }
 
