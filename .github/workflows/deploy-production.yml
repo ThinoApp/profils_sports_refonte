@@ -1,0 +1,75 @@
+name: Deploy production to OVH
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ovh-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Record deployed revision
+        run: echo "DEPLOY_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Deploy current main to OVH
+        env:
+          OVH_FTP_HOST: ${{ secrets.OVH_FTP_HOST }}
+          OVH_FTP_USER: ${{ secrets.OVH_FTP_USER }}
+          OVH_FTP_PASSWORD: ${{ secrets.OVH_FTP_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          test -n "$OVH_FTP_HOST"
+          test -n "$OVH_FTP_USER"
+          test -n "$OVH_FTP_PASSWORD"
+
+          lftp -u "$OVH_FTP_USER","$OVH_FTP_PASSWORD" "$OVH_FTP_HOST" <<'EOF'
+          set cmd:fail-exit yes
+          set ftp:ssl-allow no
+          set net:max-retries 3
+          set net:timeout 20
+          set net:reconnect-interval-base 3
+
+          mirror -R             --parallel=4             --verbose             --exclude-glob index.html             --exclude-glob .git/**             --exclude-glob .github/**             --exclude-glob .agents/**             --exclude-glob .codex/**             --exclude-glob .vscode/**             --exclude-glob docs/**             --exclude-glob scripts/**             --exclude-glob AGENTS.md             --exclude-glob README.md             --exclude-glob REPO-DATA-AUDIT.md             . www
+
+          put index.html -o www/index.html
+          bye
+          EOF
+
+      - name: Verify production endpoint
+        run: |
+          set -euo pipefail
+
+          for attempt in 1 2 3 4 5 6; do
+            body="$(curl -fsSL --max-time 20 https://profilssports.com/ || true)"
+
+            if printf '%s' "$body" | grep -q 'aqua-play.js'; then
+              echo "Production is serving the current site."
+              echo "Deployed commit: $DEPLOY_SHA"
+              exit 0
+            fi
+
+            sleep 10
+          done
+
+          echo "Production verification failed."
+          exit 1
