@@ -395,16 +395,16 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
   z-index:0;
   background-position:center;
   background-size:cover;
-  transform:scale(1.055) translate3d(var(--aqua-shift-x,0px),var(--aqua-shift-y,0px),0);
+  transform:scale(1.025);
   opacity:0;
-  transition:opacity .7s ease,transform 1.2s cubic-bezier(.16,1,.3,1);
+  transition:opacity .7s ease,transform 1.05s cubic-bezier(.16,1,.3,1);
 }
 .aqua-portal.is-entering .aqua-portal__scene { transition-delay:.18s,0s; }
 .aqua-portal__scene--court { background-image:url("assets/aqua-play/water-court.jpg"); }
 .aqua-portal__scene--bike { background-image:url("assets/aqua-play/water-bike.jpg"); }
 .aqua-portal.is-open[data-product="court"] .aqua-portal__scene--court,
 .aqua-portal.is-open[data-product="bike"] .aqua-portal__scene--bike { opacity:1; }
-.aqua-portal.is-open .aqua-portal__scene { transform:scale(1.01) translate3d(var(--aqua-shift-x,0px),var(--aqua-shift-y,0px),0); }
+.aqua-portal.is-open .aqua-portal__scene { transform:scale(1); }
 
 .aqua-portal__water {
   z-index:0;
@@ -412,25 +412,18 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
   height:100%;
   display:none;
   opacity:0;
-  transform:scale(1.035);
-  transform-origin:center;
-  filter:saturate(.94) contrast(.96);
-  transition:
-    opacity .42s .12s ease,
-    transform 1.05s cubic-bezier(.16,1,.3,1),
-    filter .9s cubic-bezier(.16,1,.3,1);
+  transform:none;
+  filter:none;
+  transition:opacity .32s .08s ease;
 }
 .aqua-portal.is-water-ready .aqua-portal__water { display:block; }
 .aqua-portal.is-open.is-water-ready .aqua-portal__water {
   opacity:1;
-  transform:scale(1.005);
-  filter:saturate(1) contrast(1);
+  transform:none;
+  filter:none;
 }
-.aqua-portal.is-entering.is-water-ready .aqua-portal__water {
-  filter:saturate(.88) contrast(.93) brightness(.94);
-}
-.aqua-portal.is-water-ready .aqua-portal__scene { opacity:0 !important; }
-.aqua-portal.is-closing .aqua-portal__water { opacity:.72; transition-duration:.35s; }
+.aqua-portal.is-entering.is-water-ready .aqua-portal__water { filter:none; }
+.aqua-portal.is-closing .aqua-portal__water { opacity:.45; transition-duration:.28s; }
 
 .aqua-portal__entry-ripple {
   z-index:2;
