@@ -20,6 +20,8 @@ Primary branch:
 
 ## Recently completed
 
+- Refined the Aqua Play liquid viewer so supplied photography is never warped or resampled through the shader. The native CSS background remains crisp and stable; WebGL now renders only transparent radial light, pointer-responsive wave highlights, caustics and transition accents above the image. Regression checks explicitly protect this no-deformation contract.
+
 - Strengthened the Aqua Play liquid viewer after review: the entrance refraction now launches after the portal becomes perceptible, travels for 1.25 s, adds a fading luminous radial wave from the exact trigger position, and uses stronger shader refraction. Pointer movement now affects a wider area with roughly doubled displacement, two wave frequencies and a slight tangential swirl, while idle throttling and reduced-motion/static fallbacks remain intact. Aqua regression checks pass.
 
 - Upgraded the full-screen Aqua Play viewer with an optional liquid WebGL surface. Opening sends a radial refractive wave from the exact trigger origin; desktop pointer movement creates a local water displacement; idle caustics slow after inactivity; Water Court ↔ Water Bike uses a liquid wipe instead of a plain crossfade. The renderer uses the existing local Three.js runtime, sleeps while closed/hidden, throttles when idle, and falls back to the established static photographic viewer for reduced motion or unavailable WebGL. Aqua regression checks cover the WebGL entrance, pointer wake-up, product wipe, static fallback, FR/EN, focus return, mobile and the original catalogue ribbon.
