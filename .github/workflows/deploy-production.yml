@@ -30,7 +30,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq lftp
 
-      - name: Deploy current main to OVH
+      - name: Back up current OVH root files
         env:
           OVH_FTP_HOST: ${{ secrets.OVH_FTP_HOST }}
           OVH_FTP_USER: ${{ secrets.OVH_FTP_USER }}
@@ -42,15 +42,40 @@ jobs:
           test -n "$OVH_FTP_USER"
           test -n "$OVH_FTP_PASSWORD"
 
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          backup_local="$RUNNER_TEMP/ovh-root-backup"
+          backup_remote="backups/pre-refonte-$stamp"
+          mkdir -p "$backup_local"
+
+          lftp -u "$OVH_FTP_USER","$OVH_FTP_PASSWORD" "$OVH_FTP_HOST" <<EOF
+          set cmd:fail-exit yes
+          set ftp:ssl-allow no
+          set net:max-retries 3
+          set net:timeout 20
+          set net:reconnect-interval-base 3
+          mirror --no-recursion --verbose www "$backup_local"
+          mkdir -p "$backup_remote"
+          mirror -R --verbose "$backup_local" "$backup_remote"
+          bye
+          EOF
+
+          echo "BACKUP_DIR=/$backup_remote" >> "$GITHUB_ENV"
+
+      - name: Deploy current main to OVH
+        env:
+          OVH_FTP_HOST: ${{ secrets.OVH_FTP_HOST }}
+          OVH_FTP_USER: ${{ secrets.OVH_FTP_USER }}
+          OVH_FTP_PASSWORD: ${{ secrets.OVH_FTP_PASSWORD }}
+        run: |
+          set -euo pipefail
+
           lftp -u "$OVH_FTP_USER","$OVH_FTP_PASSWORD" "$OVH_FTP_HOST" <<'EOF'
           set cmd:fail-exit yes
           set ftp:ssl-allow no
           set net:max-retries 3
           set net:timeout 20
           set net:reconnect-interval-base 3
-
-          mirror -R             --parallel=4             --verbose             --exclude-glob index.html             --exclude-glob .git/**             --exclude-glob .github/**             --exclude-glob .agents/**             --exclude-glob .codex/**             --exclude-glob .vscode/**             --exclude-glob docs/**             --exclude-glob scripts/**             --exclude-glob AGENTS.md             --exclude-glob README.md             --exclude-glob REPO-DATA-AUDIT.md             . www
-
+          mirror -R --parallel=4 --verbose --exclude-glob index.html --exclude-glob .git/** --exclude-glob .github/** --exclude-glob .agents/** --exclude-glob .codex/** --exclude-glob .vscode/** --exclude-glob docs/** --exclude-glob scripts/** --exclude-glob AGENTS.md --exclude-glob README.md --exclude-glob REPO-DATA-AUDIT.md . www
           put index.html -o www/index.html
           bye
           EOF
@@ -65,6 +90,7 @@ jobs:
             if printf '%s' "$body" | grep -q 'aqua-play.js'; then
               echo "Production is serving the current site."
               echo "Deployed commit: $DEPLOY_SHA"
+              echo "Backup: $BACKUP_DIR"
               exit 0
             fi
 
