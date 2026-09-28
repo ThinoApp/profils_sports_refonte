@@ -2,6 +2,14 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-28 — Aqua Play viewer behaves like a liquid surface
+
+The full-screen Aqua Play viewer now treats the product photography as a responsive water surface rather than a static background. On capable desktop browsers, a local Three.js shader adds a brief radial refraction when the viewer opens, using the exact header/catalogue trigger position as the ripple origin. Pointer movement produces a bounded local displacement rather than decorative particles; restrained caustic light continues at rest and slows substantially after roughly 2.4 seconds without input.
+
+Switching between Water Court and Water Bike uses the same surface: a distorted liquid frontier wipes between the two authentic Aqua Play images while the product copy settles separately. The effect must remain subordinate to the catalogue content. No bubbles, splash audio, fake water physics, generated product imagery or performance claims are introduced.
+
+The shader is an enhancement only. Reduced motion keeps the established static photographic viewer, missing WebGL/Three.js falls back to the same static scenes, and mobile reduced-motion coverage remains mandatory. The liquid renderer pauses while closed or hidden and throttles to a low frame rate when idle. The existing header wave shortcut, catalogue-row entry, keyboard behavior, focus return and FR/EN PDF links remain the interaction contract.
+
 ## 2026-09-28 — The Aqua viewer behaves like a water surface
 
 Opening Aqua Play should feel like passing through the wave shortcut rather than launching a conventional modal. Keep the existing origin-based full-screen expansion, then layer a restrained Three.js shader surface over the supplied Aqua imagery. The opening emits one radial refractive wave from the exact shortcut/catalogue origin; after the surface settles, slow procedural caustics remain nearly still until pointer movement wakes them.
