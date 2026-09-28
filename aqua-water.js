@@ -247,7 +247,6 @@
       this.warm().then(ready => {
         if (!ready) return;
         this.setProductInstant(this.currentProduct);
-        this.entranceStarted = performance.now();
         this.active = true;
         this.portal.dataset.waterActive = 'true';
         this.closingUntil = 0;
@@ -347,6 +346,10 @@
       if (!this.ready || document.hidden) return;
       const now = performance.now();
       if (!this.active && now >= this.closingUntil) return;
+      if (this.active && !this.entranceStarted) {
+        this.entranceStarted = now;
+        this.portal.dataset.waterEntrance = 'running';
+      }
 
       const entranceElapsedForThrottle = this.entranceStarted ? now - this.entranceStarted : this.entranceDuration;
       const sincePointer = this.lastPointerMove ? now - this.lastPointerMove : 9999;
