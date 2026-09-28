@@ -50,6 +50,10 @@ try {
   assert.equal(Number(await page.locator('.aqua-portal').getAttribute('data-water-entrance-duration')), 1250, 'enhanced radial entrance uses the longer 1.25s travel');
   assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-motion'), 'light-only', 'liquid effect does not deform the photographic background');
+  assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(pending|running|idle)$/, 'opening schedules the radial water entrance');
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.classList.contains('is-water-rippling'), null, { timeout:1500 });
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-entrance'), 'running', 'visible radial ripple is synchronized with the light overlay');
   await page.waitForFunction(() => {
     const scene = document.querySelector('.aqua-portal__scene--court');
     return scene && Number(getComputedStyle(scene).opacity) > .9;
@@ -60,14 +64,10 @@ try {
   });
   assert.ok(crispScene.opacity > .9, 'native Aqua background remains visible at full opacity under the overlay');
   assert.match(crispScene.backgroundImage, /water-court\.jpg/, 'native browser-rendered Aqua image remains the visual source');
-  assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(pending|running|idle)$/, 'opening schedules the radial water entrance');
-  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
-  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.classList.contains('is-water-rippling'), null, { timeout:1500 });
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-entrance'), 'running', 'visible radial ripple is synchronized with the shader entrance');
   await page.locator('.aqua-portal').evaluate(element => {
     element.dispatchEvent(new PointerEvent('pointermove', { clientX:1110, clientY:420, pointerType:'mouse', bubbles:true }));
   });
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-interaction'), 'active', 'pointer wakes the local water distortion');
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-interaction'), 'active', 'pointer wakes the local water-light response');
   await page.waitForTimeout(140);
   const handoffWidth = parseFloat(await page.locator('.aqua-portal').evaluate(element => getComputedStyle(element).getPropertyValue('--aqua-handoff-width')));
   assert.ok(handoffWidth > 40 && handoffWidth < 320, 'header shortcut becomes the portal handoff origin');
