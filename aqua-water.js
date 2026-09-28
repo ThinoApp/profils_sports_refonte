@@ -12,6 +12,8 @@
       this.active = false;
       this.frame = 0;
       this.lastFrame = 0;
+      this.lastRenderedAt = 0;
+      this.lastRenderedAt = 0;
       this.clock = 0;
       this.currentProduct = 'court';
       this.nextProduct = 'court';
@@ -275,7 +277,15 @@
     }
 
     transitionTo(key) {
-      if (!this.ready || !this.textures[key] || key === this.currentProduct) return;
+      if (!key || key === this.currentProduct) return;
+      if (!this.ready || !this.textures[key]) {
+        this.currentProduct = key;
+        this.nextProduct = key;
+        this.warm().then(ready => {
+          if (ready && this.currentProduct === key) this.setProductInstant(key);
+        });
+        return;
+      }
       this.nextProduct = key;
       this.uniforms.uTexA.value = this.textures[this.currentProduct];
       this.uniforms.uTexB.value = this.textures[key];
@@ -333,10 +343,19 @@
       if (!this.ready || document.hidden) return;
       if (!this.active && now >= this.closingUntil) return;
 
-      const dt = Math.min(48, this.lastFrame ? now - this.lastFrame : 16.67);
-      this.lastFrame = now;
-
+      const entranceElapsedForThrottle = this.entranceStarted ? now - this.entranceStarted : this.entranceDuration;
       const sincePointer = this.lastPointerMove ? now - this.lastPointerMove : 9999;
+      const canThrottle = sincePointer > 2400
+        && entranceElapsedForThrottle >= this.entranceDuration
+        && !this.transitionStarted;
+      if (canThrottle && this.lastRenderedAt && now - this.lastRenderedAt < 84) {
+        this.frame = requestAnimationFrame(time => this.render(time));
+        return;
+      }
+      this.lastRenderedAt = now;
+
+      const dt = Math.min(96, this.lastFrame ? now - this.lastFrame : 16.67);
+      this.lastFrame = now;
       const activityTarget = sincePointer < 260 ? 1 : sincePointer < 2300 ? .34 : .06;
       const energyTarget = sincePointer < 900 ? this.pointerEnergyTarget : 0;
       const energyEase = 1 - Math.exp(-dt / 150);
