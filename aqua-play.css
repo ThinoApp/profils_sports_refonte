@@ -371,7 +371,7 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 .aqua-portal[hidden] { display:none; }
 .aqua-portal.is-open { opacity:1; visibility:visible; clip-path:inset(0); transition-delay:0s; }
 .aqua-portal.is-closing { pointer-events:none; clip-path:inset(var(--aqua-origin,50% 0 50% 0)); transition-duration:.52s; }
-.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__water,.aqua-portal__shade,.aqua-portal__line { position:absolute; pointer-events:none; }
+.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__water,.aqua-portal__entry-ripple,.aqua-portal__shade,.aqua-portal__line { position:absolute; pointer-events:none; }
 .aqua-portal__handoff {
   z-index:1;
   left:var(--aqua-handoff-x,0px);
@@ -384,6 +384,12 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 }
 .aqua-portal.is-open .aqua-portal__handoff { opacity:0; }
 .aqua-portal.is-entering .aqua-portal__handoff { transition-delay:.18s; }
+.aqua-portal.is-water-ready.is-open .aqua-portal__handoff {
+  transition-duration:.24s;
+}
+.aqua-portal.is-water-ready.is-entering .aqua-portal__handoff {
+  transition-delay:.04s;
+}
 .aqua-portal__scene,.aqua-portal__water,.aqua-portal__shade { inset:0; }
 .aqua-portal__scene {
   z-index:0;
@@ -426,12 +432,54 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 .aqua-portal.is-water-ready .aqua-portal__scene { opacity:0 !important; }
 .aqua-portal.is-closing .aqua-portal__water { opacity:.72; transition-duration:.35s; }
 
+.aqua-portal__entry-ripple {
+  z-index:2;
+  left:var(--aqua-ripple-x,50%);
+  top:var(--aqua-ripple-y,50%);
+  width:180vmax;
+  height:180vmax;
+  border:2px solid rgba(185,246,255,.48);
+  border-radius:50%;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.012);
+  transform-origin:center;
+  box-shadow:
+    0 0 28px rgba(94,226,247,.28),
+    inset 0 0 34px rgba(94,226,247,.16);
+  background:
+    radial-gradient(circle at center,
+      transparent 0 41%,
+      rgba(96,224,246,.08) 44%,
+      rgba(225,253,255,.58) 47%,
+      rgba(105,229,246,.34) 49%,
+      rgba(59,192,221,.08) 52%,
+      transparent 56%),
+    radial-gradient(circle at center,
+      transparent 0 59%,
+      rgba(121,235,251,.14) 62%,
+      rgba(255,255,255,.12) 64%,
+      transparent 68%);
+  mix-blend-mode:screen;
+  filter:blur(.2px);
+  will-change:transform,opacity;
+}
+.aqua-portal.is-water-rippling .aqua-portal__entry-ripple {
+  animation:aquaEntryRipple 1.25s cubic-bezier(.2,.72,.22,1) both;
+}
+@keyframes aquaEntryRipple {
+  0% { opacity:0; transform:translate(-50%,-50%) scale(.012); }
+  8% { opacity:.98; }
+  44% { opacity:.84; }
+  76% { opacity:.42; }
+  100% { opacity:0; transform:translate(-50%,-50%) scale(1); }
+}
+
 .aqua-portal__shade { z-index:1; background:linear-gradient(90deg,rgba(3,19,32,.92) 0%,rgba(3,19,32,.77) 34%,rgba(3,19,32,.28) 73%,rgba(3,19,32,.3)),linear-gradient(0deg,rgba(3,19,32,.62),transparent 28%); opacity:0; transition:opacity .65s ease; }
 .aqua-portal.is-entering .aqua-portal__shade { transition-delay:.18s; }
 .aqua-portal.is-open .aqua-portal__shade { opacity:1; }
 .aqua-portal__line { z-index:1; inset:auto 0 14% 0; height:1px; background:rgba(169,231,241,.6); transform:scaleX(0); transform-origin:left; transition:transform 1.1s .2s cubic-bezier(.16,1,.3,1); }
 .aqua-portal.is-open .aqua-portal__line { transform:scaleX(1); }
-.aqua-portal__top,.aqua-portal__content,.aqua-portal__footer { position:relative; z-index:2; }
+.aqua-portal__top,.aqua-portal__content,.aqua-portal__footer { position:relative; z-index:3; }
 .aqua-portal__content { opacity:0; transform:translateY(14px); transition:opacity .5s .36s ease,transform .65s .36s cubic-bezier(.16,1,.3,1); }
 .aqua-portal.is-open .aqua-portal__content { opacity:1; transform:none; }
 .aqua-portal.is-closing .aqua-portal__content { opacity:0; transition:opacity .16s ease; }
@@ -504,8 +552,9 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
   .aqua-portal__choices { margin-top:20px; }
 }
 @media (prefers-reduced-motion:reduce) {
-  .site-header::before,.site-header::after,.aqua-shortcut,.aqua-shortcut__shine,.aqua-shortcut__logo,.aqua-shortcut__arrow,.catalogue-gallery,.catalogue-gallery::before,.catalogue-gallery::after,.catalogue-preview__aqua,.aqua-portal,.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__water,.aqua-portal__shade,.aqua-portal__content,.aqua-portal__line { transition-duration:.01ms !important; }
-  .aqua-shortcut__wave,.aqua-shortcut__shine,.aqua-portal.is-product-switching .aqua-portal__detail,.aqua-portal.is-product-switching .aqua-portal__line { animation:none !important; }
+  .site-header::before,.site-header::after,.aqua-shortcut,.aqua-shortcut__shine,.aqua-shortcut__logo,.aqua-shortcut__arrow,.catalogue-gallery,.catalogue-gallery::before,.catalogue-gallery::after,.catalogue-preview__aqua,.aqua-portal,.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__water,.aqua-portal__entry-ripple,.aqua-portal__shade,.aqua-portal__content,.aqua-portal__line { transition-duration:.01ms !important; }
+  .aqua-shortcut__wave,.aqua-shortcut__shine,.aqua-portal__entry-ripple,.aqua-portal.is-product-switching .aqua-portal__detail,.aqua-portal.is-product-switching .aqua-portal__line { animation:none !important; }
+  .aqua-portal__entry-ripple { display:none !important; }
   .catalogue-gallery::after { display:none; }
   .aqua-portal,.aqua-portal.is-closing { clip-path:none; }
   .aqua-portal__content { opacity:1; transform:none; }

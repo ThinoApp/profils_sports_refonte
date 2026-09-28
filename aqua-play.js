@@ -36,6 +36,7 @@
     <div class="aqua-portal__scene aqua-portal__scene--court" aria-hidden="true"></div>
     <div class="aqua-portal__scene aqua-portal__scene--bike" aria-hidden="true"></div>
     <canvas class="aqua-portal__water" data-aqua-water aria-hidden="true"></canvas>
+    <div class="aqua-portal__entry-ripple" aria-hidden="true"></div>
     <div class="aqua-portal__shade" aria-hidden="true"></div>
     <div class="aqua-portal__line" aria-hidden="true"></div>
     <header class="aqua-portal__top">
@@ -120,6 +121,8 @@
     portal.style.setProperty('--aqua-handoff-y', `${handoffRect.top - box.top}px`);
     portal.style.setProperty('--aqua-handoff-width', `${handoffRect.width}px`);
     portal.style.setProperty('--aqua-handoff-height', `${handoffRect.height}px`);
+    portal.style.setProperty('--aqua-ripple-x', `${sourceElementRect.left + sourceElementRect.width / 2 - box.left}px`);
+    portal.style.setProperty('--aqua-ripple-y', `${sourceElementRect.top + sourceElementRect.height / 2 - box.top}px`);
     const origin = sourceOrigin(sourceElement);
     water?.setOrigin(origin);
     return origin;
