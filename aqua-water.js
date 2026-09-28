@@ -335,12 +335,13 @@
 
     resume() {
       if (!this.ready || this.frame || document.hidden) return;
-      this.frame = requestAnimationFrame(time => this.render(time));
+      this.frame = requestAnimationFrame(() => this.render());
     }
 
-    render(now) {
+    render() {
       this.frame = 0;
       if (!this.ready || document.hidden) return;
+      const now = performance.now();
       if (!this.active && now >= this.closingUntil) return;
 
       const entranceElapsedForThrottle = this.entranceStarted ? now - this.entranceStarted : this.entranceDuration;
@@ -349,7 +350,7 @@
         && entranceElapsedForThrottle >= this.entranceDuration
         && !this.transitionStarted;
       if (canThrottle && this.lastRenderedAt && now - this.lastRenderedAt < 84) {
-        this.frame = requestAnimationFrame(time => this.render(time));
+        this.frame = requestAnimationFrame(() => this.render());
         return;
       }
       this.lastRenderedAt = now;
@@ -397,7 +398,7 @@
 
       if (sincePointer > 2400) this.portal.dataset.waterInteraction = 'idle';
 
-      this.frame = requestAnimationFrame(time => this.render(time));
+      this.frame = requestAnimationFrame(() => this.render());
     }
 
     destroy() {
