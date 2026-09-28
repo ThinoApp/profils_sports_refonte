@@ -238,7 +238,7 @@
       this.currentProduct = product;
       this.nextProduct = product;
       this.setOrigin(origin || this.origin);
-      this.entranceStarted = performance.now();
+      this.entranceStarted = 0;
       this.pointerEnergy = 0;
       this.pointerEnergyTarget = 0;
       this.lastPointerMove = 0;
@@ -246,7 +246,8 @@
 
       this.warm().then(ready => {
         if (!ready) return;
-        this.setProductInstant(product);
+        this.setProductInstant(this.currentProduct);
+        this.entranceStarted = performance.now();
         this.active = true;
         this.portal.dataset.waterActive = 'true';
         this.closingUntil = 0;
