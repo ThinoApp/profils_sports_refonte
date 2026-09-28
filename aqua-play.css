@@ -1,4 +1,4 @@
-/* Header shortcut — Aqua Play behaves like a small water portal inside the navigation. */
+/* Header shortcut — Aqua Play is a borderless animated wave capsule. */
 .site-header {
   isolation:isolate;
   overflow:hidden;
@@ -52,64 +52,89 @@
 .site-header .language { white-space:nowrap; }
 
 .aqua-shortcut {
+  --aqua-cyan:#74e8fb;
   --aqua-blue:#00bfff;
   position:relative;
-  min-width:164px;
+  min-width:166px;
   min-height:56px;
-  padding:5px 13px 5px 6px;
+  padding:5px 14px 5px 7px;
   display:grid;
   grid-template-columns:42px minmax(0,1fr) auto;
   align-items:center;
   gap:10px;
   overflow:hidden;
   isolation:isolate;
-  border:1px solid rgba(157,234,246,.42);
-  background:rgba(4,28,46,.28);
+  border:0;
+  border-radius:999px;
+  background:
+    radial-gradient(circle at 16% 16%,rgba(116,232,251,.22),transparent 34%),
+    linear-gradient(135deg,#05263b 0%,#0a3d5c 54%,#0b6d91 100%);
   color:#fff;
   text-transform:uppercase;
+  box-shadow:
+    0 8px 20px rgba(3,22,37,.18),
+    inset 0 1px 0 rgba(255,255,255,.09),
+    inset 0 -1px 0 rgba(255,255,255,.04);
+  transform:translateZ(0);
   transition:
-    border-color .28s ease,
     background .35s ease,
     box-shadow .35s ease,
-    transform .35s cubic-bezier(.16,1,.3,1);
+    transform .36s cubic-bezier(.16,1,.3,1);
 }
-.aqua-shortcut::before {
-  content:"";
+.aqua-shortcut > :not(.aqua-shortcut__waves) {
+  position:relative;
+  z-index:3;
+}
+.aqua-shortcut__waves {
   position:absolute;
-  z-index:0;
+  z-index:1;
   inset:0;
+  overflow:hidden;
+  border-radius:inherit;
   pointer-events:none;
-  background:
-    linear-gradient(90deg,rgba(3,20,33,.96),rgba(5,34,52,.80)),
-    url("assets/aqua-play/water-court.jpg") 65% 50%/cover no-repeat;
-  opacity:0;
-  transform:scale(1.04);
-  transition:opacity .32s ease,transform .62s cubic-bezier(.16,1,.3,1);
 }
-.aqua-shortcut::after {
-  content:"";
+.aqua-shortcut__wave {
   position:absolute;
-  z-index:2;
-  left:48px;
-  right:12px;
-  bottom:7px;
-  height:1px;
-  pointer-events:none;
-  background:linear-gradient(90deg,rgba(157,234,246,0),#9deaf6 22%,var(--aqua-blue) 72%,rgba(157,234,246,0));
-  transform:scaleX(.18);
-  transform-origin:left center;
-  opacity:.62;
-  transition:transform .58s cubic-bezier(.16,1,.3,1),opacity .28s ease;
+  left:-18%;
+  width:136%;
+  height:74%;
+  bottom:-31%;
+  overflow:visible;
+  transform-origin:center;
+  will-change:transform;
 }
-.aqua-shortcut > * { position:relative; z-index:1; }
+.aqua-shortcut__wave path { fill:rgba(116,232,251,.22); }
+.aqua-shortcut__wave--back {
+  bottom:-24%;
+  opacity:.58;
+  animation:aquaShortcutWaveBack 9s linear infinite;
+}
+.aqua-shortcut__wave--back path { fill:rgba(148,241,255,.2); }
+.aqua-shortcut__wave--front {
+  bottom:-34%;
+  opacity:.72;
+  animation:aquaShortcutWaveFront 6.8s linear infinite;
+}
+.aqua-shortcut__wave--front path { fill:rgba(0,191,255,.3); }
+.aqua-shortcut__shine {
+  position:absolute !important;
+  z-index:2 !important;
+  inset:-35% auto -35% -42%;
+  width:38%;
+  pointer-events:none;
+  opacity:0;
+  background:linear-gradient(110deg,transparent 0%,rgba(255,255,255,.03) 22%,rgba(255,255,255,.34) 50%,rgba(255,255,255,.04) 78%,transparent 100%);
+  transform:skewX(-18deg);
+  transition:opacity .2s ease;
+}
 .aqua-shortcut__logo {
   width:42px;
   height:42px;
   display:block;
   object-fit:contain;
   border-radius:50%;
-  filter:drop-shadow(0 5px 10px rgba(0,15,28,.28));
-  transform:rotate(-4deg) scale(.94);
+  filter:drop-shadow(0 5px 10px rgba(0,15,28,.3));
+  transform:rotate(-3deg) scale(.96);
   transition:transform .5s cubic-bezier(.16,1,.3,1),filter .35s ease;
 }
 .aqua-shortcut__copy {
@@ -119,7 +144,7 @@
   min-width:0;
 }
 .aqua-shortcut__copy small {
-  color:#9deaf6;
+  color:#c5f8ff;
   font-size:7px;
   font-weight:800;
   line-height:1;
@@ -134,98 +159,114 @@
   white-space:nowrap;
 }
 .aqua-shortcut__arrow {
-  color:#9deaf6;
+  color:#dffcff;
   font-size:13px;
   transform:translate(0,0);
   transition:transform .32s cubic-bezier(.16,1,.3,1),color .25s ease;
 }
 
-/* On the paper header the shortcut becomes its own dark water viewport.
-   This keeps contrast independent from the header theme and gives the hover
-   transition a clear visual source: the small viewport spills across the bar. */
+/* The capsule owns its contrast on the light header instead of inheriting paper colors. */
 .site-header.is-scrolled .aqua-shortcut {
-  border-color:rgba(0,191,255,.72);
-  background:#071a29;
+  background:
+    radial-gradient(circle at 16% 16%,rgba(116,232,251,.24),transparent 34%),
+    linear-gradient(135deg,#041f33 0%,#083d5d 52%,#0a6f92 100%);
   color:#fff;
   box-shadow:
-    0 8px 24px rgba(7,26,41,.16),
-    inset 0 0 0 1px rgba(255,255,255,.05);
+    0 9px 24px rgba(7,26,41,.2),
+    inset 0 1px 0 rgba(255,255,255,.1),
+    inset 0 -1px 0 rgba(255,255,255,.05);
 }
-.site-header.is-scrolled .aqua-shortcut::before {
-  opacity:.42;
-  transform:scale(1);
-}
-.site-header.is-scrolled .aqua-shortcut::after { opacity:.9; }
-.site-header.is-scrolled .aqua-shortcut__copy small,
-.site-header.is-scrolled .aqua-shortcut__arrow { color:#80e7f8; }
+.site-header.is-scrolled .aqua-shortcut__wave--back path { fill:rgba(157,238,250,.24); }
+.site-header.is-scrolled .aqua-shortcut__wave--front path { fill:rgba(0,191,255,.36); }
 
 .aqua-shortcut:hover,
 .aqua-shortcut:focus-visible,
 .site-header.is-aqua-preview .aqua-shortcut {
-  border-color:#9deaf6;
-  background:#071a29;
+  transform:translateY(-1px) scale(1.025);
+  background:
+    radial-gradient(circle at 18% 12%,rgba(157,238,250,.3),transparent 36%),
+    linear-gradient(135deg,#05283e 0%,#08506f 52%,#078db2 100%);
   box-shadow:
-    0 10px 30px rgba(0,191,255,.13),
-    inset 0 0 0 1px rgba(157,234,246,.08);
+    0 13px 30px rgba(0,95,135,.25),
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -1px 0 rgba(255,255,255,.05);
 }
-.aqua-shortcut:hover::before,
-.aqua-shortcut:focus-visible::before,
-.site-header.is-aqua-preview .aqua-shortcut::before {
-  opacity:.62;
-  transform:scale(1);
+.aqua-shortcut:hover .aqua-shortcut__wave--back,
+.aqua-shortcut:focus-visible .aqua-shortcut__wave--back,
+.site-header.is-aqua-preview .aqua-shortcut__wave--back {
+  animation-duration:5.8s;
+  transform:translateY(-5px);
 }
-.aqua-shortcut:hover::after,
-.aqua-shortcut:focus-visible::after,
-.site-header.is-aqua-preview .aqua-shortcut::after {
-  transform:scaleX(1);
+.aqua-shortcut:hover .aqua-shortcut__wave--front,
+.aqua-shortcut:focus-visible .aqua-shortcut__wave--front,
+.site-header.is-aqua-preview .aqua-shortcut__wave--front {
+  animation-duration:4.1s;
+  transform:translateY(-6px);
+}
+.aqua-shortcut:hover .aqua-shortcut__shine,
+.aqua-shortcut:focus-visible .aqua-shortcut__shine {
   opacity:1;
+  animation:aquaShortcutShine .82s cubic-bezier(.16,1,.3,1) both;
 }
 .aqua-shortcut:hover .aqua-shortcut__logo,
 .aqua-shortcut:focus-visible .aqua-shortcut__logo,
 .site-header.is-aqua-preview .aqua-shortcut__logo {
-  transform:rotate(0) scale(1.04);
-  filter:drop-shadow(0 6px 14px rgba(0,191,255,.28));
+  transform:rotate(0) scale(1.055);
+  filter:drop-shadow(0 7px 15px rgba(0,191,255,.3));
 }
 .aqua-shortcut:hover .aqua-shortcut__arrow,
 .aqua-shortcut:focus-visible .aqua-shortcut__arrow { transform:translate(3px,-3px); }
 .aqua-shortcut:focus-visible { outline:2px solid #9deaf6; outline-offset:4px; }
 
+@keyframes aquaShortcutWaveBack {
+  0% { transform:translate3d(-4%,0,0) scaleX(1.04); }
+  50% { transform:translate3d(5%,-3px,0) scaleX(1.08); }
+  100% { transform:translate3d(-4%,0,0) scaleX(1.04); }
+}
+@keyframes aquaShortcutWaveFront {
+  0% { transform:translate3d(5%,0,0) scaleX(1.05); }
+  50% { transform:translate3d(-6%,-2px,0) scaleX(1.1); }
+  100% { transform:translate3d(5%,0,0) scaleX(1.05); }
+}
+@keyframes aquaShortcutShine {
+  0% { transform:translateX(0) skewX(-18deg); }
+  100% { transform:translateX(430%) skewX(-18deg); }
+}
+
 @media (max-width:1320px) {
   .header-actions { gap:10px; }
   .aqua-shortcut {
-    min-width:132px;
+    min-width:134px;
     padding-right:10px;
     grid-template-columns:36px minmax(0,1fr) auto;
     gap:8px;
   }
   .aqua-shortcut__logo { width:36px; height:36px; }
   .aqua-shortcut__copy small { display:none; }
-  .aqua-shortcut::after { left:42px; }
 }
 @media (max-width:1100px) {
   .aqua-shortcut {
-    min-width:118px;
+    min-width:120px;
     min-height:46px;
     grid-template-columns:34px minmax(0,1fr);
-    padding:4px 9px 4px 5px;
+    padding:4px 10px 4px 6px;
   }
   .aqua-shortcut__logo { width:34px; height:34px; }
   .aqua-shortcut__arrow { display:none; }
-  .aqua-shortcut::after { left:39px; right:8px; bottom:5px; }
   .site-header.is-aqua-preview::before { background-position:64% 52%; }
 }
 @media (max-width:720px) {
   .header-actions { gap:8px; }
   .aqua-shortcut {
-    min-width:92px;
+    min-width:96px;
     min-height:42px;
     grid-template-columns:29px minmax(0,1fr);
     gap:6px;
-    padding:4px 8px 4px 4px;
+    padding:4px 9px 4px 5px;
   }
   .aqua-shortcut__logo { width:29px; height:29px; }
   .aqua-shortcut__copy strong { font-size:10px; letter-spacing:.05em; }
-  .aqua-shortcut::after { left:35px; right:6px; bottom:4px; }
+  .aqua-shortcut__wave { height:80%; }
   .site-header::after { display:none; }
 }
 
@@ -418,7 +459,8 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
   .aqua-portal__choices { margin-top:20px; }
 }
 @media (prefers-reduced-motion:reduce) {
-  .site-header::before,.site-header::after,.aqua-shortcut,.aqua-shortcut::before,.aqua-shortcut__mark,.aqua-shortcut__arrow,.catalogue-gallery,.catalogue-gallery::before,.catalogue-gallery::after,.catalogue-preview__aqua,.aqua-portal,.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__shade,.aqua-portal__content,.aqua-portal__line { transition-duration:.01ms !important; }
+  .site-header::before,.site-header::after,.aqua-shortcut,.aqua-shortcut__shine,.aqua-shortcut__logo,.aqua-shortcut__arrow,.catalogue-gallery,.catalogue-gallery::before,.catalogue-gallery::after,.catalogue-preview__aqua,.aqua-portal,.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__shade,.aqua-portal__content,.aqua-portal__line { transition-duration:.01ms !important; }
+  .aqua-shortcut__wave,.aqua-shortcut__shine { animation:none !important; }
   .catalogue-gallery::after { display:none; }
   .aqua-portal,.aqua-portal.is-closing { clip-path:none; }
   .aqua-portal__content { opacity:1; transform:none; }
