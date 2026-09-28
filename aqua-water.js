@@ -13,14 +13,13 @@
       this.frame = 0;
       this.lastFrame = 0;
       this.lastRenderedAt = 0;
-      this.lastRenderedAt = 0;
       this.clock = 0;
       this.currentProduct = 'court';
       this.nextProduct = 'court';
       this.transitionStarted = 0;
       this.transitionDuration = 760;
       this.entranceStarted = 0;
-      this.entranceDuration = 900;
+      this.entranceDuration = 1250;
       this.lastPointerMove = 0;
       this.pointerEnergy = 0;
       this.pointerEnergyTarget = 0;
@@ -156,27 +155,43 @@
 
               vec2 entranceMetric = (uv - uOrigin) * vec2(aspect, 1.0);
               float entranceDistance = length(entranceMetric);
-              float entranceRadius = mix(.01, 1.48, smoothstep(0.0, 1.0, uEntrance));
-              float entranceRing = gaussian(entranceDistance - entranceRadius, mix(.035, .075, uEntrance));
+              float entranceRadius = mix(.01, 1.62, uEntrance);
+              float entranceLead = gaussian(entranceDistance - (entranceRadius + .055), mix(.034, .055, uEntrance));
+              float entranceRing = gaussian(entranceDistance - entranceRadius, mix(.050, .082, uEntrance));
+              float entranceWake = gaussian(entranceDistance - max(.0, entranceRadius - .115), mix(.070, .110, uEntrance));
               vec2 entranceDirection = entranceDistance > .0001
                 ? entranceMetric / entranceDistance / vec2(aspect, 1.0)
                 : vec2(0.0);
-              float entranceStrength = (1.0 - smoothstep(.30, 1.0, uEntrance)) * .042;
-              uv += entranceDirection * entranceRing * entranceStrength;
-              uv += entranceDirection * sin(entranceDistance * 46.0 - uEntrance * 18.0) * entranceRing * entranceStrength * .28;
+              float entranceStrength = (1.0 - smoothstep(.58, 1.0, uEntrance)) * .072;
+              float entrancePulse = entranceRing + entranceWake * .52 + entranceLead * .34;
+              uv += entranceDirection * entrancePulse * entranceStrength;
+              uv += entranceDirection
+                * sin(entranceDistance * 38.0 - uEntrance * 21.0)
+                * (entranceRing + entranceWake * .38)
+                * entranceStrength
+                * .52;
 
               vec2 pointerMetric = (uv - uPointer) * vec2(aspect, 1.0);
               float pointerDistance = length(pointerMetric);
-              float pointerFalloff = exp(-pointerDistance * pointerDistance * 44.0);
+              float pointerFalloff = exp(-pointerDistance * pointerDistance * 24.0);
               vec2 pointerDirection = pointerDistance > .0001
                 ? pointerMetric / pointerDistance / vec2(aspect, 1.0)
                 : vec2(0.0);
-              float pointerWave = sin(pointerDistance * 58.0 - uTime * 5.4) * pointerFalloff * uEnergy;
-              uv += pointerDirection * pointerWave * .0065;
+              vec2 pointerTangent = vec2(-pointerDirection.y, pointerDirection.x);
+              float pointerWave = (
+                sin(pointerDistance * 48.0 - uTime * 6.2) * .72
+                + sin(pointerDistance * 27.0 - uTime * 3.15) * .28
+              ) * pointerFalloff * uEnergy;
+              uv += pointerDirection * pointerWave * .0125;
+              uv += pointerTangent
+                * cos(pointerDistance * 32.0 - uTime * 4.1)
+                * pointerFalloff
+                * uEnergy
+                * .0028;
               uv += vec2(
-                sin((uv.y * 8.0 + uTime * .34) * 3.14159),
-                cos((uv.x * 7.0 - uTime * .29) * 3.14159)
-              ) * (.00045 + .0009 * uActivity);
+                sin((uv.y * 8.0 + uTime * .42) * 3.14159),
+                cos((uv.x * 7.0 - uTime * .36) * 3.14159)
+              ) * (.00055 + .00125 * uActivity);
 
               float frontier = uMix * 1.36 - .18;
               float liquidLine = uv.x
@@ -199,11 +214,16 @@
               float causticA = sin(c.x * 2.2 + sin(c.y * 1.4 + uTime * .46));
               float causticB = sin(c.y * 2.55 - cos(c.x * 1.3 - uTime * .34));
               float caustic = pow(clamp((causticA + causticB) * .24 + .52, 0.0, 1.0), 6.0);
-              float causticStrength = mix(.016, .065, uActivity);
+              float causticStrength = mix(.018, .074, uActivity);
               color += vec3(.20, .56, .68) * caustic * causticStrength;
 
-              float entranceGlow = entranceRing * (1.0 - smoothstep(.48, 1.0, uEntrance));
-              color += vec3(.40, .85, .96) * entranceGlow * .16;
+              float entranceGlow = (entranceRing + entranceLead * .72 + entranceWake * .32)
+                * (1.0 - smoothstep(.68, 1.0, uEntrance));
+              color += vec3(.48, .90, 1.0) * entranceGlow * .285;
+
+              float pointerGlow = pointerFalloff * min(1.25, uEnergy);
+              color += vec3(.16, .70, .82) * pointerGlow * .038;
+
               color += vec3(.18, .58, .70) * transitionEdge * .055;
 
               gl_FragColor = vec4(color, 1.0);
@@ -218,6 +238,7 @@
         this.ready = true;
         this.portal.dataset.waterMode = 'webgl';
         this.portal.dataset.waterReady = 'true';
+        this.portal.dataset.waterMotion = 'enhanced';
         this.portal.dataset.waterActive = 'false';
         this.portal.classList.add('is-water-ready');
         return true;
@@ -315,7 +336,7 @@
       const speed = Math.sqrt(dx * dx + dy * dy) / dt * 1000;
       this.pointerTarget.x = x;
       this.pointerTarget.y = y;
-      this.pointerEnergyTarget = Math.min(1, .20 + speed * .085);
+      this.pointerEnergyTarget = Math.min(1.35, .34 + speed * .14);
       this.lastPointerMove = now;
       this.portal.dataset.waterInteraction = 'active';
       this.resume();
@@ -365,13 +386,13 @@
 
       const dt = Math.min(96, this.lastFrame ? now - this.lastFrame : 16.67);
       this.lastFrame = now;
-      const activityTarget = sincePointer < 260 ? 1 : sincePointer < 2300 ? .34 : .06;
+      const activityTarget = sincePointer < 320 ? 1.15 : sincePointer < 2300 ? .40 : .06;
       const energyTarget = sincePointer < 900 ? this.pointerEnergyTarget : 0;
-      const energyEase = 1 - Math.exp(-dt / 150);
+      const energyEase = 1 - Math.exp(-dt / 115);
       this.pointerEnergy += (energyTarget - this.pointerEnergy) * energyEase;
-      this.pointerEnergyTarget *= Math.pow(.994, dt);
+      this.pointerEnergyTarget *= Math.pow(.996, dt);
 
-      const pointerEase = 1 - Math.exp(-dt / 95);
+      const pointerEase = 1 - Math.exp(-dt / 72);
       this.pointer.x += (this.pointerTarget.x - this.pointer.x) * pointerEase;
       this.pointer.y += (this.pointerTarget.y - this.pointer.y) * pointerEase;
 
@@ -381,7 +402,7 @@
 
       const entranceElapsed = this.entranceStarted ? now - this.entranceStarted : this.entranceDuration;
       const entrance = Math.max(0, Math.min(1, entranceElapsed / this.entranceDuration));
-      const entranceEase = 1 - Math.pow(1 - entrance, 3);
+      const entranceEase = entrance * entrance * (3 - 2 * entrance);
       if (entrance >= 1 && this.portal.dataset.waterEntrance === 'running') this.portal.dataset.waterEntrance = 'idle';
 
       if (this.transitionStarted) {
