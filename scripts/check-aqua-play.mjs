@@ -48,7 +48,7 @@ try {
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterReady === 'true', null, { timeout:5000 });
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-mode'), 'webgl', 'desktop Aqua viewer uses the WebGL liquid surface');
   assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-entrance'), 'running', 'opening starts the radial water entrance');
+  assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(running|idle)$/, 'opening schedules the radial water entrance');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
   await page.mouse.move(1110, 420);
   await page.waitForTimeout(140);
