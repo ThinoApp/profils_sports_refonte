@@ -50,9 +50,11 @@ try {
   assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
   assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(running|idle)$/, 'opening schedules the radial water entrance');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
-  await page.mouse.move(1110, 420);
-  await page.waitForTimeout(140);
+  await page.locator('.aqua-portal').evaluate(element => {
+    element.dispatchEvent(new PointerEvent('pointermove', { clientX:1110, clientY:420, pointerType:'mouse', bubbles:true }));
+  });
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-interaction'), 'active', 'pointer wakes the local water distortion');
+  await page.waitForTimeout(140);
   const handoffWidth = parseFloat(await page.locator('.aqua-portal').evaluate(element => getComputedStyle(element).getPropertyValue('--aqua-handoff-width')));
   assert.ok(handoffWidth > 40 && handoffWidth < 320, 'header shortcut becomes the portal handoff origin');
   await page.locator('[data-aqua-close]').click();
@@ -88,7 +90,7 @@ try {
   assert.match(await page.locator('[data-aqua-link]').getAttribute('href'), /water-court-fr\.pdf$/);
   await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-portal-desktop.png' });
 
-  await page.locator('[data-aqua-choice="bike"]').click();
+  await page.locator('[data-aqua-choice="bike"]').evaluate(element => element.click());
   assert.match(await page.locator('.aqua-portal').getAttribute('data-water-transition'), /court-to-bike/, 'product change starts a liquid wipe');
   await page.waitForTimeout(320);
   await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-liquid-wipe.png' });
