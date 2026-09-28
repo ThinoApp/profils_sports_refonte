@@ -229,6 +229,7 @@
       portal.hidden = true;
       portal.classList.remove('is-closing');
       previousFocus?.focus({ preventScroll:true });
+      if (previousFocus?.matches?.('[data-aqua-shortcut]')) setHeaderPreview(false);
     }, reduced ? 0 : 540);
   };
 
