@@ -47,7 +47,6 @@ try {
   await page.waitForSelector('.aqua-portal.is-open');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterReady === 'true', null, { timeout:5000 });
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-mode'), 'webgl-overlay', 'desktop Aqua viewer uses a transparent WebGL liquid overlay');
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-motion'), 'enhanced', 'Aqua viewer uses the amplified liquid tuning');
   assert.equal(Number(await page.locator('.aqua-portal').getAttribute('data-water-entrance-duration')), 1250, 'enhanced radial entrance uses the longer 1.25s travel');
   assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-motion'), 'light-only', 'liquid effect does not deform the photographic background');
