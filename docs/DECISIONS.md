@@ -2,6 +2,14 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-28 — The Aqua viewer behaves like a water surface
+
+Opening Aqua Play should feel like passing through the wave shortcut rather than launching a conventional modal. Keep the existing origin-based full-screen expansion, then layer a restrained Three.js shader surface over the supplied Aqua imagery. The opening emits one radial refractive wave from the exact shortcut/catalogue origin; after the surface settles, slow procedural caustics remain nearly still until pointer movement wakes them.
+
+Desktop pointer movement creates a bounded local refraction around the cursor rather than particles, splashes or bubbles. Water Court ↔ Water Bike changes use one horizontal liquid wipe with a distorted wave front instead of a cross-fade. Supporting copy moves only slightly during that transition so the photography remains the primary effect. The surface throttles when idle and pauses when hidden/closed.
+
+This treatment must remain progressive enhancement. The existing CSS photography stays underneath as the no-WebGL fallback, `prefers-reduced-motion` keeps that static presentation, touch does not receive cursor refraction, and all FR/EN brochure links, keyboard controls, focus return and the catalogue-row entry remain unchanged. Do not add autoplay audio, decorative bubbles, fish or exaggerated splash effects.
+
 ## 2026-09-28 — Aqua Play gets a direct header gate
 
 Aqua Play now has a dedicated shortcut in the persistent site header instead of requiring visitors to discover it only inside the catalogue list. Keep it as a restrained architectural control, not a generic promotional pill.
