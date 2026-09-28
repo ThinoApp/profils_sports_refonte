@@ -43,7 +43,7 @@ try {
   await page.waitForTimeout(700);
   assert.equal(await page.locator('[data-header]').evaluate(element => element.classList.contains('is-aqua-preview')), true, 'header enters Aqua preview state');
   await page.screenshot({ path:'/tmp/aqua-header-preview.png' });
-  await shortcut.click();
+  await shortcut.evaluate(element => element.click());
   await page.waitForSelector('.aqua-portal.is-open');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterReady === 'true', null, { timeout:5000 });
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-mode'), 'webgl', 'desktop Aqua viewer uses the WebGL liquid surface');
