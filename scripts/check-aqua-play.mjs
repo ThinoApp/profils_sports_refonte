@@ -46,18 +46,27 @@ try {
   await shortcut.evaluate(element => element.click());
   await page.waitForSelector('.aqua-portal.is-open');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterReady === 'true', null, { timeout:5000 });
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-mode'), 'webgl', 'desktop Aqua viewer uses the WebGL liquid surface');
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-motion'), 'enhanced', 'Aqua viewer uses the amplified liquid tuning');
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-mode'), 'webgl-overlay', 'desktop Aqua viewer uses a transparent WebGL liquid overlay');
   assert.equal(Number(await page.locator('.aqua-portal').getAttribute('data-water-entrance-duration')), 1250, 'enhanced radial entrance uses the longer 1.25s travel');
   assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-motion'), 'light-only', 'liquid effect does not deform the photographic background');
   assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(pending|running|idle)$/, 'opening schedules the radial water entrance');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
-  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.classList.contains('is-water-rippling'), null, { timeout:1500 });
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-entrance'), 'running', 'visible radial ripple is synchronized with the shader entrance');
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterEntrance === 'running', null, { timeout:1500 });
+  await page.waitForFunction(() => {
+    const scene = document.querySelector('.aqua-portal__scene--court');
+    return scene && Number(getComputedStyle(scene).opacity) > .9;
+  }, null, { timeout:1800 });
+  const crispScene = await page.locator('.aqua-portal__scene--court').evaluate(element => {
+    const style = getComputedStyle(element);
+    return { opacity:Number(style.opacity), transform:style.transform, backgroundImage:style.backgroundImage };
+  });
+  assert.ok(crispScene.opacity > .9, 'native Aqua background remains visible at full opacity under the overlay');
+  assert.match(crispScene.backgroundImage, /water-court\.jpg/, 'native browser-rendered Aqua image remains the visual source');
   await page.locator('.aqua-portal').evaluate(element => {
     element.dispatchEvent(new PointerEvent('pointermove', { clientX:1110, clientY:420, pointerType:'mouse', bubbles:true }));
   });
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-interaction'), 'active', 'pointer wakes the local water distortion');
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-interaction'), 'active', 'pointer wakes the local water-light response');
   await page.waitForTimeout(140);
   const handoffWidth = parseFloat(await page.locator('.aqua-portal').evaluate(element => getComputedStyle(element).getPropertyValue('--aqua-handoff-width')));
   assert.ok(handoffWidth > 40 && handoffWidth < 320, 'header shortcut becomes the portal handoff origin');
@@ -166,7 +175,7 @@ try {
     assert.match(response.headers.get('content-type') || '', /pdf/, file);
   }
   assert.deepEqual(errors, []);
-  console.log('PASS: Aqua wave shortcut, amplified radial entrance, stronger pointer refraction, liquid product wipe, WebGL/static fallbacks, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
+  console.log('PASS: Aqua wave shortcut, crisp native backgrounds, light-only liquid overlay, radial entrance, pointer surface motion, product transition, fallbacks, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
 } finally {
   await browser.close();
 }

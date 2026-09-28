@@ -2,6 +2,12 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-28 — Aqua photography stays native and undeformed
+
+Review showed that rendering the supplied Aqua Play photography through the WebGL shader made the background look softer/pixelated and the stronger pointer refraction visibly warped the product image. The liquid effect is now an overlay only: the browser renders the original supplied JPG directly as the CSS background, while WebGL draws transparent caustic light, pointer-driven wave highlights, the radial entrance cue and the product-transition light frontier above it.
+
+Do not feed the catalogue photography back through a displacement shader. The Aqua image must remain crisp, stable and geometrically unchanged at all times. Liquid interaction should be communicated through light, ripples and surface energy rather than by bending product photography. The existing reduced-motion/static fallback remains unchanged.
+
 ## 2026-09-28 — Aqua Play liquid motion gets a stronger readable amplitude
 
 The first liquid pass was intentionally restrained, but review showed that the radial entrance and pointer displacement were too subtle once layered under the expanding portal. The entrance now launches slightly after the portal begins opening so the effect is actually visible, uses a longer 1.25 s travel, stronger shader refraction, and a soft luminous wave ring tied to the exact trigger origin. The visual ring is only an entrance cue; it fades completely and does not remain as decoration.
