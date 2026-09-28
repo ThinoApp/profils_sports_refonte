@@ -1,6 +1,6 @@
 # Current State / Next — Profils Sports Refonte
 
-Last updated: 2026-09-09
+Last updated: 2026-09-28
 
 ## Current version
 
@@ -19,6 +19,8 @@ Primary branch:
 `main`
 
 ## Recently completed
+
+- Header wordmark: “SPORTS” now shares the signal-yellow accent of “INTERNATIONAL”; the latter is right-aligned beneath “SPORTS” at desktop and mobile widths. The scrolled paper header retains the existing darker accessible accent.
 
 - Replaced the former photo-based horizontal Solutions carousel with the approved large menu-driven Three.js maquette. Eight verified services, a shared architectural base, interruptible component/camera transitions, exploded-to-assembled installation, a bounded maintenance scan, component explanations and a top-view control. No photos, wheel capture or scroll-driven service changes. This explicit September 9 approval supersedes the older carousel-preservation notes below.
   - `solutions-model.js`, `solutions-scene.js`, `solutions-scene.css`; runtime uses the existing vendored Three.js. Blue/graphite materials, fine structural details and a single transforming yellow thread preserve the V3/Method direction. Reduced motion keeps meaningful static configurations; local model renders retain menu navigation without WebGL. See `docs/SOLUTIONS_SCENE.md` and `scripts/check-solutions.mjs`. Published to the official OVH `/www` directory on September 9.

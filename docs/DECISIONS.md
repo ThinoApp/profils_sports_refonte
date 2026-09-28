@@ -2,6 +2,10 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-28 — Header wordmark alignment
+
+Use the signal-yellow accent for “SPORTS” and “INTERNATIONAL” in the header. Position “INTERNATIONAL” below and right-aligned with “SPORTS”. On the paper-colored scrolled header, keep the existing deeper yellow for legibility. The logo mark and intro landing geometry remain unchanged. The two replaced production files are backed up at `/backups/pre-header-20260928T075544Z` on OVH.
+
 ## 2026-09-09 — Official production moves to the OVH-hosted domain
 
 At the user's explicit request, publish the validated static redesign to `https://profilssports.com/` on the existing OVH shared-hosting cluster. GitHub Pages remains the automatic preview for `main`; OVH production publication is an explicit deployment action.
