@@ -47,9 +47,12 @@ try {
   await page.waitForSelector('.aqua-portal.is-open');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterReady === 'true', null, { timeout:5000 });
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-mode'), 'webgl', 'desktop Aqua viewer uses the WebGL liquid surface');
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-motion'), 'enhanced', 'Aqua viewer uses the amplified liquid tuning');
   assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
   assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(running|idle)$/, 'opening schedules the radial water entrance');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
+  await page.waitForTimeout(520);
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-entrance'), 'running', 'stronger radial entrance remains visible through the middle of the opening');
   await page.locator('.aqua-portal').evaluate(element => {
     element.dispatchEvent(new PointerEvent('pointermove', { clientX:1110, clientY:420, pointerType:'mouse', bubbles:true }));
   });
@@ -162,7 +165,7 @@ try {
     assert.match(response.headers.get('content-type') || '', /pdf/, file);
   }
   assert.deepEqual(errors, []);
-  console.log('PASS: Aqua wave shortcut, radial liquid entrance, pointer refraction, liquid product wipe, WebGL/static fallbacks, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
+  console.log('PASS: Aqua wave shortcut, amplified radial entrance, stronger pointer refraction, liquid product wipe, WebGL/static fallbacks, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
 } finally {
   await browser.close();
 }
