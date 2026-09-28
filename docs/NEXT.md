@@ -20,6 +20,8 @@ Primary branch:
 
 ## Recently completed
 
+- Added an explicit manual OVH production workflow at `.github/workflows/deploy-production.yml`. It deploys the current `main` branch only when `workflow_dispatch` is triggered, backs up the existing OVH document-root files under `/backups/pre-refonte-<timestamp>`, overlays runtime files without deleting legacy `/www` assets, uploads `index.html` last, and verifies the public HTTPS endpoint. The workflow reads `OVH_FTP_HOST`, `OVH_FTP_USER` and `OVH_FTP_PASSWORD` from GitHub Actions secrets; production publication therefore remains a deliberate action rather than an automatic side effect of every push.
+
 - Aqua Play is now a fifth catalogue collection, using the user-supplied Water Court and Water Bike sheets in FR/EN. Desktop hover/focus immerses the entire catalogue gallery in an architectural water scene; opening expands that visual world into a dedicated two-product viewer. The existing four 3D catalogue ribbons are untouched. The 102-page figure still refers only to the four original page sequences, with two additional Aqua Play sheets identified separately. Local browser checks cover both products, language-matched PDFs, original ribbon regression, keyboard focus, mobile and reduced motion. Official OVH publication remains a separate explicit action.
 
 - Header wordmark: “SPORTS” now shares the signal-yellow accent of “INTERNATIONAL”; the latter is right-aligned beneath “SPORTS” at desktop and mobile widths. The scrolled paper header retains the existing darker accessible accent.
