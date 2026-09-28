@@ -50,6 +50,10 @@ try {
   assert.equal(Number(await page.locator('.aqua-portal').getAttribute('data-water-entrance-duration')), 1250, 'enhanced radial entrance uses the longer 1.25s travel');
   assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-motion'), 'light-only', 'liquid effect does not deform the photographic background');
+  await page.waitForFunction(() => {
+    const scene = document.querySelector('.aqua-portal__scene--court');
+    return scene && Number(getComputedStyle(scene).opacity) > .9;
+  }, null, { timeout:1800 });
   const crispScene = await page.locator('.aqua-portal__scene--court').evaluate(element => {
     const style = getComputedStyle(element);
     return { opacity:Number(style.opacity), transform:style.transform, backgroundImage:style.backgroundImage };
