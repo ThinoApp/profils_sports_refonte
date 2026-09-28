@@ -20,6 +20,8 @@ async function pageFor(options = {}) {
 
 try {
   const page = await pageFor();
+  await page.evaluate(() => scrollTo(0, Math.min(5000, document.documentElement.scrollHeight - innerHeight)));
+  await page.waitForFunction(() => document.querySelector('[data-header]')?.classList.contains('is-scrolled'));
   const shortcut = page.locator('[data-aqua-shortcut]');
   assert.equal(await shortcut.isVisible(), true, 'Aqua shortcut is visible in the fixed header');
   assert.match(await shortcut.locator('.aqua-shortcut__logo').getAttribute('src'), /assets\/aqua-play\/logo\.png$/, 'official Aqua Play logo is used in the shortcut');
