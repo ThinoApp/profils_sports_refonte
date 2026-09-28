@@ -218,6 +218,7 @@
         this.ready = true;
         this.portal.dataset.waterMode = 'webgl';
         this.portal.dataset.waterReady = 'true';
+        this.portal.dataset.waterActive = 'false';
         this.portal.classList.add('is-water-ready');
         return true;
       } catch (error) {
