@@ -2,6 +2,14 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-28 — Aqua Play enters through the catalogue gallery
+
+The supplied Aqua Play package contains two distinct one-page brochures, Water Court and Water Bike, each in French and English. Present Aqua Play as a fifth collection with two product sheets, not as four extra catalogue pages or a two-page version of the existing helix.
+
+Hovering or focusing its row changes the whole catalogue gallery from architectural paper to a darkened water scene using the supplied imagery. A restrained cursor-following light field responds within that scene; the site's directional white cursor itself is unchanged. Opening expands the same visual world from the selected row into a full-viewport Aqua Play viewer. Visitors select either product and open its language-matched original PDF. The four established catalogues keep their independent 3D page ribbon and particle preview. The Aqua view deliberately suppresses those effects so its physical imagery can lead.
+
+The source imagery is presentation material, not evidence of a delivered installation. The experience makes no product-performance, project or engineering claim. Touch, keyboard, reduced motion and no-JavaScript paths remain navigable; original PDFs are local static assets. This interaction should be validated on a physical mobile Safari device before official production publication. GitHub Pages `main` remains the review preview; OVH remains a separate explicit deployment step.
+
 ## 2026-09-28 — Header wordmark alignment
 
 Use the signal-yellow accent for “SPORTS” and “INTERNATIONAL” in the header. Position “INTERNATIONAL” below and right-aligned with “SPORTS”. On the paper-colored scrolled header, keep the existing deeper yellow for legibility. The logo mark and intro landing geometry remain unchanged. The two replaced production files are backed up at `/backups/pre-header-20260928T075544Z` on OVH.

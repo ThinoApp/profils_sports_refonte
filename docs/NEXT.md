@@ -20,6 +20,8 @@ Primary branch:
 
 ## Recently completed
 
+- Aqua Play is now a fifth catalogue collection, using the user-supplied Water Court and Water Bike sheets in FR/EN. Desktop hover/focus immerses the entire catalogue gallery in an architectural water scene; opening expands that visual world into a dedicated two-product viewer. The existing four 3D catalogue ribbons are untouched. The 102-page figure still refers only to the four original page sequences, with two additional Aqua Play sheets identified separately. Local browser checks cover both products, language-matched PDFs, original ribbon regression, keyboard focus, mobile and reduced motion. Official OVH publication remains a separate explicit action.
+
 - Header wordmark: “SPORTS” now shares the signal-yellow accent of “INTERNATIONAL”; the latter is right-aligned beneath “SPORTS” at desktop and mobile widths. The scrolled paper header retains the existing darker accessible accent.
 
 - Replaced the former photo-based horizontal Solutions carousel with the approved large menu-driven Three.js maquette. Eight verified services, a shared architectural base, interruptible component/camera transitions, exploded-to-assembled installation, a bounded maintenance scan, component explanations and a top-view control. No photos, wheel capture or scroll-driven service changes. This explicit September 9 approval supersedes the older carousel-preservation notes below.
@@ -86,11 +88,12 @@ Primary branch:
 
 ## Current priorities
 
-1. Validate the directional cursor visually against the reference video on the live GitHub Pages build.
-2. Validate the new Solutions maquette and large typography on physical tablet/mobile browsers, especially Safari/iOS.
-3. Build a proper Project / Reference page template ready for real verified projects.
-4. Continue replacing generic/legacy media with verified Profils Sports project imagery when available.
-5. Evolve the current single-page prototype toward the final site information architecture.
+1. Review Aqua Play's new gallery-to-viewer transition on the GitHub Pages preview, especially physical Safari/iOS, before publishing it to OVH production.
+2. Validate the directional cursor visually against the reference video on the live GitHub Pages build.
+3. Validate the new Solutions maquette and large typography on physical tablet/mobile browsers, especially Safari/iOS.
+4. Build a proper Project / Reference page template ready for real verified projects.
+5. Continue replacing generic/legacy media with verified Profils Sports project imagery when available.
+6. Evolve the current single-page prototype toward the final site information architecture.
 
 ## Deferred audit recommendations — 2026-09-04
 

@@ -234,7 +234,9 @@ The legacy repo contains actual catalogue page sequences used by the homepage ca
 - CSP Pro — 4 pages
 - Canopy School — 4 pages
 
-Total currently represented in V3: 102 catalogue pages.
+The four legacy sequences currently represented in V3 total 102 catalogue pages.
+
+A separate user-supplied Aqua Play package (September 28, 2026) adds Water Court and Water Bike as two one-page product sheets, each supplied in FR and EN. It is a fifth collection in the catalogue gallery, but is not part of the legacy repository's 102-page sequence.
 
 There are also discipline icons/assets for:
 

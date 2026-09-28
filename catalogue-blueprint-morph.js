@@ -19,32 +19,39 @@
 
   const STATES = {
     fitness: {
-      number: '01 / 04',
+      number: '01 / 05',
       title: 'FITNESS',
       footer: 'CATALOGUE FITNESS',
       coordinate: '74 PAGES',
       path: 'M62 436C82 286 126 128 257 105c116-20 197 85 204 189 8 119-73 197-191 181-96-13-158-95-141-190 15-85 92-143 176-124 70 16 114 86 96 154-17 64-79 103-143 87-51-13-80-65-67-116 10-41 48-69 89-62'
     },
     padel: {
-      number: '02 / 04',
+      number: '02 / 05',
       title: 'PADEL',
       footer: 'CATALOGUE PADEL',
       coordinate: '20 PAGES',
       path: 'M126 404C178 348 189 300 156 263c-30-34-19-82 28-102 62-26 118 20 106 78-10 49-60 62-79 100-18 36 10 81 63 73 56-8 87-68 63-115-19-38-6-90 45-113'
     },
     csp: {
-      number: '03 / 04',
+      number: '03 / 05',
       title: 'CSP PRO',
       footer: 'CATALOGUE CSP PRO',
       coordinate: '4 PAGES',
       path: 'M93 411L159 311l66 48 72-149 74 54 58-110'
     },
     canopy: {
-      number: '04 / 04',
+      number: '04 / 05',
       title: 'CANOPY SCHOOL',
       footer: 'CATALOGUE CANOPY SCHOOL',
       coordinate: '4 PAGES',
       path: 'M90 402C139 259 208 167 292 143c67-19 122 16 151 72'
+    },
+    aqua: {
+      number: '05 / 05',
+      title: 'AQUA PLAY',
+      footer: 'COLLECTION AQUA PLAY',
+      coordinate: '02 / 02',
+      path: 'M52 356C112 320 147 392 207 356S302 320 362 356s95 36 111 0'
     }
   };
 
@@ -117,7 +124,7 @@
     return t;
   };
   label(38, 49, 'PROFILS SPORTS / CATALOGUES', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8.5', 'font-weight': '600', 'letter-spacing': '.9', opacity: '.72' });
-  const stateNumber = label(454, 49, '01 / 04', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8.5', 'font-weight': '600', 'letter-spacing': '.4', 'text-anchor': 'end', opacity: '.72' });
+  const stateNumber = label(454, 49, '01 / 05', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8.5', 'font-weight': '600', 'letter-spacing': '.4', 'text-anchor': 'end', opacity: '.72' });
   const stateTitle = label(39, 88, 'FITNESS', { 'font-family': '"Barlow Condensed", Arial, sans-serif', 'font-size': '31', 'font-weight': '600', 'letter-spacing': '.2' });
   const stateFooter = label(38, 526, 'CATALOGUE FITNESS', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8', 'font-weight': '500', 'letter-spacing': '.45', opacity: '.48' });
   const stateCoordinate = label(454, 526, '74 PAGES', { 'font-family': 'Archivo, Arial, sans-serif', 'font-size': '8', 'font-weight': '500', 'letter-spacing': '.35', 'text-anchor': 'end', opacity: '.48' });

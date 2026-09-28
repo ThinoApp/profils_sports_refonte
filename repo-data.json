@@ -13,7 +13,8 @@
     {"name":"Fitness","category":"Performance","pages":74},
     {"name":"Padel","category":"Sports de raquette","pages":20},
     {"name":"CSP Pro","category":"Outdoor","pages":4},
-    {"name":"Canopy School","category":"Education","pages":4}
+    {"name":"Canopy School","category":"Education","pages":4},
+    {"name":"Aqua Play","category":"Sports sur l’eau","products":["Water Court","Water Bike"],"sheets":2,"languages":["fr","en"]}
   ],
   "clientProfiles": ["Collectivités","Entreprises privées","Événementiel","Professionnels","Institutionnels","Sports","Tourisme","Urbanisme"],
   "disciplines": ["Billard","Fitness","Padel","Pickleball","Pilates","Soccer","Street Workout","Tennis"],

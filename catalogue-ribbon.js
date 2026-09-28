@@ -2,7 +2,7 @@
   'use strict';
 
   const catalogueSection = document.querySelector('#catalogues');
-  const rows = catalogueSection ? [...catalogueSection.querySelectorAll('[data-catalogue]')] : [];
+  const rows = catalogueSection ? [...catalogueSection.querySelectorAll('[data-catalogue]:not([data-catalogue="aqua"])')] : [];
   if (!catalogueSection || !rows.length) return;
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;

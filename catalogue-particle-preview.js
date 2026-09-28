@@ -6,7 +6,7 @@
   const body = document.body;
   const catalogue = document.querySelector('#catalogues');
   const list = catalogue?.querySelector('.catalogue-list');
-  const rows = catalogue ? [...catalogue.querySelectorAll('[data-catalogue]')] : [];
+  const rows = catalogue ? [...catalogue.querySelectorAll('[data-catalogue]:not([data-catalogue="aqua"])')] : [];
 
   if (!catalogue || !list || !rows.length) return;
 
@@ -463,10 +463,14 @@
     });
 
     list.addEventListener('mouseenter', event => {
+      if (document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-catalogue="aqua"]')) return;
       setCanvasVisible(true);
       setTargetFromPointer(event);
     });
-    list.addEventListener('pointermove', setTargetFromPointer, { passive: true });
+    list.addEventListener('pointermove', event => {
+      if (event.target.closest('[data-catalogue="aqua"]')) return;
+      setTargetFromPointer(event);
+    }, { passive: true });
     list.addEventListener('mouseleave', () => setCanvasVisible(false));
 
     const resize = () => {

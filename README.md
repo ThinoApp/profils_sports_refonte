@@ -14,7 +14,7 @@ Then visit `http://localhost:8080`.
 ## What changed from V2
 - Hero now uses the real repository video asset (`video3.mp4`) via the deployed Profils Sports domain.
 - Horizontal scroll carousel is preserved and expanded to the 8 real service families.
-- Catalogue module now uses the 4 actual catalogue datasets and their real cover thumbnails: Fitness, Padel, CSP Pro, Canopy School.
+- Catalogue module uses the 4 legacy page sequences (Fitness, Padel, CSP Pro, Canopy School) and the user-supplied Aqua Play collection (Water Court and Water Bike brochures in FR/EN).
 - Added 8 real sport discipline assets from the repository.
 - Added repository-backed iterative project approach (feasibility, Eurocodes, CAPEX/OPEX, HSE, DOE, construction).
 - Added the 8 client profiles defined in the product constants.

@@ -233,7 +233,8 @@
     fitness: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Fitness/Fitness_Page_01.jpg',
     padel: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/PADEL/PADEL_page-0001.jpg',
     csp: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/CSP%20Pro/CSP%20PRO_page-0001.jpg',
-    canopy: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Canopy/CANOPY%20SCHOOL_pages-to-jpg-0001.jpg'
+    canopy: 'https://www.profilssports.com/assets/CATALOGUES_THUMBS/Canopy/CANOPY%20SCHOOL_pages-to-jpg-0001.jpg',
+    aqua: 'assets/aqua-play/water-court.jpg'
   };
   const previewImage = q('.catalogue-preview__image');
   const previewNumber = q('.catalogue-preview__data strong');
@@ -255,7 +256,7 @@
     }
     if (previewNumber) previewNumber.textContent = String(index + 1).padStart(2,'0');
     if (previewCategory) previewCategory.textContent = (lang === 'fr' ? row.dataset.categoryFr : row.dataset.categoryEn || row.dataset.categoryFr).toUpperCase();
-    if (previewPages) previewPages.textContent = `${row.dataset.pages} PAGES`;
+    if (previewPages) previewPages.textContent = row.dataset[lang === 'fr' ? 'countFr' : 'countEn'] || `${row.dataset.pages} PAGES`;
   };
   const catalogueRows = qa('[data-catalogue]');
   catalogueRows.forEach((row, index) => {
