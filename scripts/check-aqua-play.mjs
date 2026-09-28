@@ -53,7 +53,6 @@ try {
   assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(pending|running|idle)$/, 'opening schedules the radial water entrance');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterEntrance === 'running', null, { timeout:1500 });
-  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-entrance'), 'running', 'radial light entrance starts after the portal becomes visible');
   await page.waitForFunction(() => {
     const scene = document.querySelector('.aqua-portal__scene--court');
     return scene && Number(getComputedStyle(scene).opacity) > .9;
