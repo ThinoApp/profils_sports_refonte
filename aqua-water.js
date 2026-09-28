@@ -19,6 +19,8 @@
       this.transitionStarted = 0;
       this.transitionDuration = 760;
       this.entranceStarted = 0;
+      this.entranceLaunchAt = 0;
+      this.entranceDelay = 260;
       this.entranceDuration = 1250;
       this.lastPointerMove = 0;
       this.pointerEnergy = 0;
@@ -263,10 +265,11 @@
       this.nextProduct = product;
       this.setOrigin(origin || this.origin);
       this.entranceStarted = 0;
+      this.entranceLaunchAt = performance.now() + this.entranceDelay;
       this.pointerEnergy = 0;
       this.pointerEnergyTarget = 0;
       this.lastPointerMove = 0;
-      this.portal.dataset.waterEntrance = this.reduced ? 'static' : 'running';
+      this.portal.dataset.waterEntrance = this.reduced ? 'static' : 'pending';
 
       this.warm().then(ready => {
         if (!ready) return;
@@ -274,13 +277,6 @@
         this.active = true;
         this.portal.dataset.waterActive = 'true';
         this.closingUntil = 0;
-        clearTimeout(this.rippleTimer);
-        this.portal.classList.remove('is-water-rippling');
-        void this.portal.offsetWidth;
-        this.portal.classList.add('is-water-rippling');
-        this.rippleTimer = setTimeout(() => {
-          this.portal.classList.remove('is-water-rippling');
-        }, this.entranceDuration + 90);
         this.resume();
       });
     }
@@ -379,15 +375,22 @@
       if (!this.ready || document.hidden) return;
       const now = performance.now();
       if (!this.active && now >= this.closingUntil) return;
-      if (this.active && !this.entranceStarted) {
+      if (this.active && !this.entranceStarted && now >= this.entranceLaunchAt) {
         this.entranceStarted = now;
         this.portal.dataset.waterEntrance = 'running';
+        clearTimeout(this.rippleTimer);
+        this.portal.classList.remove('is-water-rippling');
+        void this.portal.offsetWidth;
+        this.portal.classList.add('is-water-rippling');
+        this.rippleTimer = setTimeout(() => {
+          this.portal.classList.remove('is-water-rippling');
+        }, this.entranceDuration + 90);
       }
 
-      const entranceElapsedForThrottle = this.entranceStarted ? now - this.entranceStarted : this.entranceDuration;
+      const entranceElapsedForThrottle = this.entranceStarted ? now - this.entranceStarted : 0;
       const sincePointer = this.lastPointerMove ? now - this.lastPointerMove : 9999;
       const canThrottle = sincePointer > 2400
-        && entranceElapsedForThrottle >= this.entranceDuration
+        && (!this.active || (this.entranceStarted && entranceElapsedForThrottle >= this.entranceDuration))
         && !this.transitionStarted;
       if (canThrottle && this.lastRenderedAt && now - this.lastRenderedAt < 84) {
         this.frame = requestAnimationFrame(() => this.render());
@@ -411,10 +414,14 @@
       this._activity = activity + (activityTarget - activity) * (1 - Math.exp(-dt / 520));
       this.clock += dt * (.10 + this._activity * .90) / 1000;
 
-      const entranceElapsed = this.entranceStarted ? now - this.entranceStarted : this.entranceDuration;
-      const entrance = Math.max(0, Math.min(1, entranceElapsed / this.entranceDuration));
+      const entranceElapsed = this.entranceStarted ? now - this.entranceStarted : 0;
+      const entrance = this.entranceStarted
+        ? Math.max(0, Math.min(1, entranceElapsed / this.entranceDuration))
+        : 0;
       const entranceEase = entrance * entrance * (3 - 2 * entrance);
-      if (entrance >= 1 && this.portal.dataset.waterEntrance === 'running') this.portal.dataset.waterEntrance = 'idle';
+      if (this.entranceStarted && entrance >= 1 && this.portal.dataset.waterEntrance === 'running') {
+        this.portal.dataset.waterEntrance = 'idle';
+      }
 
       if (this.transitionStarted) {
         const progress = Math.max(0, Math.min(1, (now - this.transitionStarted) / this.transitionDuration));
