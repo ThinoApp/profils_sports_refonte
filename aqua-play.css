@@ -384,6 +384,12 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 }
 .aqua-portal.is-open .aqua-portal__handoff { opacity:0; }
 .aqua-portal.is-entering .aqua-portal__handoff { transition-delay:.18s; }
+.aqua-portal.is-water-ready.is-open .aqua-portal__handoff {
+  transition-duration:.24s;
+}
+.aqua-portal.is-water-ready.is-entering .aqua-portal__handoff {
+  transition-delay:.04s;
+}
 .aqua-portal__scene,.aqua-portal__water,.aqua-portal__shade { inset:0; }
 .aqua-portal__scene {
   z-index:0;
