@@ -49,6 +49,7 @@
 .site-header.is-aqua-preview::after { opacity:1; }
 .site-header.is-aqua-preview .brand-logo { filter:brightness(0) invert(1); }
 .site-header.is-aqua-preview .brand-copy :is(.brand-sports,small) { color:#9deaf6; }
+.site-header .language { white-space:nowrap; }
 
 .aqua-shortcut {
   position:relative;
