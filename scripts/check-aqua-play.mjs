@@ -22,6 +22,13 @@ try {
   const page = await pageFor();
   const shortcut = page.locator('[data-aqua-shortcut]');
   assert.equal(await shortcut.isVisible(), true, 'Aqua shortcut is visible in the fixed header');
+  assert.match(await shortcut.locator('.aqua-shortcut__logo').getAttribute('src'), /assets\/aqua-play\/logo\.png$/, 'official Aqua Play logo is used in the shortcut');
+  const shortcutStyle = await shortcut.evaluate(element => {
+    const style = getComputedStyle(element);
+    return { color:style.color, backgroundColor:style.backgroundColor };
+  });
+  assert.equal(shortcutStyle.color, 'rgb(255, 255, 255)', 'shortcut remains high contrast on the paper header');
+  assert.notEqual(shortcutStyle.backgroundColor, 'rgba(0, 0, 0, 0)', 'shortcut owns a dark viewport on the paper header');
   await shortcut.hover();
   await page.waitForTimeout(700);
   assert.equal(await page.locator('[data-header]').evaluate(element => element.classList.contains('is-aqua-preview')), true, 'header enters Aqua preview state');
@@ -90,6 +97,7 @@ try {
   const mobile = await pageFor({ viewport:{ width:390, height:844 }, isMobile:true, hasTouch:true, reducedMotion:'reduce' });
   const mobileShortcut = mobile.locator('[data-aqua-shortcut]');
   assert.equal(await mobileShortcut.isVisible(), true, 'compact Aqua shortcut stays visible beside the mobile menu');
+  assert.match(await mobileShortcut.locator('.aqua-shortcut__logo').getAttribute('src'), /assets\/aqua-play\/logo\.png$/);
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await mobileShortcut.click();
   await mobile.waitForSelector('.aqua-portal.is-open');
@@ -127,7 +135,7 @@ try {
     assert.match(response.headers.get('content-type') || '', /pdf/, file);
   }
   assert.deepEqual(errors, []);
-  console.log('PASS: Aqua header gate, catalogue hover, full-screen entry, both products, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
+  console.log('PASS: Aqua logo portal, light-header contrast, header gate, catalogue hover, full-screen entry, both products, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
 } finally {
   await browser.close();
 }
