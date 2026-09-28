@@ -42,6 +42,7 @@
 
       document.addEventListener('visibilitychange', this.onVisibility);
       this.portal.dataset.waterMode = 'loading';
+      this.portal.dataset.waterActive = 'false';
     }
 
     warm() {
@@ -247,6 +248,7 @@
         if (!ready) return;
         this.setProductInstant(product);
         this.active = true;
+        this.portal.dataset.waterActive = 'true';
         this.closingUntil = 0;
         this.resume();
       });
@@ -254,6 +256,7 @@
 
     close(delay = 560) {
       this.active = false;
+      this.portal.dataset.waterActive = 'false';
       this.closingUntil = performance.now() + delay;
       setTimeout(() => {
         if (performance.now() >= this.closingUntil && !this.active) {
