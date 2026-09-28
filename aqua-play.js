@@ -3,6 +3,8 @@
 
   const gallery = document.querySelector('#catalogues .catalogue-gallery');
   const row = gallery?.querySelector('[data-catalogue="aqua"]');
+  const header = document.querySelector('[data-header]');
+  const shortcuts = [...document.querySelectorAll('[data-aqua-shortcut]')];
   if (!gallery || !row) return;
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -79,6 +81,9 @@
   let entranceTimer = 0;
   let lightFrame = 0;
   let lightPoint = null;
+  let headerLightFrame = 0;
+  let headerLightPoint = null;
+  let originSource = row;
 
   const english = () => document.documentElement.lang === 'en';
   const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
@@ -88,19 +93,19 @@
     top:window.visualViewport?.offsetTop || 0,
     left:window.visualViewport?.offsetLeft || 0
   });
-  const setOrigin = () => {
+  const setOrigin = (sourceElement = originSource) => {
     const box = viewport();
-    const source = row.getBoundingClientRect();
-    const galleryRect = gallery.getBoundingClientRect();
+    const sourceElementRect = (sourceElement || row).getBoundingClientRect();
+    const handoffRect = sourceElement === row ? gallery.getBoundingClientRect() : sourceElementRect;
     portal.style.setProperty('--aqua-top', `${box.top}px`);
     portal.style.setProperty('--aqua-left', `${box.left}px`);
     portal.style.setProperty('--aqua-width', `${box.width}px`);
     portal.style.setProperty('--aqua-height', `${box.height}px`);
-    portal.style.setProperty('--aqua-origin', `${clamp(source.top - box.top, 0, box.height)}px ${Math.max(0, box.width - source.right + box.left)}px ${Math.max(0, box.height - source.bottom + box.top)}px ${Math.max(0, source.left - box.left)}px`);
-    portal.style.setProperty('--aqua-handoff-x', `${galleryRect.left - box.left}px`);
-    portal.style.setProperty('--aqua-handoff-y', `${galleryRect.top - box.top}px`);
-    portal.style.setProperty('--aqua-handoff-width', `${galleryRect.width}px`);
-    portal.style.setProperty('--aqua-handoff-height', `${galleryRect.height}px`);
+    portal.style.setProperty('--aqua-origin', `${clamp(sourceElementRect.top - box.top, 0, box.height)}px ${Math.max(0, box.width - sourceElementRect.right + box.left)}px ${Math.max(0, box.height - sourceElementRect.bottom + box.top)}px ${Math.max(0, sourceElementRect.left - box.left)}px`);
+    portal.style.setProperty('--aqua-handoff-x', `${handoffRect.left - box.left}px`);
+    portal.style.setProperty('--aqua-handoff-y', `${handoffRect.top - box.top}px`);
+    portal.style.setProperty('--aqua-handoff-width', `${handoffRect.width}px`);
+    portal.style.setProperty('--aqua-handoff-height', `${handoffRect.height}px`);
   };
 
   const updateCopy = () => {
@@ -117,6 +122,10 @@
     localeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.aquaLocale === documentLocale)));
     note.textContent = english() ? 'PRESENTATION VISUALS · FR / EN SHEETS' : 'VISUELS DE PRÉSENTATION · FICHES FR / EN';
     row.href = `assets/aqua-play/water-court-${english() ? 'en' : 'fr'}.pdf`;
+    shortcuts.forEach(shortcut => {
+      shortcut.href = `assets/aqua-play/water-court-${english() ? 'en' : 'fr'}.pdf`;
+      shortcut.setAttribute('aria-label', english() ? 'Open Aqua Play' : 'Ouvrir Aqua Play');
+    });
   };
 
   const selectProduct = key => {
@@ -131,6 +140,27 @@
     if (!active && (isOpen || portal.classList.contains('is-closing'))) return;
     gallery.classList.toggle('is-aqua-hover', active);
     document.body.classList.toggle('catalogue-aqua-hover', active);
+  };
+  const setHeaderPreview = active => {
+    if (!header) return;
+    const next = Boolean(active && !isOpen && !portal.classList.contains('is-closing'));
+    header.classList.toggle('is-aqua-preview', next);
+    if (!next) {
+      header.style.removeProperty('--aqua-header-light-x');
+      header.style.removeProperty('--aqua-header-light-y');
+    }
+  };
+  const moveHeaderLight = event => {
+    if (!header || reduced || event.pointerType === 'touch') return;
+    headerLightPoint = { x:event.clientX, y:event.clientY };
+    if (headerLightFrame) return;
+    headerLightFrame = requestAnimationFrame(() => {
+      headerLightFrame = 0;
+      if (!headerLightPoint) return;
+      const rect = header.getBoundingClientRect();
+      header.style.setProperty('--aqua-header-light-x', `${headerLightPoint.x - rect.left - 150}px`);
+      header.style.setProperty('--aqua-header-light-y', `${headerLightPoint.y - rect.top - 95}px`);
+    });
   };
   row.addEventListener('mouseenter', () => setImmersed(true));
   row.addEventListener('focus', () => setImmersed(true));
@@ -158,12 +188,14 @@
     });
   }, { passive:true });
 
-  const open = () => {
+  const open = (sourceElement = row) => {
     clearTimeout(closeTimer);
     clearTimeout(entranceTimer);
+    originSource = sourceElement || row;
+    setHeaderPreview(false);
     setImmersed(true);
-    setOrigin();
-    previousFocus = row;
+    setOrigin(originSource);
+    previousFocus = originSource;
     documentLocale = english() ? 'en' : 'fr';
     selectProduct('court');
     portal.hidden = false;
@@ -185,7 +217,7 @@
     if (!isOpen) return;
     clearTimeout(entranceTimer);
     isOpen = false;
-    setOrigin();
+    setOrigin(originSource);
     portal.classList.add('is-closing');
     portal.classList.remove('is-open', 'is-entering');
     portal.setAttribute('aria-hidden', 'true');
@@ -197,13 +229,26 @@
       portal.hidden = true;
       portal.classList.remove('is-closing');
       previousFocus?.focus({ preventScroll:true });
+      if (previousFocus?.matches?.('[data-aqua-shortcut]')) setHeaderPreview(false);
     }, reduced ? 0 : 540);
   };
 
   row.addEventListener('click', event => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
-    open();
+    open(row);
+  });
+  shortcuts.forEach(shortcut => {
+    shortcut.addEventListener('mouseenter', () => setHeaderPreview(true));
+    shortcut.addEventListener('focus', () => setHeaderPreview(true));
+    shortcut.addEventListener('pointermove', moveHeaderLight, { passive:true });
+    shortcut.addEventListener('mouseleave', () => setHeaderPreview(false));
+    shortcut.addEventListener('blur', () => setHeaderPreview(false));
+    shortcut.addEventListener('click', event => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      open(shortcut);
+    });
   });
   closeButton.addEventListener('click', close);
   choices.forEach(choice => choice.addEventListener('click', () => selectProduct(choice.dataset.aquaChoice)));
@@ -234,9 +279,9 @@
       focusables[next].focus();
     }
   });
-  addEventListener('resize', () => { if (isOpen) setOrigin(); }, { passive:true });
-  window.visualViewport?.addEventListener('resize', () => { if (isOpen) setOrigin(); }, { passive:true });
-  window.visualViewport?.addEventListener('scroll', () => { if (isOpen) setOrigin(); }, { passive:true });
+  addEventListener('resize', () => { if (isOpen) setOrigin(originSource); }, { passive:true });
+  window.visualViewport?.addEventListener('resize', () => { if (isOpen) setOrigin(originSource); }, { passive:true });
+  window.visualViewport?.addEventListener('scroll', () => { if (isOpen) setOrigin(originSource); }, { passive:true });
   document.addEventListener('site:language-change', () => {
     documentLocale = english() ? 'en' : 'fr';
     updateCopy();

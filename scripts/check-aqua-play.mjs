@@ -20,6 +20,22 @@ async function pageFor(options = {}) {
 
 try {
   const page = await pageFor();
+  const shortcut = page.locator('[data-aqua-shortcut]');
+  assert.equal(await shortcut.isVisible(), true, 'Aqua shortcut is visible in the fixed header');
+  await shortcut.hover();
+  await page.waitForTimeout(700);
+  assert.equal(await page.locator('[data-header]').evaluate(element => element.classList.contains('is-aqua-preview')), true, 'header enters Aqua preview state');
+  await page.screenshot({ path:'/tmp/aqua-header-preview.png' });
+  await shortcut.click();
+  await page.waitForSelector('.aqua-portal.is-open');
+  const handoffWidth = parseFloat(await page.locator('.aqua-portal').evaluate(element => getComputedStyle(element).getPropertyValue('--aqua-handoff-width')));
+  assert.ok(handoffWidth > 40 && handoffWidth < 320, 'header shortcut becomes the portal handoff origin');
+  await page.locator('[data-aqua-close]').click();
+  await page.waitForTimeout(600);
+  assert.equal(await page.locator('.aqua-portal').isVisible(), false);
+  assert.equal(await shortcut.evaluate(element => element === document.activeElement), true, 'focus returns to the header shortcut');
+  assert.equal(await page.locator('[data-header]').evaluate(element => element.classList.contains('is-aqua-preview')), false, 'header returns to its normal state after closing');
+
   const aqua = page.locator('[data-catalogue="aqua"]');
   await aqua.scrollIntoViewIfNeeded();
   await page.waitForTimeout(350);
@@ -72,7 +88,10 @@ try {
   await page.close();
 
   const mobile = await pageFor({ viewport:{ width:390, height:844 }, isMobile:true, hasTouch:true, reducedMotion:'reduce' });
-  await mobile.locator('[data-catalogue="aqua"]').click();
+  const mobileShortcut = mobile.locator('[data-aqua-shortcut]');
+  assert.equal(await mobileShortcut.isVisible(), true, 'compact Aqua shortcut stays visible beside the mobile menu');
+  assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await mobileShortcut.click();
   await mobile.waitForSelector('.aqua-portal.is-open');
   await mobile.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-portal-mobile.png' });
   assert.equal(await mobile.locator('[data-aqua-link]').isVisible(), true);
@@ -96,6 +115,8 @@ try {
 
   const noJS = await browser.newPage({ javaScriptEnabled:false });
   await noJS.goto(url, { waitUntil:'domcontentloaded' });
+  assert.match(await noJS.locator('[data-aqua-shortcut]').getAttribute('href'), /water-court-fr\.pdf$/, 'header shortcut keeps a direct PDF fallback without JavaScript');
+  assert.equal(await noJS.locator('[data-aqua-shortcut]').isVisible(), true);
   assert.match(await noJS.locator('[data-catalogue="aqua"]').getAttribute('href'), /water-court-fr\.pdf$/);
   assert.equal(await noJS.locator('[data-catalogue="aqua"]').isVisible(), true);
   await noJS.close();
@@ -106,7 +127,7 @@ try {
     assert.match(response.headers.get('content-type') || '', /pdf/, file);
   }
   assert.deepEqual(errors, []);
-  console.log('PASS: Aqua Play hover, full-screen entry, both products, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
+  console.log('PASS: Aqua header gate, catalogue hover, full-screen entry, both products, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
 } finally {
   await browser.close();
 }

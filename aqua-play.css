@@ -1,3 +1,171 @@
+/* Header shortcut — a compact Aqua gate that floods the existing header on interaction. */
+.site-header {
+  isolation:isolate;
+  overflow:hidden;
+}
+.site-header > * { position:relative; z-index:1; }
+.site-header::before {
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(4,20,34,.97) 0%,rgba(5,31,49,.91) 46%,rgba(3,26,44,.62) 100%),
+    url("assets/aqua-play/water-court.jpg") 72% 52%/cover no-repeat;
+  clip-path:inset(100% 0 0 0);
+  opacity:0;
+  transform:scale(1.04);
+  transform-origin:center bottom;
+  transition:
+    clip-path .62s cubic-bezier(.16,1,.3,1),
+    transform .9s cubic-bezier(.16,1,.3,1),
+    opacity .28s ease;
+}
+.site-header::after {
+  content:"";
+  position:absolute;
+  z-index:0;
+  left:var(--aqua-header-light-x,-320px);
+  top:var(--aqua-header-light-y,-90px);
+  width:300px;
+  height:190px;
+  pointer-events:none;
+  background:radial-gradient(circle,rgba(157,234,246,.24),rgba(157,234,246,0) 68%);
+  opacity:0;
+  transition:opacity .22s ease;
+}
+.site-header.is-aqua-preview,
+.site-header.is-scrolled.is-aqua-preview {
+  color:#fff;
+  background:transparent;
+  border-color:rgba(157,234,246,.45);
+}
+.site-header.is-aqua-preview::before {
+  clip-path:inset(0);
+  opacity:1;
+  transform:scale(1);
+}
+.site-header.is-aqua-preview::after { opacity:1; }
+.site-header.is-aqua-preview .brand-logo { filter:brightness(0) invert(1); }
+.site-header.is-aqua-preview .brand-copy :is(.brand-sports,small) { color:#9deaf6; }
+.site-header .language { white-space:nowrap; }
+
+.aqua-shortcut {
+  position:relative;
+  min-width:148px;
+  min-height:52px;
+  padding:0 14px;
+  display:grid;
+  grid-template-columns:22px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  overflow:hidden;
+  border:1px solid rgba(157,234,246,.38);
+  background:rgba(4,28,46,.16);
+  color:inherit;
+  text-transform:uppercase;
+  transition:border-color .25s ease,color .25s ease,background .25s ease;
+}
+.site-header.is-scrolled .aqua-shortcut {
+  border-color:rgba(5,65,82,.32);
+  background:rgba(7,42,59,.035);
+}
+.aqua-shortcut::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:linear-gradient(90deg,rgba(55,188,217,.16),rgba(157,234,246,.28));
+  transform:scaleX(0);
+  transform-origin:left center;
+  transition:transform .48s cubic-bezier(.16,1,.3,1);
+}
+.aqua-shortcut > * { position:relative; z-index:1; }
+.aqua-shortcut:hover::before,
+.aqua-shortcut:focus-visible::before,
+.site-header.is-aqua-preview .aqua-shortcut::before { transform:scaleX(1); }
+.aqua-shortcut:hover,
+.aqua-shortcut:focus-visible,
+.site-header.is-aqua-preview .aqua-shortcut {
+  border-color:#9deaf6;
+  color:#fff;
+}
+.aqua-shortcut__mark {
+  position:relative;
+  width:22px;
+  height:22px;
+  border:1px solid currentColor;
+  border-radius:50%;
+  color:#9deaf6;
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.aqua-shortcut__mark i {
+  position:absolute;
+  left:4px;
+  right:4px;
+  height:1px;
+  background:currentColor;
+  transform-origin:center;
+}
+.aqua-shortcut__mark i:first-child { top:8px; transform:rotate(-12deg); }
+.aqua-shortcut__mark i:last-child { top:13px; transform:rotate(12deg); }
+.aqua-shortcut:hover .aqua-shortcut__mark,
+.aqua-shortcut:focus-visible .aqua-shortcut__mark { transform:rotate(18deg) scale(1.06); }
+.aqua-shortcut__copy { display:grid; gap:1px; min-width:0; }
+.aqua-shortcut__copy small {
+  color:#9deaf6;
+  font-size:7px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:.16em;
+}
+.aqua-shortcut__copy strong {
+  font-family:"Barlow Condensed",sans-serif;
+  font-size:13px;
+  line-height:1;
+  letter-spacing:.08em;
+  white-space:nowrap;
+}
+.aqua-shortcut__arrow {
+  color:#9deaf6;
+  font-size:13px;
+  transform:translate(0,0);
+  transition:transform .32s cubic-bezier(.16,1,.3,1);
+}
+.aqua-shortcut:hover .aqua-shortcut__arrow,
+.aqua-shortcut:focus-visible .aqua-shortcut__arrow { transform:translate(3px,-3px); }
+.aqua-shortcut:focus-visible { outline:2px solid #9deaf6; outline-offset:4px; }
+
+@media (max-width:1320px) {
+  .header-actions { gap:10px; }
+  .aqua-shortcut { min-width:118px; padding:0 11px; gap:8px; }
+  .aqua-shortcut__copy small { display:none; }
+}
+@media (max-width:1100px) {
+  .aqua-shortcut { min-width:112px; min-height:44px; }
+  .site-header.is-aqua-preview::before {
+    background-position:64% 52%;
+  }
+}
+@media (max-width:720px) {
+  .header-actions { gap:8px; }
+  .aqua-shortcut {
+    min-width:88px;
+    min-height:40px;
+    padding:0 9px;
+    grid-template-columns:16px minmax(0,1fr);
+    gap:7px;
+  }
+  .aqua-shortcut__mark { width:16px; height:16px; }
+  .aqua-shortcut__mark i { left:3px; right:3px; }
+  .aqua-shortcut__mark i:first-child { top:6px; }
+  .aqua-shortcut__mark i:last-child { top:10px; }
+  .aqua-shortcut__copy strong { font-size:10px; letter-spacing:.06em; }
+  .aqua-shortcut__arrow { display:none; }
+  .site-header::after { display:none; }
+}
+
 /* Aqua Play is a material change inside the catalogue gallery, not a new section. */
 .catalogues { --catalogue-section-pad:clamp(95px,11vw,175px); }
 .catalogue-gallery {
@@ -187,7 +355,7 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
   .aqua-portal__choices { margin-top:20px; }
 }
 @media (prefers-reduced-motion:reduce) {
-  .catalogue-gallery,.catalogue-gallery::before,.catalogue-gallery::after,.catalogue-preview__aqua,.aqua-portal,.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__shade,.aqua-portal__content,.aqua-portal__line { transition-duration:.01ms !important; }
+  .site-header::before,.site-header::after,.aqua-shortcut,.aqua-shortcut::before,.aqua-shortcut__mark,.aqua-shortcut__arrow,.catalogue-gallery,.catalogue-gallery::before,.catalogue-gallery::after,.catalogue-preview__aqua,.aqua-portal,.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__shade,.aqua-portal__content,.aqua-portal__line { transition-duration:.01ms !important; }
   .catalogue-gallery::after { display:none; }
   .aqua-portal,.aqua-portal.is-closing { clip-path:none; }
   .aqua-portal__content { opacity:1; transform:none; }

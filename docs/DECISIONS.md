@@ -2,6 +2,14 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-28 — Aqua Play gets a direct header gate
+
+Aqua Play now has a dedicated shortcut in the persistent site header instead of requiring visitors to discover it only inside the catalogue list. Keep it as a restrained architectural control, not a generic promotional pill.
+
+The control exposes a compact AQUA PLAY label with a small wave mark and direct PDF fallback. Hover or keyboard focus temporarily transforms the existing header into a dark Aqua scene: the water image rises from the lower edge, the Profils Sports wordmark remains legible, and a bounded cursor-following light field responds only inside the header. Clicking the shortcut reuses the existing full-screen Aqua Play viewer and expands it from the shortcut's exact screen bounds, so the interaction feels like one continuous gate from navigation to product world rather than a separate modal launch.
+
+The catalogue-row entry remains unchanged and continues to open the same viewer from the catalogue gallery. Mobile keeps a compact AQUA PLAY control beside the menu button. Reduced motion removes the transition choreography, and without JavaScript the header shortcut opens the French Water Court PDF directly. Closing the viewer restores focus to the originating trigger without leaving the header in its preview state.
+
 ## 2026-09-28 — Aqua Play enters through the catalogue gallery
 
 The supplied Aqua Play package contains two distinct one-page brochures, Water Court and Water Bike, each in French and English. Present Aqua Play as a fifth collection with two product sheets, not as four extra catalogue pages or a two-page version of the existing helix.
