@@ -239,6 +239,7 @@
         this.portal.dataset.waterMode = 'webgl';
         this.portal.dataset.waterReady = 'true';
         this.portal.dataset.waterMotion = 'enhanced';
+        this.portal.dataset.waterEntranceDuration = String(this.entranceDuration);
         this.portal.dataset.waterActive = 'false';
         this.portal.classList.add('is-water-ready');
         return true;
