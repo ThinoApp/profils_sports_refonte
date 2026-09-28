@@ -459,7 +459,7 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
   filter:blur(.2px);
   will-change:transform,opacity;
 }
-.aqua-portal.is-open.is-entering .aqua-portal__entry-ripple {
+.aqua-portal.is-water-rippling .aqua-portal__entry-ripple {
   animation:aquaEntryRipple 1.25s cubic-bezier(.2,.72,.22,1) both;
 }
 @keyframes aquaEntryRipple {
