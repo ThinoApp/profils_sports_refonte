@@ -176,7 +176,7 @@
 
               vec2 pointerMetric = (uv - uPointer) * vec2(aspect, 1.0);
               float pointerDistance = length(pointerMetric);
-              float pointerFalloff = exp(-pointerDistance * pointerDistance * 24.0);
+              float pointerFalloff = exp(-pointerDistance * pointerDistance * 20.0);
               vec2 pointerDirection = pointerDistance > .0001
                 ? pointerMetric / pointerDistance / vec2(aspect, 1.0)
                 : vec2(0.0);
@@ -185,12 +185,12 @@
                 sin(pointerDistance * 48.0 - uTime * 6.2) * .72
                 + sin(pointerDistance * 27.0 - uTime * 3.15) * .28
               ) * pointerFalloff * uEnergy;
-              uv += pointerDirection * pointerWave * .0125;
+              uv += pointerDirection * pointerWave * .0145;
               uv += pointerTangent
                 * cos(pointerDistance * 32.0 - uTime * 4.1)
                 * pointerFalloff
                 * uEnergy
-                * .0028;
+                * .0034;
               uv += vec2(
                 sin((uv.y * 8.0 + uTime * .42) * 3.14159),
                 cos((uv.x * 7.0 - uTime * .36) * 3.14159)
@@ -343,7 +343,7 @@
       const speed = Math.sqrt(dx * dx + dy * dy) / dt * 1000;
       this.pointerTarget.x = x;
       this.pointerTarget.y = y;
-      this.pointerEnergyTarget = Math.min(1.35, .34 + speed * .14);
+      this.pointerEnergyTarget = Math.min(1.45, .38 + speed * .16);
       this.lastPointerMove = now;
       this.portal.dataset.waterInteraction = 'active';
       this.resume();
