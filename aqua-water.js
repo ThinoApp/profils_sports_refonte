@@ -27,6 +27,7 @@
       this.pointerTarget = { x:.62, y:.48 };
       this.origin = { x:.5, y:.06 };
       this.closingUntil = 0;
+      this.rippleTimer = 0;
       this.textures = {};
       this.textureSizes = {};
       this.onVisibility = () => {
@@ -273,12 +274,21 @@
         this.active = true;
         this.portal.dataset.waterActive = 'true';
         this.closingUntil = 0;
+        clearTimeout(this.rippleTimer);
+        this.portal.classList.remove('is-water-rippling');
+        void this.portal.offsetWidth;
+        this.portal.classList.add('is-water-rippling');
+        this.rippleTimer = setTimeout(() => {
+          this.portal.classList.remove('is-water-rippling');
+        }, this.entranceDuration + 90);
         this.resume();
       });
     }
 
     close(delay = 560) {
       this.active = false;
+      clearTimeout(this.rippleTimer);
+      this.portal.classList.remove('is-water-rippling');
       this.portal.dataset.waterActive = 'false';
       this.closingUntil = performance.now() + delay;
       setTimeout(() => {
@@ -432,6 +442,7 @@
     }
 
     destroy() {
+      clearTimeout(this.rippleTimer);
       this.pause();
       document.removeEventListener('visibilitychange', this.onVisibility);
       Object.values(this.textures).forEach(texture => texture?.dispose?.());
