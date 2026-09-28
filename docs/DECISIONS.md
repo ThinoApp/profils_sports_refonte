@@ -2,6 +2,12 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-28 — Aqua Play liquid motion gets a stronger readable amplitude
+
+The first liquid pass was intentionally restrained, but review showed that the radial entrance and pointer displacement were too subtle once layered under the expanding portal. The entrance now launches slightly after the portal begins opening so the effect is actually visible, uses a longer 1.25 s travel, stronger shader refraction, and a soft luminous wave ring tied to the exact trigger origin. The visual ring is only an entrance cue; it fades completely and does not remain as decoration.
+
+Pointer refraction is also widened and strengthened: the affected radius is larger, the displacement combines two wave frequencies plus a slight tangential swirl, and slower cursor movement still produces a readable response. Keep this stronger tuning below the point where product photography becomes hard to read or feels like a novelty distortion. Reduced motion continues to bypass all of it.
+
 ## 2026-09-28 — Aqua Play viewer behaves like a liquid surface
 
 The full-screen Aqua Play viewer now treats the product photography as a responsive water surface rather than a static background. On capable desktop browsers, a local Three.js shader adds a brief radial refraction when the viewer opens, using the exact header/catalogue trigger position as the ripple origin. Pointer movement produces a bounded local displacement rather than decorative particles; restrained caustic light continues at rest and slows substantially after roughly 2.4 seconds without input.
