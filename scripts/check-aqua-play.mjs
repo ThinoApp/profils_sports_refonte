@@ -25,12 +25,20 @@ try {
   const shortcut = page.locator('[data-aqua-shortcut]');
   assert.equal(await shortcut.isVisible(), true, 'Aqua shortcut is visible in the fixed header');
   assert.match(await shortcut.locator('.aqua-shortcut__logo').getAttribute('src'), /assets\/aqua-play\/logo\.png$/, 'official Aqua Play logo is used in the shortcut');
+  assert.equal(await shortcut.locator('.aqua-shortcut__wave').count(), 2, 'wave button renders two animated water layers');
   const shortcutStyle = await shortcut.evaluate(element => {
     const style = getComputedStyle(element);
-    return { color:style.color, backgroundColor:style.backgroundColor };
+    return {
+      color:style.color,
+      backgroundImage:style.backgroundImage,
+      borderTopWidth:style.borderTopWidth,
+      borderRadius:style.borderRadius
+    };
   });
   assert.equal(shortcutStyle.color, 'rgb(255, 255, 255)', 'shortcut remains high contrast on the paper header');
-  assert.notEqual(shortcutStyle.backgroundColor, 'rgba(0, 0, 0, 0)', 'shortcut owns a dark viewport on the paper header');
+  assert.notEqual(shortcutStyle.backgroundImage, 'none', 'shortcut owns its own aquatic gradient on the paper header');
+  assert.equal(shortcutStyle.borderTopWidth, '0px', 'wave shortcut has no visible border');
+  assert.notEqual(shortcutStyle.borderRadius, '0px', 'wave shortcut keeps a capsule silhouette');
   await shortcut.hover();
   await page.waitForTimeout(700);
   assert.equal(await page.locator('[data-header]').evaluate(element => element.classList.contains('is-aqua-preview')), true, 'header enters Aqua preview state');
@@ -137,7 +145,7 @@ try {
     assert.match(response.headers.get('content-type') || '', /pdf/, file);
   }
   assert.deepEqual(errors, []);
-  console.log('PASS: Aqua logo portal, light-header contrast, header gate, catalogue hover, full-screen entry, both products, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
+  console.log('PASS: borderless Aqua wave button, official logo, light-header contrast, header spill, catalogue hover, full-screen entry, both products, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
 } finally {
   await browser.close();
 }
