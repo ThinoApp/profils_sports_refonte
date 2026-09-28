@@ -35,6 +35,7 @@
     <div class="aqua-portal__handoff" aria-hidden="true"></div>
     <div class="aqua-portal__scene aqua-portal__scene--court" aria-hidden="true"></div>
     <div class="aqua-portal__scene aqua-portal__scene--bike" aria-hidden="true"></div>
+    <canvas class="aqua-portal__water" data-aqua-water aria-hidden="true"></canvas>
     <div class="aqua-portal__shade" aria-hidden="true"></div>
     <div class="aqua-portal__line" aria-hidden="true"></div>
     <header class="aqua-portal__top">
@@ -72,6 +73,10 @@
   const choices = [...portal.querySelectorAll('[data-aqua-choice]')];
   const localeButtons = [...portal.querySelectorAll('[data-aqua-locale]')];
   const localeGroup = portal.querySelector('.aqua-portal__languages');
+  const waterCanvas = portal.querySelector('[data-aqua-water]');
+  const water = window.AquaWaterSurface
+    ? new window.AquaWaterSurface({ portal, canvas:waterCanvas, reduced })
+    : null;
   let currentProduct = 'court';
   let documentLocale = document.documentElement.lang === 'en' ? 'en' : 'fr';
   let isOpen = false;
@@ -84,6 +89,7 @@
   let headerLightFrame = 0;
   let headerLightPoint = null;
   let originSource = row;
+  let productSwitchTimer = 0;
 
   const english = () => document.documentElement.lang === 'en';
   const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
@@ -93,6 +99,14 @@
     top:window.visualViewport?.offsetTop || 0,
     left:window.visualViewport?.offsetLeft || 0
   });
+  const sourceOrigin = (sourceElement = originSource) => {
+    const box = viewport();
+    const rect = (sourceElement || row).getBoundingClientRect();
+    return {
+      x:clamp((rect.left + rect.width / 2 - box.left) / Math.max(1, box.width), 0, 1),
+      y:clamp((rect.top + rect.height / 2 - box.top) / Math.max(1, box.height), 0, 1)
+    };
+  };
   const setOrigin = (sourceElement = originSource) => {
     const box = viewport();
     const sourceElementRect = (sourceElement || row).getBoundingClientRect();
@@ -106,6 +120,9 @@
     portal.style.setProperty('--aqua-handoff-y', `${handoffRect.top - box.top}px`);
     portal.style.setProperty('--aqua-handoff-width', `${handoffRect.width}px`);
     portal.style.setProperty('--aqua-handoff-height', `${handoffRect.height}px`);
+    const origin = sourceOrigin(sourceElement);
+    water?.setOrigin(origin);
+    return origin;
   };
 
   const updateCopy = () => {
@@ -128,12 +145,26 @@
     });
   };
 
-  const selectProduct = key => {
+  const selectProduct = (key, { instant = false } = {}) => {
     if (!products[key]) return;
+    const changed = key !== currentProduct;
     currentProduct = key;
     portal.dataset.product = key;
     choices.forEach(choice => choice.setAttribute('aria-pressed', String(choice.dataset.aquaChoice === key)));
     updateCopy();
+
+    if (!changed) return;
+    clearTimeout(productSwitchTimer);
+    portal.classList.remove('is-product-switching');
+    if (instant) {
+      water?.setProductInstant(key);
+      return;
+    }
+
+    water?.transitionTo(key);
+    void portal.offsetWidth;
+    portal.classList.add('is-product-switching');
+    productSwitchTimer = setTimeout(() => portal.classList.remove('is-product-switching'), reduced ? 0 : 760);
   };
 
   const setImmersed = active => {
@@ -162,8 +193,8 @@
       header.style.setProperty('--aqua-header-light-y', `${headerLightPoint.y - rect.top - 95}px`);
     });
   };
-  row.addEventListener('mouseenter', () => setImmersed(true));
-  row.addEventListener('focus', () => setImmersed(true));
+  row.addEventListener('mouseenter', () => { setImmersed(true); water?.warm(); });
+  row.addEventListener('focus', () => { setImmersed(true); water?.warm(); });
   gallery.querySelectorAll('[data-catalogue]:not([data-catalogue="aqua"])').forEach(other => {
     other.addEventListener('mouseenter', () => setImmersed(false));
     other.addEventListener('focus', () => setImmersed(false));
@@ -194,11 +225,13 @@
     originSource = sourceElement || row;
     setHeaderPreview(false);
     setImmersed(true);
-    setOrigin(originSource);
+    const origin = setOrigin(originSource);
     previousFocus = originSource;
     documentLocale = english() ? 'en' : 'fr';
-    selectProduct('court');
+    selectProduct('court', { instant:true });
     portal.hidden = false;
+    water?.resize();
+    water?.open({ origin, product:'court' });
     portal.setAttribute('aria-hidden', 'false');
     portal.classList.remove('is-closing');
     portal.classList.add('is-entering');
@@ -222,6 +255,7 @@
     portal.classList.remove('is-open', 'is-entering');
     portal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('aqua-portal-open');
+    water?.close(reduced ? 0 : 560);
     backgroundState.forEach(({ element, inert }) => { element.inert = inert; });
     backgroundState = [];
     closeTimer = setTimeout(() => {
@@ -239,8 +273,8 @@
     open(row);
   });
   shortcuts.forEach(shortcut => {
-    shortcut.addEventListener('mouseenter', () => setHeaderPreview(true));
-    shortcut.addEventListener('focus', () => setHeaderPreview(true));
+    shortcut.addEventListener('mouseenter', () => { setHeaderPreview(true); water?.warm(); });
+    shortcut.addEventListener('focus', () => { setHeaderPreview(true); water?.warm(); });
     shortcut.addEventListener('pointermove', moveHeaderLight, { passive:true });
     shortcut.addEventListener('mouseleave', () => setHeaderPreview(false));
     shortcut.addEventListener('blur', () => setHeaderPreview(false));
@@ -258,6 +292,7 @@
   }));
   portal.addEventListener('pointermove', event => {
     if (!isOpen || reduced || event.pointerType !== 'mouse') return;
+    water?.pointerMove(event);
     portal.style.setProperty('--aqua-shift-x', `${((event.clientX / innerWidth) - .5) * -12}px`);
     portal.style.setProperty('--aqua-shift-y', `${((event.clientY / innerHeight) - .5) * -10}px`);
   }, { passive:true });
@@ -279,9 +314,21 @@
       focusables[next].focus();
     }
   });
-  addEventListener('resize', () => { if (isOpen) setOrigin(originSource); }, { passive:true });
-  window.visualViewport?.addEventListener('resize', () => { if (isOpen) setOrigin(originSource); }, { passive:true });
-  window.visualViewport?.addEventListener('scroll', () => { if (isOpen) setOrigin(originSource); }, { passive:true });
+  addEventListener('resize', () => {
+    if (!isOpen) return;
+    setOrigin(originSource);
+    water?.resize();
+  }, { passive:true });
+  window.visualViewport?.addEventListener('resize', () => {
+    if (!isOpen) return;
+    setOrigin(originSource);
+    water?.resize();
+  }, { passive:true });
+  window.visualViewport?.addEventListener('scroll', () => {
+    if (!isOpen) return;
+    setOrigin(originSource);
+    water?.resize();
+  }, { passive:true });
   document.addEventListener('site:language-change', () => {
     documentLocale = english() ? 'en' : 'fr';
     updateCopy();

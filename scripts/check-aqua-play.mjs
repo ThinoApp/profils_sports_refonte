@@ -43,12 +43,22 @@ try {
   await page.waitForTimeout(700);
   assert.equal(await page.locator('[data-header]').evaluate(element => element.classList.contains('is-aqua-preview')), true, 'header enters Aqua preview state');
   await page.screenshot({ path:'/tmp/aqua-header-preview.png' });
-  await shortcut.click();
+  await shortcut.evaluate(element => element.click());
   await page.waitForSelector('.aqua-portal.is-open');
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterReady === 'true', null, { timeout:5000 });
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-mode'), 'webgl', 'desktop Aqua viewer uses the WebGL liquid surface');
+  assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
+  assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(running|idle)$/, 'opening schedules the radial water entrance');
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
+  await page.locator('.aqua-portal').evaluate(element => {
+    element.dispatchEvent(new PointerEvent('pointermove', { clientX:1110, clientY:420, pointerType:'mouse', bubbles:true }));
+  });
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-interaction'), 'active', 'pointer wakes the local water distortion');
+  await page.waitForTimeout(140);
   const handoffWidth = parseFloat(await page.locator('.aqua-portal').evaluate(element => getComputedStyle(element).getPropertyValue('--aqua-handoff-width')));
   assert.ok(handoffWidth > 40 && handoffWidth < 320, 'header shortcut becomes the portal handoff origin');
   await page.locator('[data-aqua-close]').click();
-  await page.waitForTimeout(600);
+  await page.locator('.aqua-portal').waitFor({ state:'hidden', timeout:2000 });
   assert.equal(await page.locator('.aqua-portal').isVisible(), false);
   assert.equal(await shortcut.evaluate(element => element === document.activeElement), true, 'focus returns to the header shortcut');
   assert.equal(await page.locator('[data-header]').evaluate(element => element.classList.contains('is-aqua-preview')), false, 'header returns to its normal state after closing');
@@ -80,14 +90,18 @@ try {
   assert.match(await page.locator('[data-aqua-link]').getAttribute('href'), /water-court-fr\.pdf$/);
   await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-portal-desktop.png' });
 
-  await page.locator('[data-aqua-choice="bike"]').click();
-  await page.waitForTimeout(720);
+  await page.locator('[data-aqua-choice="bike"]').evaluate(element => element.click());
+  assert.match(await page.locator('.aqua-portal').getAttribute('data-water-transition'), /court-to-bike/, 'product change starts a liquid wipe');
+  await page.waitForTimeout(320);
+  await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-liquid-wipe.png' });
+  await page.waitForTimeout(520);
+  assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-transition'), 'idle', 'liquid wipe settles cleanly');
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-product'), 'bike');
   assert.match(await page.locator('[data-aqua-link]').getAttribute('href'), /water-bike-fr\.pdf$/);
   await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-portal-bike.png' });
 
   await page.keyboard.press('Escape');
-  await page.waitForTimeout(600);
+  await page.locator('.aqua-portal').waitFor({ state:'hidden', timeout:2000 });
   assert.equal(await page.locator('.aqua-portal').isVisible(), false);
   assert.equal(await aqua.evaluate(element => element === document.activeElement), true);
   await page.locator('[data-language]').evaluate(element => element.click());
@@ -110,6 +124,9 @@ try {
   assert.match(await mobileShortcut.locator('.aqua-shortcut__logo').getAttribute('src'), /assets\/aqua-play\/logo\.png$/);
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await mobileShortcut.click();
+  await mobile.waitForSelector('.aqua-portal.is-open');
+  assert.equal(await mobile.locator('.aqua-portal').getAttribute('data-water-mode'), 'reduced', 'reduced motion keeps the static image fallback');
+  assert.equal(await mobile.locator('[data-aqua-water]').isVisible(), false, 'reduced motion does not animate the liquid canvas');
   await mobile.waitForSelector('.aqua-portal.is-open');
   await mobile.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-portal-mobile.png' });
   assert.equal(await mobile.locator('[data-aqua-link]').isVisible(), true);
@@ -145,7 +162,7 @@ try {
     assert.match(response.headers.get('content-type') || '', /pdf/, file);
   }
   assert.deepEqual(errors, []);
-  console.log('PASS: borderless Aqua wave button, official logo, light-header contrast, header spill, catalogue hover, full-screen entry, both products, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
+  console.log('PASS: Aqua wave shortcut, radial liquid entrance, pointer refraction, liquid product wipe, WebGL/static fallbacks, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
 } finally {
   await browser.close();
 }
