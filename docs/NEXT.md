@@ -21,6 +21,7 @@ Primary branch:
 ## Recently completed
 
 - Raised functional microcopy in the header, catalogues, globe, Solutions model, Method scene and footer to a readable 11 px minimum, with less tracking and steadier contrast. Removed padding transitions from Aqua product choices and legacy list rows, keeping hover emphasis without layout reflow. Impeccable's hooked `layout-transition` and `undersized-ui-text` findings are resolved in the active page. Verify the mobile hierarchy visually alongside the existing interaction regressions.
+- Integrated the revised user-supplied Aqua Play package: updated Water Bike presentation image and FR/EN PDFs, plus new Water Court L imagery and FR/EN PDFs. The Aqua viewer now presents three selectable products with a continuous interruptible photographic wipe, including rapid third-product changes, keyboard order, focus return and static/reduced-motion fallbacks. Aqua Play uses its exact Braggadocio Regular logo outlines in the header, catalogue and viewer; its shortcut is grouped beside Profils Sports without the “Nouveau” tag. The header subline reads “International” aligned beneath “SPORTS”. The 102 legacy catalogue pages are unchanged; Aqua Play adds three separate sheets. Local browser regression passes; inspect physical Safari/iOS before any separately authorized OVH publication.
 
 - Reworked Aqua Play as one continuous gallery-to-viewer water interaction. Hover/focus opens a radial window into the supplied imagery; activating the row or header shortcut expands a radial portal from the actual trigger. The entry ring and light-only WebGL overlay now follow that same origin, and the shader canvas uses the viewport's actual pixel size. Water Court ↔ Water Bike now uses a real, interruptible 900 ms wave-front mask on two native-resolution CSS photographs; the shader draws only light at that same boundary, never resamples or distorts the imagery. Mobile/no-WebGL retains the photographic mask; reduced motion switches immediately. Desktop/mobile and fallback regression checks cover the midpoint, reversal, FR/EN PDFs, focus return and the four original catalogue ribbons. Physical Safari/iOS remains to be validated before separate OVH publication.
 
@@ -177,7 +178,6 @@ The 102 pages used by the catalogue ribbon are now optimized WebP derivatives st
 Do not reuse obvious demo data from legacy pages such as fictional references, partners, awards, budgets or satisfaction metrics.
 
 Wait for verified data from the user or a trusted source before building final project case studies.
-
 
 ### Catalogue particle preview
 

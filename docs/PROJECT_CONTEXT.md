@@ -236,7 +236,7 @@ The legacy repo contains actual catalogue page sequences used by the homepage ca
 
 The four legacy sequences currently represented in V3 total 102 catalogue pages.
 
-A separate user-supplied Aqua Play package (September 28, 2026) adds Water Court and Water Bike as two one-page product sheets, each supplied in FR and EN. It is a fifth collection in the catalogue gallery, but is not part of the legacy repository's 102-page sequence.
+A user-supplied Aqua Play package, updated September 29, 2026, contains three one-page product sheets: Water Court, Water Court L and Water Bike, each supplied in FR and EN. It is a fifth collection in the catalogue gallery, but is not part of the legacy repository's 102-page sequence. The update also supplies revised Water Bike imagery and the original Aqua Play vector lettering (Braggadocio Regular).
 
 There are also discipline icons/assets for:
 
