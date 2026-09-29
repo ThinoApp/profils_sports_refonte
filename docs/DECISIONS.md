@@ -2,6 +2,14 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-29 — Aqua Play adopts its original lettering and three-product collection
+
+The supplied September 29 package supersedes the two-product Aqua set. Water Court L joins Water Court and Water Bike as a third one-page FR/EN sheet; the revised Water Bike photo and PDFs replace the earlier supplied versions. The site's 102-page figure still counts only the four legacy catalogue sequences, with three Aqua Play sheets called out separately. The visuals remain presentation material, not proof of a delivered installation.
+
+The user identified the Aqua Play display face as Braggadocio Regular. Use the exact letter outlines from the supplied vector logo as a small self-contained SVG wordmark in the header shortcut, catalogue row/preview and full-screen viewer. This avoids a synthetic approximation or external font dependency. Move the Aqua shortcut immediately beside the Profils Sports brand, remove the “Nouveau” label, and set the brand subline as “International” aligned to the right beneath “SPORTS”. The shortcut remains a separate, keyboard-focusable link with its PDF fallback.
+
+For the third product, preserve the crisp native background images and the wave-front photo transition. An interrupted switch leaves the visible image layers in place while the next image wipes above them; the layers collapse after settling. Do not feed the supplied photography through the shader. Preserve FR/EN links, mobile/reduced-motion fallbacks, keyboard order and focus return. GitHub Pages remains the preview; official OVH deployment still requires a separate request.
+
 ## 2026-09-29 — One continuous Aqua Play water transition
 
 The September 28 Aqua interactions were individually present but the gallery hover, portal opening and product change did not share a perceptible material or timing. Make the authentic photo the continuous substrate: a radial gallery preview grows from the hovered row, then a radial full-screen reveal grows from the actual row or header shortcut. The entrance ring and WebGL light use the same measured origin. Keep the content readable throughout; no intermediate blank, generic modal cut or second unrelated reveal.

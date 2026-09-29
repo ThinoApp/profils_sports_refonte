@@ -9,12 +9,19 @@
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canClipWipe = Boolean(window.CSS?.supports?.('clip-path', 'polygon(0 0, 100% 0, 100% 100%)'));
+  const productOrder = ['court', 'court-l', 'bike'];
   const products = {
     court: {
       title: 'WATER COURT',
       fr: 'Le terrain de sport flottant',
       en: 'The floating sports court',
       file: 'water-court'
+    },
+    'court-l': {
+      title: 'WATER COURT L',
+      fr: 'Le terrain sportif flottant en version L',
+      en: 'The floating sports court in its L version',
+      file: 'water-court-l'
     },
     bike: {
       title: 'WATER BIKE',
@@ -34,8 +41,7 @@
   portal.setAttribute('aria-labelledby', 'aqua-portal-title');
   portal.innerHTML = `
     <div class="aqua-portal__handoff" aria-hidden="true"></div>
-    <div class="aqua-portal__scene aqua-portal__scene--court" aria-hidden="true"></div>
-    <div class="aqua-portal__scene aqua-portal__scene--bike" aria-hidden="true"></div>
+    <div class="aqua-portal__scenes" aria-hidden="true"><div class="aqua-portal__scene aqua-portal__scene--court" data-scene-product="court"></div></div>
     <canvas class="aqua-portal__water" data-aqua-water aria-hidden="true"></canvas>
     <div class="aqua-portal__entry-ripple" aria-hidden="true"></div>
     <div class="aqua-portal__shade" aria-hidden="true"></div>
@@ -46,15 +52,16 @@
       <button type="button" class="aqua-portal__close" data-aqua-close>FERMER ×</button>
     </header>
     <div class="aqua-portal__content">
-      <p class="aqua-portal__index" data-aqua-index>COLLECTION / 01 — 02</p>
-      <h2 class="aqua-portal__title" id="aqua-portal-title"><span>AQUA</span><span>PLAY.</span></h2>
+      <p class="aqua-portal__index" data-aqua-index>COLLECTION / 01 — 03</p>
+      <h2 class="aqua-portal__title" id="aqua-portal-title"><img src="assets/aqua-play/wordmark.svg" alt="Aqua Play" width="682" height="83"></h2>
       <div class="aqua-portal__detail" aria-live="polite">
         <h3 data-aqua-title>WATER COURT</h3>
         <p data-aqua-description>Le terrain de sport flottant</p>
       </div>
       <div class="aqua-portal__choices" role="group" aria-label="Aqua Play">
-        <button class="aqua-portal__choice" type="button" data-aqua-choice="court" aria-pressed="true"><small>01 / 02</small>WATER COURT</button>
-        <button class="aqua-portal__choice" type="button" data-aqua-choice="bike" aria-pressed="false"><small>02 / 02</small>WATER BIKE</button>
+        <button class="aqua-portal__choice" type="button" data-aqua-choice="court" aria-pressed="true"><small>01 / 03</small>WATER COURT</button>
+        <button class="aqua-portal__choice" type="button" data-aqua-choice="court-l" aria-pressed="false"><small>02 / 03</small>WATER COURT L</button>
+        <button class="aqua-portal__choice" type="button" data-aqua-choice="bike" aria-pressed="false"><small>03 / 03</small>WATER BIKE</button>
       </div>
       <div class="aqua-portal__document">
         <a class="aqua-portal__link" data-aqua-link href="assets/aqua-play/water-court-fr.pdf" target="_blank" rel="noopener noreferrer">VOIR LA FICHE <span aria-hidden="true">↗</span></a>
@@ -77,7 +84,8 @@
   const localeButtons = [...portal.querySelectorAll('[data-aqua-locale]')];
   const localeGroup = portal.querySelector('.aqua-portal__languages');
   const waterCanvas = portal.querySelector('[data-aqua-water]');
-  const bikeScene = portal.querySelector('.aqua-portal__scene--bike');
+  const scenes = portal.querySelector('.aqua-portal__scenes');
+  let activeScene = scenes.firstElementChild;
   const wipeEdge = portal.querySelector('.aqua-portal__wipe-edge');
   const water = window.AquaWaterSurface
     ? new window.AquaWaterSurface({ portal, canvas:waterCanvas, reduced })
@@ -146,14 +154,26 @@
     return origin;
   };
 
-  // Keep both authentic photos in the DOM: only the upper photo is clipped.
-  // The boundary can reverse mid-flight without replacing or resampling either image.
+  // Each new photo wipes above the currently visible scene stack. If a visitor
+  // chooses a third product mid-flight, the outgoing composite stays untouched.
+  const createScene = key => {
+    const scene = document.createElement('div');
+    scene.className = `aqua-portal__scene aqua-portal__scene--${key}`;
+    scene.dataset.sceneProduct = key;
+    return scene;
+  };
   const paintWipe = (active = false) => {
     portal.dataset.waterWipe = wipeValue.toFixed(3);
+    if (scenes.childElementCount < 2) {
+      wipeEdge.style.opacity = '0';
+      water?.setWipe(0, 0, false);
+      return;
+    }
+    activeScene.dataset.wipeProgress = String(wipeValue);
     const width = Math.max(1, portal.getBoundingClientRect().width || viewport().width);
     const height = Math.max(1, portal.getBoundingClientRect().height || viewport().height);
     if (wipeValue <= .001 || wipeValue >= .999) {
-      bikeScene.style.clipPath = wipeValue >= .999 ? 'inset(0)' : 'inset(0 100% 0 0)';
+      activeScene.style.clipPath = wipeValue >= .999 ? 'inset(0)' : 'inset(0 100% 0 0)';
       wipeEdge.style.opacity = '0';
     } else {
       const amplitude = Math.min(48, Math.max(20, width * .033)) * Math.sin(Math.PI * wipeValue);
@@ -174,7 +194,7 @@
         left.push(`${clamp(edge - 15, 0, width).toFixed(1)}px ${y}px`);
         right.push(`${clamp(edge + 18, 0, width).toFixed(1)}px ${y}px`);
       }
-      bikeScene.style.clipPath = `polygon(0px 0px, ${boundary.join(', ')}, 0px ${height}px)`;
+      activeScene.style.clipPath = `polygon(0px 0px, ${boundary.join(', ')}, 0px ${height}px)`;
       wipeEdge.style.clipPath = `polygon(${left.join(', ')}, ${right.reverse().join(', ')})`;
       wipeEdge.style.opacity = active ? String(Math.min(.82, Math.sin(Math.PI * wipeValue) * .82)) : '0';
     }
@@ -185,13 +205,24 @@
     wipeFrame = 0;
     wipeLastFrame = 0;
   };
-  const setWipeInstant = value => {
+  const setWipeInstant = key => {
     stopWipe();
-    wipeValue = wipeTarget = wipeStartValue = value;
+    activeScene = createScene(key);
+    activeScene.style.clipPath = 'inset(0)';
+    scenes.replaceChildren(activeScene);
+    wipeValue = wipeTarget = wipeStartValue = 0;
     wipeStartedAt = 0;
     wipePhase = 0;
     paintWipe(false);
     portal.dataset.waterTransition = 'idle';
+  };
+  const startWipe = (target, name) => {
+    wipeStartValue = wipeValue;
+    wipeTarget = target;
+    wipeStartedAt = performance.now();
+    wipeDuration = Math.max(380, 900 * Math.abs(wipeTarget - wipeStartValue));
+    portal.dataset.waterTransition = name;
+    wipeFrame = requestAnimationFrame(tickWipe);
   };
   const tickWipe = now => {
     wipeFrame = 0;
@@ -207,25 +238,46 @@
     paintWipe(!settled);
     if (settled) {
       wipeLastFrame = 0;
-      portal.dataset.waterTransition = 'idle';
+      if (wipeTarget === 1) {
+        activeScene.style.clipPath = 'inset(0)';
+        scenes.replaceChildren(activeScene);
+        wipeValue = 0;
+        paintWipe(false);
+        portal.dataset.waterTransition = 'idle';
+      } else {
+        activeScene.remove();
+        activeScene = scenes.lastElementChild;
+        wipeValue = Number(activeScene.dataset.wipeProgress) || 0;
+        if (scenes.childElementCount > 1) {
+          startWipe(1, `${activeScene.dataset.sceneProduct}-settling`);
+        } else {
+          wipeValue = 0;
+          paintWipe(false);
+          portal.dataset.waterTransition = 'idle';
+        }
+      }
     } else {
       wipeFrame = requestAnimationFrame(tickWipe);
     }
   };
-  const transitionWipe = key => {
-    wipeStartValue = wipeValue;
-    wipeTarget = key === 'bike' ? 1 : 0;
-    wipeStartedAt = performance.now();
-    wipeDuration = Math.max(380, 900 * Math.abs(wipeTarget - wipeStartValue));
-    portal.dataset.waterTransition = `${wipeTarget ? 'court-to-bike' : 'bike-to-court'}`;
-    if (!wipeFrame) wipeFrame = requestAnimationFrame(tickWipe);
+  const transitionWipe = (key, previousProduct) => {
+    const underneath = scenes.children[scenes.childElementCount - 2];
+    const reversing = Boolean(underneath && underneath.dataset.sceneProduct === key);
+    stopWipe();
+    if (!reversing) {
+      activeScene = createScene(key);
+      scenes.appendChild(activeScene);
+      wipeValue = 0;
+      paintWipe(false);
+    }
+    startWipe(reversing ? 0 : 1, `${previousProduct}-to-${key}`);
   };
 
   const updateCopy = () => {
     const product = products[currentProduct];
     title.textContent = product.title;
     description.textContent = product[english() ? 'en' : 'fr'];
-    index.textContent = english() ? 'COLLECTION / 01 — 02' : 'COLLECTION / 01 — 02';
+    index.textContent = 'COLLECTION / 01 — 03';
     closeButton.textContent = english() ? 'CLOSE ×' : 'FERMER ×';
     closeButton.setAttribute('aria-label', english() ? 'Close Aqua Play' : 'Fermer Aqua Play');
     link.firstChild.textContent = english() ? 'OPEN THE BROCHURE ' : 'VOIR LA FICHE ';
@@ -244,6 +296,7 @@
   const selectProduct = (key, { instant = false } = {}) => {
     if (!products[key]) return;
     const changed = key !== currentProduct;
+    const previousProduct = currentProduct;
     currentProduct = key;
     portal.dataset.product = key;
     choices.forEach(choice => choice.setAttribute('aria-pressed', String(choice.dataset.aquaChoice === key)));
@@ -253,11 +306,11 @@
     clearTimeout(productSwitchTimer);
     portal.classList.remove('is-product-switching');
     if (instant || reduced || !canClipWipe) {
-      setWipeInstant(key === 'bike' ? 1 : 0);
+      setWipeInstant(key);
       return;
     }
 
-    transitionWipe(key);
+    transitionWipe(key, previousProduct);
     void portal.offsetWidth;
     portal.classList.add('is-product-switching');
     productSwitchTimer = setTimeout(() => portal.classList.remove('is-product-switching'), reduced ? 0 : 860);
@@ -418,7 +471,9 @@
       close();
     } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
-      selectProduct(event.key === 'ArrowLeft' ? 'court' : 'bike');
+      const direction = event.key === 'ArrowLeft' ? -1 : 1;
+      const next = (productOrder.indexOf(currentProduct) + direction + productOrder.length) % productOrder.length;
+      selectProduct(productOrder[next]);
     } else if (event.key === 'Tab') {
       const focusables = [closeButton, ...choices, link, ...localeButtons];
       const current = focusables.indexOf(document.activeElement);

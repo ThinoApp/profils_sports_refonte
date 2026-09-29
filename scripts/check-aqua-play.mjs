@@ -24,7 +24,11 @@ try {
   await page.waitForFunction(() => document.querySelector('[data-header]')?.classList.contains('is-scrolled'));
   const shortcut = page.locator('[data-aqua-shortcut]');
   assert.equal(await shortcut.isVisible(), true, 'Aqua shortcut is visible in the fixed header');
+  assert.equal(await shortcut.locator('xpath=..').getAttribute('class'), 'brand-cluster', 'Aqua Play sits next to the Profils Sports brand');
+  assert.equal(await page.locator('.brand-copy small').textContent(), 'International', 'International keeps only its initial uppercase');
+  assert.equal(await shortcut.getByText('NOUVEAU').count(), 0, 'the shortcut has no new badge');
   assert.match(await shortcut.locator('.aqua-shortcut__logo').getAttribute('src'), /assets\/aqua-play\/logo\.png$/, 'official Aqua Play logo is used in the shortcut');
+  assert.match(await shortcut.locator('.aqua-shortcut__wordmark').getAttribute('src'), /assets\/aqua-play\/wordmark\.svg$/, 'shortcut uses exact Braggadocio letter outlines');
   assert.equal(await shortcut.locator('.aqua-shortcut__wave').count(), 2, 'wave button renders two animated water layers');
   const shortcutStyle = await shortcut.evaluate(element => {
     const style = getComputedStyle(element);
@@ -90,6 +94,7 @@ try {
   assert.equal(await page.locator('[data-header]').evaluate(element => element.classList.contains('is-aqua-preview')), false, 'header returns to its normal state after closing');
 
   const aqua = page.locator('[data-catalogue="aqua"]');
+  assert.match(await aqua.locator('.catalogue-name--aqua img').getAttribute('src'), /assets\/aqua-play\/wordmark\.svg$/, 'catalogue title also uses the supplied lettering');
   await aqua.scrollIntoViewIfNeeded();
   await page.waitForTimeout(350);
   await aqua.hover();
@@ -136,7 +141,22 @@ try {
   await page.locator('[data-aqua-choice="bike"]').evaluate(element => element.click());
   await page.waitForTimeout(120);
   const reverseRestart = Number(await page.locator('.aqua-portal').getAttribute('data-water-wipe'));
-  assert.ok(reverseRestart > reverseStart, 'rapid reversal continues from the current image boundary');
+  assert.ok(reverseRestart < reverseStart, 'rapid reversal retracts the current image boundary');
+
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterTransition === 'idle', null, { timeout:1800 });
+  await page.locator('[data-aqua-choice="court-l"]').click();
+  assert.match(await page.locator('[data-aqua-link]').getAttribute('href'), /water-court-l-fr\.pdf$/, 'the new Water Court L opens its French sheet');
+  await page.waitForTimeout(310);
+  assert.match(await page.locator('.aqua-portal__scene--court-l').evaluate(element => getComputedStyle(element).clipPath), /polygon\(/, 'Water Court L uses the same liquid photographic wipe');
+  await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-portal-court-l.png' });
+  await page.locator('[data-aqua-choice="bike"]').click();
+  assert.equal(await page.locator('.aqua-portal__scene--court-l').count(), 1, 'an interrupted Water Court L layer remains intact under the next wipe');
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterTransition === 'idle', null, { timeout:2200 });
+  assert.equal(await page.locator('.aqua-portal__scene').count(), 1, 'settled viewer releases transitional image layers');
+  await page.locator('[data-aqua-choice="court-l"]').click();
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterTransition === 'idle', null, { timeout:1700 });
+  assert.match(await page.locator('.aqua-portal__scene--court-l').evaluate(element => getComputedStyle(element).backgroundImage), /water-court-l\.jpg/, 'the settled third product keeps its supplied photograph');
+  await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-portal-court-l-settled.png' });
 
   await page.keyboard.press('Escape');
   await page.locator('.aqua-portal').waitFor({ state:'hidden', timeout:2000 });
@@ -148,6 +168,8 @@ try {
   assert.match(await page.locator('[data-aqua-link]').getAttribute('href'), /water-court-en\.pdf$/);
   await page.locator('[data-aqua-choice="bike"]').click();
   assert.match(await page.locator('[data-aqua-link]').getAttribute('href'), /water-bike-en\.pdf$/);
+  await page.locator('[data-aqua-choice="court-l"]').click();
+  assert.match(await page.locator('[data-aqua-link]').getAttribute('href'), /water-court-l-en\.pdf$/);
   await page.locator('[data-aqua-close]').click();
   await page.waitForTimeout(600);
 
@@ -160,6 +182,8 @@ try {
   const mobileShortcut = mobile.locator('[data-aqua-shortcut]');
   assert.equal(await mobileShortcut.isVisible(), true, 'compact Aqua shortcut stays visible beside the mobile menu');
   assert.match(await mobileShortcut.locator('.aqua-shortcut__logo').getAttribute('src'), /assets\/aqua-play\/logo\.png$/);
+  const mobileHeader = await mobile.evaluate(() => ({ brand:document.querySelector('.brand').getBoundingClientRect().right, aquaLeft:document.querySelector('.aqua-shortcut').getBoundingClientRect().left, aquaRight:document.querySelector('.aqua-shortcut').getBoundingClientRect().right, menu:document.querySelector('.menu-toggle').getBoundingClientRect().left }));
+  assert.ok(mobileHeader.brand < mobileHeader.aquaLeft && mobileHeader.aquaRight < mobileHeader.menu, 'mobile logos remain separate and do not overlap the menu');
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await mobileShortcut.click();
   await mobile.waitForSelector('.aqua-portal.is-open');
@@ -171,6 +195,9 @@ try {
   await mobile.locator('[data-aqua-locale="en"]').click();
   assert.match(await mobile.locator('[data-aqua-link]').getAttribute('href'), /water-court-en\.pdf$/);
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await mobile.keyboard.press('ArrowRight');
+  assert.equal(await mobile.locator('.aqua-portal').getAttribute('data-product'), 'court-l');
+  assert.match(await mobile.locator('[data-aqua-link]').getAttribute('href'), /water-court-l-en\.pdf$/);
   await mobile.keyboard.press('ArrowRight');
   assert.equal(await mobile.locator('.aqua-portal').getAttribute('data-product'), 'bike');
   assert.match(await mobile.locator('[data-aqua-link]').getAttribute('href'), /water-bike-en\.pdf$/);
@@ -190,7 +217,10 @@ try {
   await mobileMotion.close();
 
   const compact = await pageFor({ viewport:{ width:360, height:640 }, isMobile:true, hasTouch:true, reducedMotion:'reduce' });
+  const compactRow = await compact.locator('[data-catalogue="aqua"]').evaluate(element => ({ title:element.querySelector('img').getBoundingClientRect().right, action:element.querySelector('.catalogue-action').getBoundingClientRect().left }));
+  assert.ok(compactRow.title + 8 < compactRow.action, 'Aqua wordmark leaves breathing room before the mobile catalogue action');
   await compact.locator('[data-catalogue="aqua"]').click();
+  await compact.locator('.aqua-portal.is-open').waitFor();
   await compact.locator('[data-aqua-link]').scrollIntoViewIfNeeded();
   assert.equal(await compact.locator('[data-aqua-link]').isVisible(), true);
   assert.equal(await compact.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
@@ -204,13 +234,13 @@ try {
   assert.equal(await noJS.locator('[data-catalogue="aqua"]').isVisible(), true);
   await noJS.close();
 
-  for (const file of ['water-court-fr.pdf','water-court-en.pdf','water-bike-fr.pdf','water-bike-en.pdf']) {
+  for (const file of ['water-court-fr.pdf','water-court-en.pdf','water-court-l-fr.pdf','water-court-l-en.pdf','water-bike-fr.pdf','water-bike-en.pdf']) {
     const response = await fetch(new URL(`assets/aqua-play/${file}`, url));
     assert.equal(response.status, 200, file);
     assert.match(response.headers.get('content-type') || '', /pdf/, file);
   }
   assert.deepEqual(errors, []);
-  console.log('PASS: Aqua wave shortcut, crisp native backgrounds, light-only liquid overlay, radial entrance, pointer surface motion, product transition, fallbacks, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
+  console.log('PASS: Braggadocio Aqua wordmark, adjacent header shortcut, three native Aqua products, liquid transitions, fallbacks, FR/EN PDFs, focus return, original ribbon, mobile/reduced motion.');
 } finally {
   await browser.close();
 }

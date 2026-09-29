@@ -55,13 +55,13 @@
   --aqua-cyan:#74e8fb;
   --aqua-blue:#00bfff;
   position:relative;
-  min-width:166px;
-  min-height:56px;
-  padding:5px 14px 5px 7px;
+  min-width:0;
+  min-height:52px;
+  padding:5px 10px 5px 6px;
   display:grid;
-  grid-template-columns:42px minmax(0,1fr) auto;
+  grid-template-columns:36px auto;
   align-items:center;
-  gap:10px;
+  gap:8px;
   overflow:hidden;
   isolation:isolate;
   border:0;
@@ -128,8 +128,8 @@
   transition:opacity .2s ease;
 }
 .aqua-shortcut__logo {
-  width:42px;
-  height:42px;
+  width:36px;
+  height:36px;
   display:block;
   object-fit:contain;
   border-radius:50%;
@@ -138,27 +138,13 @@
   transition:transform .5s cubic-bezier(.16,1,.3,1),filter .35s ease;
 }
 .aqua-shortcut__copy {
-  display:grid;
-  align-content:center;
-  gap:2px;
+  display:flex;
+  align-items:center;
   min-width:0;
 }
-.aqua-shortcut__copy small {
-  color:#c5f8ff;
-  font-size:7px;
-  font-weight:800;
-  line-height:1;
-  letter-spacing:.16em;
-}
-.aqua-shortcut__copy strong {
-  font-family:"Barlow Condensed",sans-serif;
-  font-size:13px;
-  font-weight:700;
-  line-height:1;
-  letter-spacing:.09em;
-  white-space:nowrap;
-}
+.aqua-shortcut__wordmark { display:block; width:84px; height:auto; }
 .aqua-shortcut__arrow {
+  display:none;
   color:#dffcff;
   font-size:13px;
   transform:translate(0,0);
@@ -234,21 +220,21 @@
 }
 
 @media (max-width:1320px) {
+  .brand { gap:10px; }
+  .brand-logo { width:38px; height:38px; }
+  .brand-copy strong { font-size:18px; }
   .header-actions { gap:10px; }
   .aqua-shortcut {
-    min-width:134px;
-    padding-right:10px;
-    grid-template-columns:36px minmax(0,1fr) auto;
+    grid-template-columns:30px auto;
     gap:8px;
   }
-  .aqua-shortcut__logo { width:36px; height:36px; }
-  .aqua-shortcut__copy small { display:none; }
+  .aqua-shortcut__logo { width:30px; height:30px; }
+  .aqua-shortcut__wordmark { width:72px; }
 }
 @media (max-width:1100px) {
   .aqua-shortcut {
-    min-width:120px;
     min-height:46px;
-    grid-template-columns:34px minmax(0,1fr);
+    grid-template-columns:34px auto;
     padding:4px 10px 4px 6px;
   }
   .aqua-shortcut__logo { width:34px; height:34px; }
@@ -258,16 +244,29 @@
 @media (max-width:720px) {
   .header-actions { gap:8px; }
   .aqua-shortcut {
-    min-width:96px;
     min-height:42px;
-    grid-template-columns:29px minmax(0,1fr);
+    grid-template-columns:29px auto;
     gap:6px;
     padding:4px 9px 4px 5px;
   }
   .aqua-shortcut__logo { width:29px; height:29px; }
-  .aqua-shortcut__copy strong { font-size:10px; letter-spacing:.05em; }
+  .aqua-shortcut__wordmark { width:68px; }
   .aqua-shortcut__wave { height:80%; }
   .site-header::after { display:none; }
+}
+@media (max-width:430px) {
+  .brand { gap:5px; }
+  .brand-logo { width:32px; height:32px; }
+  .brand-copy { gap:1px; }
+  .brand-copy strong { display:grid; justify-items:end; gap:1px; font-size:16px; line-height:.83; }
+  .brand-copy small { font-size:11px; }
+  .aqua-shortcut { grid-template-columns:auto; padding:9px 8px; }
+  .aqua-shortcut__logo { display:none; }
+  .aqua-shortcut__wordmark { width:82px; }
+}
+@media (max-width:360px) {
+  .brand-cluster { gap:6px; }
+  .aqua-shortcut__wordmark { width:78px; }
 }
 
 /* Aqua Play is a material change inside the catalogue gallery, not a new section. */
@@ -318,6 +317,8 @@
 .catalogue-gallery.is-aqua-hover .catalogue-row:hover { background:rgba(0,191,255,.17); }
 .catalogue-gallery.is-aqua-hover .catalogue-num { color:#93e7f5; }
 .catalogue-gallery.is-aqua-hover .catalogue-row--aqua .catalogue-action { color:#9ceaf5; }
+.catalogue-name--aqua img { display:block; width:min(420px,100%); height:auto; filter:brightness(0); }
+.catalogue-gallery.is-aqua-hover .catalogue-name--aqua img { filter:none; }
 .catalogue-gallery.is-aqua-hover .catalogue-preview,
 body.catalogue-particle-ready #catalogues .catalogue-gallery.is-aqua-hover .catalogue-preview { background:#08263c; border:1px solid rgba(178,236,247,.45); }
 .catalogue-gallery.is-aqua-hover .catalogue-preview > :not(.catalogue-preview__aqua) { opacity:0 !important; visibility:hidden !important; }
@@ -341,7 +342,8 @@ body.catalogue-particle-ready #catalogues .catalogue-gallery.is-aqua-hover .cata
   transition:opacity .48s ease,visibility .48s,transform .8s cubic-bezier(.16,1,.3,1);
   pointer-events:none;
 }
-.catalogue-preview__aqua span,.catalogue-preview__aqua small { font-size:10px; font-weight:800; letter-spacing:.16em; }
+.catalogue-preview__aqua span,.catalogue-preview__aqua small { font-size:11px; font-weight:800; letter-spacing:.13em; }
+.catalogue-preview__aqua-wordmark { display:block; width:clamp(130px,15vw,190px); height:auto; }
 .catalogue-preview__aqua strong { font-family:"Barlow Condensed",sans-serif; font-size:clamp(60px,6.5vw,112px); font-weight:800; line-height:.78; letter-spacing:-.025em; }
 .catalogue-gallery.is-aqua-hover .catalogue-preview > .catalogue-preview__aqua,
 body.catalogue-particle-ready #catalogues .catalogue-gallery.is-aqua-hover .catalogue-preview > .catalogue-preview__aqua { opacity:1 !important; visibility:visible !important; transform:scale(1); }
@@ -370,7 +372,7 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 .aqua-portal[hidden] { display:none; }
 .aqua-portal.is-open { opacity:1; visibility:visible; clip-path:circle(var(--aqua-reveal-radius,160vmax) at var(--aqua-ripple-x,50%) var(--aqua-ripple-y,50%)); transition-delay:0s; }
 .aqua-portal.is-closing { pointer-events:none; clip-path:circle(0px at var(--aqua-ripple-x,50%) var(--aqua-ripple-y,50%)); transition-duration:.56s; }
-.aqua-portal__handoff,.aqua-portal__scene,.aqua-portal__water,.aqua-portal__entry-ripple,.aqua-portal__wipe-edge,.aqua-portal__shade,.aqua-portal__line { position:absolute; pointer-events:none; }
+.aqua-portal__handoff,.aqua-portal__scenes,.aqua-portal__scene,.aqua-portal__water,.aqua-portal__entry-ripple,.aqua-portal__wipe-edge,.aqua-portal__shade,.aqua-portal__line { position:absolute; pointer-events:none; }
 .aqua-portal__handoff {
   z-index:1;
   left:var(--aqua-handoff-x,0px);
@@ -389,15 +391,16 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 .aqua-portal.is-water-ready.is-entering .aqua-portal__handoff {
   transition-delay:.06s;
 }
-.aqua-portal__scene,.aqua-portal__water,.aqua-portal__shade { inset:0; }
+.aqua-portal__scenes,.aqua-portal__scene,.aqua-portal__water,.aqua-portal__shade { inset:0; }
+.aqua-portal__scenes { z-index:0; overflow:hidden; }
 .aqua-portal__scene {
-  z-index:0;
   background-position:center;
   background-size:cover;
   opacity:0;
   transition:opacity .24s ease;
 }
 .aqua-portal__scene--court { background-image:url("assets/aqua-play/water-court.jpg"); }
+.aqua-portal__scene--court-l { background-image:url("assets/aqua-play/water-court-l.jpg"); }
 .aqua-portal__scene--bike { background-image:url("assets/aqua-play/water-bike.jpg"); clip-path:inset(0 100% 0 0); }
 .aqua-portal.is-entering .aqua-portal__scene,
 .aqua-portal.is-open .aqua-portal__scene,
@@ -481,8 +484,8 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 .aqua-portal__close:hover { background:#fff; color:var(--aqua-ink); }
 .aqua-portal__content { width:min(700px,62vw); height:calc(100% - 180px); margin-left:var(--pad); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding-bottom:3vh; }
 .aqua-portal__index { margin:0 0 20px; color:#9fe4f0; font-size:10px; font-weight:800; letter-spacing:.18em; }
-.aqua-portal__title { margin:0; font-family:"Barlow Condensed",sans-serif; font-size:clamp(100px,13vw,210px); font-weight:800; line-height:.72; letter-spacing:-.03em; }
-.aqua-portal__title span { display:block; }
+.aqua-portal__title { margin:0; width:min(660px,100%); }
+.aqua-portal__title img { display:block; width:100%; height:auto; filter:drop-shadow(0 12px 24px rgba(0,17,29,.22)); }
 .aqua-portal__detail { margin-top:clamp(30px,5vh,58px); max-width:520px; }
 .aqua-portal__detail h3 { margin:0 0 4px; font-family:"Barlow Condensed",sans-serif; font-size:clamp(42px,5vw,72px); font-weight:700; line-height:.9; }
 .aqua-portal__detail p { margin:0; font-size:14px; line-height:1.5; color:rgba(255,255,255,.85); }
@@ -503,10 +506,10 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
   100% { opacity:1; transform:scaleX(1); }
 }
 .aqua-portal__choices { display:flex; gap:0; width:min(580px,100%); margin-top:clamp(24px,4vh,44px); border-top:1px solid rgba(255,255,255,.45); }
-.aqua-portal__choice { flex:1; min-height:67px; padding:14px 12px 12px 0; border:0; border-bottom:1px solid rgba(255,255,255,.45); background:transparent; color:rgba(255,255,255,.62); text-align:left; font-family:"Barlow Condensed",sans-serif; font-size:24px; font-weight:700; cursor:pointer; transition:color .22s,background .22s,padding .22s; }
+.aqua-portal__choice { flex:1; min-width:0; min-height:67px; padding:14px 12px 12px 0; border:0; border-bottom:1px solid rgba(255,255,255,.45); background:transparent; color:rgba(255,255,255,.62); text-align:left; font-family:"Barlow Condensed",sans-serif; font-size:24px; font-weight:700; cursor:pointer; transition:color .22s,background .22s; }
 .aqua-portal__choice + .aqua-portal__choice { padding-left:20px; border-left:1px solid rgba(255,255,255,.45); }
 .aqua-portal__choice[aria-pressed="true"],.aqua-portal__choice:hover { color:#9deaf6; background:rgba(0,191,255,.09); }
-.aqua-portal__choice small { display:block; margin-bottom:4px; font-family:"Archivo",sans-serif; font-size:9px; letter-spacing:.14em; }
+.aqua-portal__choice small { display:block; margin-bottom:4px; font-family:"Archivo",sans-serif; font-size:11px; letter-spacing:.1em; }
 .aqua-portal__document { display:flex; align-items:end; flex-wrap:wrap; gap:22px; }
 .aqua-portal__link { display:inline-flex; gap:22px; align-items:center; min-height:50px; margin-top:26px; padding:0 0 6px; border-bottom:1px solid #9deaf6; color:#fff; font-size:11px; font-weight:800; letter-spacing:.11em; text-transform:uppercase; transition:gap .2s,color .2s; }
 .aqua-portal__link:hover { gap:30px; color:#9deaf6; }
@@ -523,22 +526,24 @@ body.aqua-portal-open .catalogue-particle-canvas { opacity:0 !important; visibil
 @media (max-width:720px) {
   .catalogue-gallery { padding-bottom:90px; }
   .catalogue-preview__aqua strong { font-size:clamp(55px,15vw,90px); }
+  .catalogue-name--aqua img { width:min(50vw,220px); }
   .aqua-portal__top { padding-top:20px; }
   .aqua-portal__brand img { width:36px; height:36px; }
   .aqua-portal__brand span { max-width:115px; font-size:8px; }
   .aqua-portal__content { justify-content:center; height:calc(100% - 125px); padding-bottom:5vh; }
-  .aqua-portal__title { font-size:clamp(88px,24vw,145px); }
+  .aqua-portal__title { width:100%; }
   .aqua-portal__detail { margin-top:30px; }
   .aqua-portal__detail h3 { font-size:52px; }
   .aqua-portal__detail p { font-size:12px; }
   .aqua-portal__choices { margin-top:26px; }
-  .aqua-portal__choice { min-height:60px; font-size:21px; }
+  .aqua-portal__choice { min-height:60px; font-size:clamp(15px,4.4vw,21px); }
+  .aqua-portal__choice + .aqua-portal__choice { padding-left:10px; }
   .aqua-portal__footer { font-size:7px; }
   .aqua-portal__footer span:last-child { display:none; }
 }
 @media (max-height:680px) {
   .aqua-portal__content { justify-content:flex-start; overflow-y:auto; padding-top:10px; padding-bottom:50px; }
-  .aqua-portal__title { font-size:clamp(78px,16vh,120px); }
+  .aqua-portal__title { max-width:520px; }
   .aqua-portal__detail { margin-top:20px; }
   .aqua-portal__choices { margin-top:20px; }
 }
