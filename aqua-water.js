@@ -6,7 +6,7 @@
       this.portal = portal;
       this.canvas = canvas;
       this.reduced = Boolean(reduced);
-      this.available = Boolean(portal && canvas && window.THREE && !this.reduced);
+      this.available = Boolean(portal && canvas && window.THREE && !this.reduced && matchMedia('(any-pointer:fine)').matches);
       this.ready = false;
       this.initializing = null;
       this.active = false;
@@ -14,14 +14,13 @@
       this.lastFrame = 0;
       this.lastRenderedAt = 0;
       this.clock = 0;
-      this.currentProduct = 'court';
-      this.nextProduct = 'court';
-      this.transitionStarted = 0;
-      this.transitionDuration = 760;
+      this.wipeValue = 0;
+      this.wipePhase = 0;
+      this.wipeActive = false;
       this.entranceStarted = 0;
       this.entranceLaunchAt = 0;
-      this.entranceDelay = 220;
-      this.entranceDuration = 1250;
+      this.entranceDelay = 55;
+      this.entranceDuration = 900;
       this.lastPointerMove = 0;
       this.pointerEnergy = 0;
       this.pointerEnergyTarget = 0;
@@ -29,10 +28,31 @@
       this.pointerTarget = { x:.62, y:.48 };
       this.origin = { x:.5, y:.06 };
       this.closingUntil = 0;
-      this.rippleTimer = 0;
+      this.openToken = 0;
       this.onVisibility = () => {
         if (document.hidden) this.pause();
         else if (this.active || performance.now() < this.closingUntil) this.resume();
+      };
+      this.onContextLost = event => {
+        event.preventDefault();
+        this.pause();
+        this.ready = false;
+        this.available = false;
+        this.portal.classList.remove('is-water-ready');
+        this.portal.dataset.waterMode = 'fallback';
+        this.portal.dataset.waterActive = 'false';
+      };
+      this.onContextRestored = () => {
+        if (this.reduced || !matchMedia('(any-pointer:fine)').matches || !this.renderer) return;
+        requestAnimationFrame(() => {
+          this.available = true;
+          this.ready = true;
+          this.portal.classList.add('is-water-ready');
+          this.portal.dataset.waterMode = 'webgl-overlay';
+          this.portal.dataset.waterActive = String(this.active);
+          this.resize();
+          if (this.active) this.resume();
+        });
       };
 
       if (!this.available) {
@@ -41,6 +61,8 @@
       }
 
       document.addEventListener('visibilitychange', this.onVisibility);
+      this.canvas.addEventListener('webglcontextlost', this.onContextLost);
+      this.canvas.addEventListener('webglcontextrestored', this.onContextRestored);
       this.portal.dataset.waterMode = 'loading';
       this.portal.dataset.waterActive = 'false';
     }
@@ -77,6 +99,8 @@
           uEntrance:{ value:1 },
           uEnergy:{ value:0 },
           uActivity:{ value:.08 },
+          uWipePhase:{ value:0 },
+          uWipeActive:{ value:0 },
           uPointer:{ value:new THREE.Vector2(this.pointer.x, this.pointer.y) },
           uOrigin:{ value:new THREE.Vector2(this.origin.x, this.origin.y) }
         };
@@ -104,6 +128,8 @@
             uniform float uEntrance;
             uniform float uEnergy;
             uniform float uActivity;
+            uniform float uWipePhase;
+            uniform float uWipeActive;
 
             float gaussian(float value, float width) {
               float scaled = value / max(width, .0001);
@@ -116,48 +142,52 @@
 
               vec2 entranceMetric = (uv - uOrigin) * vec2(aspect, 1.0);
               float entranceDistance = length(entranceMetric);
-              float entranceRadius = mix(.01, 1.62, uEntrance);
-              float entranceLead = gaussian(entranceDistance - (entranceRadius + .055), mix(.032, .052, uEntrance));
-              float entranceRing = gaussian(entranceDistance - entranceRadius, mix(.046, .078, uEntrance));
-              float entranceWake = gaussian(entranceDistance - max(.0, entranceRadius - .12), mix(.065, .10, uEntrance));
-              float entranceLife = 1.0 - smoothstep(.68, 1.0, uEntrance);
-              float entranceGlow = (entranceRing + entranceLead * .72 + entranceWake * .34) * entranceLife;
+              float maxRadius = length(vec2(max(uOrigin.x, 1.0 - uOrigin.x) * aspect, max(uOrigin.y, 1.0 - uOrigin.y))) + .03;
+              float entranceRadius = maxRadius * uEntrance;
+              float entranceRing = gaussian(entranceDistance - entranceRadius, mix(.025, .055, uEntrance));
+              float entranceWake = gaussian(entranceDistance - max(0.0, entranceRadius - .09), .09);
+              float entranceLife = 1.0 - smoothstep(.72, 1.0, uEntrance);
+              float entranceGlow = (entranceRing + entranceWake * .34) * entranceLife;
 
               vec2 pointerMetric = (uv - uPointer) * vec2(aspect, 1.0);
               float pointerDistance = length(pointerMetric);
-              float pointerFalloff = exp(-pointerDistance * pointerDistance * 17.0);
+              float pointerFalloff = exp(-pointerDistance * pointerDistance * 13.0);
               float pointerWaveA = .5 + .5 * sin(pointerDistance * 52.0 - uTime * 7.0);
               float pointerWaveB = .5 + .5 * sin(pointerDistance * 29.0 - uTime * 3.8 + 1.2);
               float pointerSurface = (pointerWaveA * .66 + pointerWaveB * .34) * pointerFalloff * uEnergy;
-              float pointerCore = gaussian(pointerDistance, .105) * uEnergy;
+              float pointerRim = gaussian(pointerDistance - .14, .026) * uEnergy;
+              float pointerCore = gaussian(pointerDistance, .07) * uEnergy;
 
               vec2 c = uv * vec2(7.2, 5.2);
               float causticA = sin(c.x * 2.2 + sin(c.y * 1.4 + uTime * .46));
               float causticB = sin(c.y * 2.55 - cos(c.x * 1.3 - uTime * .34));
               float caustic = pow(clamp((causticA + causticB) * .24 + .52, 0.0, 1.0), 6.0);
-              float causticAlpha = caustic * mix(.015, .055, uActivity);
+              float causticAlpha = caustic * mix(.018, .052, uActivity);
 
-              float frontier = uMix * 1.36 - .18;
-              float liquidLine = uv.x
-                + sin(uv.y * 13.0 + uTime * 1.35) * .034
-                + sin(uv.y * 31.0 - uTime * .72) * .011;
-              float transitionEdge = gaussian(liquidLine - frontier, .072);
-              float transitionAlpha = transitionEdge * step(.001, uMix) * step(uMix, .999) * .16;
+              float waveAmplitude = clamp(uResolution.x * .033, 20.0, 48.0) / max(uResolution.x, 1.0) * sin(3.14159 * uMix);
+              float yTop = 1.0 - uv.y;
+              float frontier = uMix + waveAmplitude * (
+                sin(yTop * 13.0 + uWipePhase) * .72
+                + sin(yTop * 31.0 - uWipePhase * .55) * .28
+              );
+              float transitionEdge = gaussian(uv.x - frontier, .018);
+              float transitionAlpha = transitionEdge * uWipeActive * .22;
 
-              vec3 color = vec3(.24, .76, .90) * causticAlpha;
-              color += vec3(.50, .93, 1.0) * entranceGlow * .34;
-              color += vec3(.22, .78, .92) * pointerSurface * .16;
-              color += vec3(.72, .97, 1.0) * pointerCore * .045;
-              color += vec3(.25, .72, .86) * transitionAlpha;
+              vec3 color = mix(
+                vec3(.26, .74, .88),
+                vec3(.83, .97, 1.0),
+                clamp(entranceGlow * .8 + pointerRim * .55 + transitionEdge * uWipeActive * .5, 0.0, 1.0)
+              );
 
               float alpha = clamp(
-                causticAlpha * .70
-                + entranceGlow * .46
-                + pointerSurface * .22
-                + pointerCore * .05
+                causticAlpha * .75
+                + entranceGlow * .28
+                + pointerSurface * .24
+                + pointerRim * .12
+                + pointerCore * .07
                 + transitionAlpha,
                 0.0,
-                .46
+                .42
               );
 
               gl_FragColor = vec4(color, alpha);
@@ -167,9 +197,8 @@
 
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.scene.add(this.mesh);
-        this.resize();
-
         this.ready = true;
+        this.resize();
         this.portal.dataset.waterMode = 'webgl-overlay';
         this.portal.dataset.waterReady = 'true';
         this.portal.dataset.waterMotion = 'light-only';
@@ -192,9 +221,9 @@
     }
 
     open({ origin, product = 'court' } = {}) {
-      this.currentProduct = product;
-      this.nextProduct = product;
+      const token = ++this.openToken;
       this.setOrigin(origin || this.origin);
+      this.setWipe(product === 'bike' ? 1 : 0, 0, false);
       this.entranceStarted = 0;
       this.entranceLaunchAt = performance.now() + this.entranceDelay;
       this.pointerEnergy = 0;
@@ -203,8 +232,7 @@
       this.portal.dataset.waterEntrance = this.reduced ? 'static' : 'pending';
 
       this.warm().then(ready => {
-        if (!ready) return;
-        this.setProductInstant(this.currentProduct);
+        if (!ready || token !== this.openToken) return;
         this.active = true;
         this.portal.dataset.waterActive = 'true';
         this.closingUntil = 0;
@@ -213,9 +241,8 @@
     }
 
     close(delay = 560) {
+      this.openToken += 1;
       this.active = false;
-      clearTimeout(this.rippleTimer);
-      this.portal.classList.remove('is-water-rippling');
       this.portal.dataset.waterActive = 'false';
       this.closingUntil = performance.now() + delay;
       setTimeout(() => {
@@ -227,20 +254,16 @@
       }, delay + 40);
     }
 
-    setProductInstant(key) {
-      if (!key) return;
-      this.currentProduct = key;
-      this.nextProduct = key;
-      if (this.uniforms) this.uniforms.uMix.value = 0;
-      this.portal.dataset.waterTransition = 'idle';
-    }
-
-    transitionTo(key) {
-      if (!key || key === this.currentProduct) return;
-      this.nextProduct = key;
-      this.transitionStarted = performance.now();
-      this.portal.dataset.waterTransition = `${this.currentProduct}-to-${key}`;
-      this.resume();
+    setWipe(progress, phase = 0, active = false) {
+      this.wipeValue = Math.max(0, Math.min(1, progress));
+      this.wipePhase = phase;
+      this.wipeActive = Boolean(active);
+      if (this.uniforms) {
+        this.uniforms.uMix.value = this.wipeValue;
+        this.uniforms.uWipePhase.value = this.wipePhase;
+        this.uniforms.uWipeActive.value = this.wipeActive ? 1 : 0;
+      }
+      if (this.wipeActive) this.resume();
     }
 
     pointerMove(event) {
@@ -257,7 +280,7 @@
       const speed = Math.sqrt(dx * dx + dy * dy) / dt * 1000;
       this.pointerTarget.x = x;
       this.pointerTarget.y = y;
-      this.pointerEnergyTarget = Math.min(1.35, .34 + speed * .14);
+      this.pointerEnergyTarget = Math.min(1.3, .52 + speed * .15);
       this.lastPointerMove = now;
       this.portal.dataset.waterInteraction = 'active';
       this.resume();
@@ -294,20 +317,13 @@
       if (this.active && !this.entranceStarted && now >= this.entranceLaunchAt) {
         this.entranceStarted = now;
         this.portal.dataset.waterEntrance = 'running';
-        clearTimeout(this.rippleTimer);
-        this.portal.classList.remove('is-water-rippling');
-        void this.portal.offsetWidth;
-        this.portal.classList.add('is-water-rippling');
-        this.rippleTimer = setTimeout(() => {
-          this.portal.classList.remove('is-water-rippling');
-        }, this.entranceDuration + 90);
       }
 
       const entranceElapsedForThrottle = this.entranceStarted ? now - this.entranceStarted : 0;
       const sincePointer = this.lastPointerMove ? now - this.lastPointerMove : 9999;
       const canThrottle = sincePointer > 2400
         && (!this.active || (this.entranceStarted && entranceElapsedForThrottle >= this.entranceDuration))
-        && !this.transitionStarted;
+        && !this.wipeActive;
 
       if (canThrottle && this.lastRenderedAt && now - this.lastRenderedAt < 84) {
         this.frame = requestAnimationFrame(() => this.render());
@@ -340,17 +356,6 @@
         this.portal.dataset.waterEntrance = 'idle';
       }
 
-      if (this.transitionStarted) {
-        const progress = Math.max(0, Math.min(1, (now - this.transitionStarted) / this.transitionDuration));
-        const eased = progress * progress * (3 - 2 * progress);
-        this.uniforms.uMix.value = eased;
-        if (progress >= 1) {
-          this.currentProduct = this.nextProduct;
-          this.transitionStarted = 0;
-          this.setProductInstant(this.currentProduct);
-        }
-      }
-
       this.uniforms.uTime.value = this.clock;
       this.uniforms.uEntrance.value = entranceEase;
       this.uniforms.uEnergy.value = this.pointerEnergy;
@@ -366,9 +371,10 @@
     }
 
     destroy() {
-      clearTimeout(this.rippleTimer);
       this.pause();
       document.removeEventListener('visibilitychange', this.onVisibility);
+      this.canvas?.removeEventListener('webglcontextlost', this.onContextLost);
+      this.canvas?.removeEventListener('webglcontextrestored', this.onContextRestored);
       this.geometry?.dispose?.();
       this.material?.dispose?.();
       this.renderer?.dispose?.();

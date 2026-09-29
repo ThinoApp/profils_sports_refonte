@@ -8,6 +8,7 @@
   if (!gallery || !row) return;
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canClipWipe = Boolean(window.CSS?.supports?.('clip-path', 'polygon(0 0, 100% 0, 100% 100%)'));
   const products = {
     court: {
       title: 'WATER COURT',
@@ -38,6 +39,7 @@
     <canvas class="aqua-portal__water" data-aqua-water aria-hidden="true"></canvas>
     <div class="aqua-portal__entry-ripple" aria-hidden="true"></div>
     <div class="aqua-portal__shade" aria-hidden="true"></div>
+    <div class="aqua-portal__wipe-edge" aria-hidden="true"></div>
     <div class="aqua-portal__line" aria-hidden="true"></div>
     <header class="aqua-portal__top">
       <div class="aqua-portal__brand"><img src="assets/aqua-play/logo.png" alt=""><span>PROFILS SPORTS × AQUA PLAY</span></div>
@@ -75,6 +77,8 @@
   const localeButtons = [...portal.querySelectorAll('[data-aqua-locale]')];
   const localeGroup = portal.querySelector('.aqua-portal__languages');
   const waterCanvas = portal.querySelector('[data-aqua-water]');
+  const bikeScene = portal.querySelector('.aqua-portal__scene--bike');
+  const wipeEdge = portal.querySelector('.aqua-portal__wipe-edge');
   const water = window.AquaWaterSurface
     ? new window.AquaWaterSurface({ portal, canvas:waterCanvas, reduced })
     : null;
@@ -91,6 +95,15 @@
   let headerLightPoint = null;
   let originSource = row;
   let productSwitchTimer = 0;
+  let rippleTimer = 0;
+  let wipeFrame = 0;
+  let wipeLastFrame = 0;
+  let wipeValue = 0;
+  let wipeTarget = 0;
+  let wipeStartValue = 0;
+  let wipeStartedAt = 0;
+  let wipeDuration = 900;
+  let wipePhase = 0;
 
   const english = () => document.documentElement.lang === 'en';
   const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
@@ -123,9 +136,89 @@
     portal.style.setProperty('--aqua-handoff-height', `${handoffRect.height}px`);
     portal.style.setProperty('--aqua-ripple-x', `${sourceElementRect.left + sourceElementRect.width / 2 - box.left}px`);
     portal.style.setProperty('--aqua-ripple-y', `${sourceElementRect.top + sourceElementRect.height / 2 - box.top}px`);
+    const localX = clamp(sourceElementRect.left + sourceElementRect.width / 2 - box.left, 0, box.width);
+    const localY = clamp(sourceElementRect.top + sourceElementRect.height / 2 - box.top, 0, box.height);
+    const radius = Math.hypot(Math.max(localX, box.width - localX), Math.max(localY, box.height - localY)) + 24;
+    portal.style.setProperty('--aqua-reveal-radius', `${radius}px`);
+    portal.style.setProperty('--aqua-ripple-size', `${radius * 2}px`);
     const origin = sourceOrigin(sourceElement);
     water?.setOrigin(origin);
     return origin;
+  };
+
+  // Keep both authentic photos in the DOM: only the upper photo is clipped.
+  // The boundary can reverse mid-flight without replacing or resampling either image.
+  const paintWipe = (active = false) => {
+    portal.dataset.waterWipe = wipeValue.toFixed(3);
+    const width = Math.max(1, portal.getBoundingClientRect().width || viewport().width);
+    const height = Math.max(1, portal.getBoundingClientRect().height || viewport().height);
+    if (wipeValue <= .001 || wipeValue >= .999) {
+      bikeScene.style.clipPath = wipeValue >= .999 ? 'inset(0)' : 'inset(0 100% 0 0)';
+      wipeEdge.style.opacity = '0';
+    } else {
+      const amplitude = Math.min(48, Math.max(20, width * .033)) * Math.sin(Math.PI * wipeValue);
+      const samples = width < 720 ? 16 : 24;
+      const edgeAt = ratio => clamp(
+        width * wipeValue + amplitude * (Math.sin(ratio * 13 + wipePhase) * .72 + Math.sin(ratio * 31 - wipePhase * .55) * .28),
+        0,
+        width
+      );
+      const boundary = [];
+      const left = [];
+      const right = [];
+      for (let step = 0; step <= samples; step += 1) {
+        const ratio = step / samples;
+        const y = Math.round(ratio * height);
+        const edge = edgeAt(ratio);
+        boundary.push(`${edge.toFixed(1)}px ${y}px`);
+        left.push(`${clamp(edge - 15, 0, width).toFixed(1)}px ${y}px`);
+        right.push(`${clamp(edge + 18, 0, width).toFixed(1)}px ${y}px`);
+      }
+      bikeScene.style.clipPath = `polygon(0px 0px, ${boundary.join(', ')}, 0px ${height}px)`;
+      wipeEdge.style.clipPath = `polygon(${left.join(', ')}, ${right.reverse().join(', ')})`;
+      wipeEdge.style.opacity = active ? String(Math.min(.82, Math.sin(Math.PI * wipeValue) * .82)) : '0';
+    }
+    water?.setWipe(wipeValue, wipePhase, active);
+  };
+  const stopWipe = () => {
+    if (wipeFrame) cancelAnimationFrame(wipeFrame);
+    wipeFrame = 0;
+    wipeLastFrame = 0;
+  };
+  const setWipeInstant = value => {
+    stopWipe();
+    wipeValue = wipeTarget = wipeStartValue = value;
+    wipeStartedAt = 0;
+    wipePhase = 0;
+    paintWipe(false);
+    portal.dataset.waterTransition = 'idle';
+  };
+  const tickWipe = now => {
+    wipeFrame = 0;
+    if (!isOpen || reduced) return;
+    const dt = Math.min(64, wipeLastFrame ? now - wipeLastFrame : 16.67);
+    wipeLastFrame = now;
+    const progress = clamp((now - wipeStartedAt) / wipeDuration, 0, 1);
+    const eased = progress * progress * (3 - 2 * progress);
+    wipeValue = wipeStartValue + (wipeTarget - wipeStartValue) * eased;
+    wipePhase += dt * .0024;
+    const settled = progress >= 1;
+    if (settled) wipeValue = wipeTarget;
+    paintWipe(!settled);
+    if (settled) {
+      wipeLastFrame = 0;
+      portal.dataset.waterTransition = 'idle';
+    } else {
+      wipeFrame = requestAnimationFrame(tickWipe);
+    }
+  };
+  const transitionWipe = key => {
+    wipeStartValue = wipeValue;
+    wipeTarget = key === 'bike' ? 1 : 0;
+    wipeStartedAt = performance.now();
+    wipeDuration = Math.max(380, 900 * Math.abs(wipeTarget - wipeStartValue));
+    portal.dataset.waterTransition = `${wipeTarget ? 'court-to-bike' : 'bike-to-court'}`;
+    if (!wipeFrame) wipeFrame = requestAnimationFrame(tickWipe);
   };
 
   const updateCopy = () => {
@@ -156,22 +249,34 @@
     choices.forEach(choice => choice.setAttribute('aria-pressed', String(choice.dataset.aquaChoice === key)));
     updateCopy();
 
-    if (!changed) return;
+    if (!changed && !instant) return;
     clearTimeout(productSwitchTimer);
     portal.classList.remove('is-product-switching');
-    if (instant) {
-      water?.setProductInstant(key);
+    if (instant || reduced || !canClipWipe) {
+      setWipeInstant(key === 'bike' ? 1 : 0);
       return;
     }
 
-    water?.transitionTo(key);
+    transitionWipe(key);
     void portal.offsetWidth;
     portal.classList.add('is-product-switching');
-    productSwitchTimer = setTimeout(() => portal.classList.remove('is-product-switching'), reduced ? 0 : 760);
+    productSwitchTimer = setTimeout(() => portal.classList.remove('is-product-switching'), reduced ? 0 : 860);
   };
 
-  const setImmersed = active => {
+  const setImmersed = (active, event) => {
     if (!active && (isOpen || portal.classList.contains('is-closing'))) return;
+    if (active) {
+      const galleryRect = gallery.getBoundingClientRect();
+      const rowRect = row.getBoundingClientRect();
+      const x = event?.clientX ?? rowRect.left + rowRect.width / 2;
+      const y = event?.clientY ?? rowRect.top + rowRect.height / 2;
+      const localX = clamp(x - galleryRect.left, 0, galleryRect.width);
+      const localY = clamp(y - galleryRect.top, 0, galleryRect.height);
+      const radius = Math.hypot(Math.max(localX, galleryRect.width - localX), Math.max(localY, galleryRect.height - localY)) + 24;
+      gallery.style.setProperty('--aqua-gallery-x', `${localX}px`);
+      gallery.style.setProperty('--aqua-gallery-y', `${localY}px`);
+      gallery.style.setProperty('--aqua-gallery-radius', `${radius}px`);
+    }
     gallery.classList.toggle('is-aqua-hover', active);
     document.body.classList.toggle('catalogue-aqua-hover', active);
   };
@@ -196,7 +301,7 @@
       header.style.setProperty('--aqua-header-light-y', `${headerLightPoint.y - rect.top - 95}px`);
     });
   };
-  row.addEventListener('mouseenter', () => { setImmersed(true); water?.warm(); });
+  row.addEventListener('mouseenter', event => { setImmersed(true, event); water?.warm(); });
   row.addEventListener('focus', () => { setImmersed(true); water?.warm(); });
   gallery.querySelectorAll('[data-catalogue]:not([data-catalogue="aqua"])').forEach(other => {
     other.addEventListener('mouseenter', () => setImmersed(false));
@@ -225,6 +330,7 @@
   const open = (sourceElement = row) => {
     clearTimeout(closeTimer);
     clearTimeout(entranceTimer);
+    clearTimeout(rippleTimer);
     originSource = sourceElement || row;
     setHeaderPreview(false);
     setImmersed(true);
@@ -237,6 +343,7 @@
     water?.open({ origin, product:'court' });
     portal.setAttribute('aria-hidden', 'false');
     portal.classList.remove('is-closing');
+    portal.classList.remove('is-water-rippling');
     portal.classList.add('is-entering');
     document.body.classList.add('aqua-portal-open');
     isOpen = true;
@@ -245,17 +352,24 @@
       .map(element => ({ element, inert:element.inert }));
     backgroundState.forEach(({ element }) => { element.inert = true; });
     void portal.offsetWidth;
-    requestAnimationFrame(() => { if (isOpen) portal.classList.add('is-open'); });
-    entranceTimer = setTimeout(() => portal.classList.remove('is-entering'), reduced ? 0 : 950);
+    requestAnimationFrame(() => {
+      if (!isOpen) return;
+      portal.classList.add('is-open');
+      if (!reduced) portal.classList.add('is-water-rippling');
+    });
+    rippleTimer = setTimeout(() => portal.classList.remove('is-water-rippling'), reduced ? 0 : 1040);
+    entranceTimer = setTimeout(() => portal.classList.remove('is-entering'), reduced ? 0 : 1000);
     setTimeout(() => { if (isOpen) closeButton.focus({ preventScroll:true }); }, reduced ? 0 : 120);
   };
   const close = () => {
     if (!isOpen) return;
     clearTimeout(entranceTimer);
+    clearTimeout(rippleTimer);
     isOpen = false;
+    stopWipe();
     setOrigin(originSource);
     portal.classList.add('is-closing');
-    portal.classList.remove('is-open', 'is-entering');
+    portal.classList.remove('is-open', 'is-entering', 'is-water-rippling');
     portal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('aqua-portal-open');
     water?.close(reduced ? 0 : 560);
@@ -267,7 +381,7 @@
       portal.classList.remove('is-closing');
       previousFocus?.focus({ preventScroll:true });
       if (previousFocus?.matches?.('[data-aqua-shortcut]')) setHeaderPreview(false);
-    }, reduced ? 0 : 540);
+    }, reduced ? 0 : 600);
   };
 
   row.addEventListener('click', event => {
@@ -296,8 +410,6 @@
   portal.addEventListener('pointermove', event => {
     if (!isOpen || reduced || event.pointerType !== 'mouse') return;
     water?.pointerMove(event);
-    portal.style.setProperty('--aqua-shift-x', `${((event.clientX / innerWidth) - .5) * -12}px`);
-    portal.style.setProperty('--aqua-shift-y', `${((event.clientY / innerHeight) - .5) * -10}px`);
   }, { passive:true });
   addEventListener('keydown', event => {
     if (!isOpen) return;
@@ -320,16 +432,19 @@
   addEventListener('resize', () => {
     if (!isOpen) return;
     setOrigin(originSource);
+    paintWipe(Boolean(wipeFrame));
     water?.resize();
   }, { passive:true });
   window.visualViewport?.addEventListener('resize', () => {
     if (!isOpen) return;
     setOrigin(originSource);
+    paintWipe(Boolean(wipeFrame));
     water?.resize();
   }, { passive:true });
   window.visualViewport?.addEventListener('scroll', () => {
     if (!isOpen) return;
     setOrigin(originSource);
+    paintWipe(Boolean(wipeFrame));
     water?.resize();
   }, { passive:true });
   document.addEventListener('site:language-change', () => {

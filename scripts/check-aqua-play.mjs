@@ -45,10 +45,23 @@ try {
   await page.screenshot({ path:'/tmp/aqua-header-preview.png' });
   await shortcut.evaluate(element => element.click());
   await page.waitForSelector('.aqua-portal.is-open');
+  const radialSamples = await page.evaluate(async () => {
+    const portal = document.querySelector('.aqua-portal');
+    const radius = () => Number(getComputedStyle(portal).clipPath.match(/circle\(([\d.]+)px/)?.[1] || 0);
+    const values = [radius()];
+    await new Promise(resolve => setTimeout(resolve, 130));
+    values.push(radius());
+    await new Promise(resolve => setTimeout(resolve, 340));
+    values.push(radius());
+    return values;
+  });
+  assert.ok(radialSamples[0] < radialSamples[1] && radialSamples[1] < radialSamples[2], `radial opening grows continuously: ${radialSamples.join(' → ')}`);
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterReady === 'true', null, { timeout:5000 });
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-mode'), 'webgl-overlay', 'desktop Aqua viewer uses a transparent WebGL liquid overlay');
-  assert.equal(Number(await page.locator('.aqua-portal').getAttribute('data-water-entrance-duration')), 1250, 'enhanced radial entrance uses the longer 1.25s travel');
+  assert.equal(Number(await page.locator('.aqua-portal').getAttribute('data-water-entrance-duration')), 900, 'WebGL wave matches the radial portal opening');
   assert.equal(await page.locator('[data-aqua-water]').isVisible(), true, 'liquid surface canvas is visible');
+  assert.ok(await page.locator('[data-aqua-water]').evaluate(canvas => canvas.width >= innerWidth), 'WebGL canvas renders at viewport resolution instead of its 300px default');
+  assert.match(await page.locator('.aqua-portal').evaluate(element => getComputedStyle(element).clipPath), /circle\(/, 'viewer opens from a real radial mask');
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-motion'), 'light-only', 'liquid effect does not deform the photographic background');
   assert.match(await page.locator('.aqua-portal').getAttribute('data-water-entrance') || '', /^(pending|running|idle)$/, 'opening schedules the radial water entrance');
   await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterActive === 'true', null, { timeout:1000 });
@@ -82,6 +95,7 @@ try {
   await aqua.hover();
   await page.waitForTimeout(900);
   assert.equal(await page.locator('.catalogue-gallery').evaluate(element => element.classList.contains('is-aqua-hover')), true);
+  assert.match(await page.locator('.catalogue-gallery').evaluate(element => getComputedStyle(element, '::before').clipPath), /circle\(/, 'gallery preview also grows radially');
   assert.equal(await page.locator('.catalogue-preview__aqua').isVisible(), true);
   await page.screenshot({ path:'/tmp/aqua-gallery-desktop.png' });
   await page.locator('[data-catalogue="padel"]').hover();
@@ -106,12 +120,23 @@ try {
   await page.locator('[data-aqua-choice="bike"]').evaluate(element => element.click());
   assert.match(await page.locator('.aqua-portal').getAttribute('data-water-transition'), /court-to-bike/, 'product change starts a liquid wipe');
   await page.waitForTimeout(320);
+  const wipeMidpoint = Number(await page.locator('.aqua-portal').getAttribute('data-water-wipe'));
+  assert.ok(wipeMidpoint > .2 && wipeMidpoint < .95, 'wipe makes measured partial progress');
+  assert.match(await page.locator('.aqua-portal__scene--bike').evaluate(element => getComputedStyle(element).clipPath), /polygon\(/, 'incoming native photo is revealed by a shaped liquid boundary');
+  assert.ok(Number(await page.locator('.aqua-portal__scene--court').evaluate(element => getComputedStyle(element).opacity)) > .95, 'outgoing photo stays fully opaque beneath the wipe');
   await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-liquid-wipe.png' });
-  await page.waitForTimeout(520);
+  await page.waitForFunction(() => document.querySelector('.aqua-portal')?.dataset.waterTransition === 'idle', null, { timeout:1700 });
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-water-transition'), 'idle', 'liquid wipe settles cleanly');
   assert.equal(await page.locator('.aqua-portal').getAttribute('data-product'), 'bike');
   assert.match(await page.locator('[data-aqua-link]').getAttribute('href'), /water-bike-fr\.pdf$/);
   await page.locator('.aqua-portal').screenshot({ path:'/tmp/aqua-portal-bike.png' });
+  await page.locator('[data-aqua-choice="court"]').evaluate(element => element.click());
+  await page.waitForTimeout(170);
+  const reverseStart = Number(await page.locator('.aqua-portal').getAttribute('data-water-wipe'));
+  await page.locator('[data-aqua-choice="bike"]').evaluate(element => element.click());
+  await page.waitForTimeout(120);
+  const reverseRestart = Number(await page.locator('.aqua-portal').getAttribute('data-water-wipe'));
+  assert.ok(reverseRestart > reverseStart, 'rapid reversal continues from the current image boundary');
 
   await page.keyboard.press('Escape');
   await page.locator('.aqua-portal').waitFor({ state:'hidden', timeout:2000 });
@@ -153,6 +178,16 @@ try {
   await mobile.locator('.aqua-portal').waitFor({ state:'hidden' });
   assert.equal(await mobile.locator('.aqua-portal').isVisible(), false);
   await mobile.close();
+
+  const mobileMotion = await pageFor({ viewport:{ width:390, height:844 }, isMobile:true, hasTouch:true });
+  await mobileMotion.locator('[data-aqua-shortcut]').click();
+  await mobileMotion.waitForSelector('.aqua-portal.is-open');
+  assert.equal(await mobileMotion.locator('.aqua-portal').getAttribute('data-water-mode'), 'fallback', 'touch devices avoid an unnecessary WebGL pointer surface');
+  await mobileMotion.locator('[data-aqua-choice="bike"]').click();
+  await mobileMotion.waitForTimeout(270);
+  assert.match(await mobileMotion.locator('.aqua-portal__scene--bike').evaluate(element => getComputedStyle(element).clipPath), /polygon\(/, 'touch still receives the photographic liquid wipe');
+  assert.equal(await mobileMotion.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await mobileMotion.close();
 
   const compact = await pageFor({ viewport:{ width:360, height:640 }, isMobile:true, hasTouch:true, reducedMotion:'reduce' });
   await compact.locator('[data-catalogue="aqua"]').click();

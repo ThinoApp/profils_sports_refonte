@@ -2,6 +2,14 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-29 — One continuous Aqua Play water transition
+
+The September 28 Aqua interactions were individually present but the gallery hover, portal opening and product change did not share a perceptible material or timing. Make the authentic photo the continuous substrate: a radial gallery preview grows from the hovered row, then a radial full-screen reveal grows from the actual row or header shortcut. The entrance ring and WebGL light use the same measured origin. Keep the content readable throughout; no intermediate blank, generic modal cut or second unrelated reveal.
+
+Water Court and Water Bike remain separate native CSS background images. Switching products moves an interruptible, 900 ms wavy clipping boundary across the upper image, with a narrow luminous edge. The optional shader receives the same boundary only to draw responsive light. It must never texture, resample, blur or geometrically distort the brochures. A fast reverse continues from the current boundary rather than restarting. Pointer movement wakes a bounded light response, not a fake water simulation. Resize the WebGL canvas to the actual viewport before rendering; fall back cleanly after context loss.
+
+Touch and no-WebGL environments keep the photographic wipe without pointer light; reduced motion shows the selected image immediately. Preserve the four existing catalogue ribbons, FR/EN original PDFs, keyboard navigation and focus return. GitHub Pages is the preview; official OVH publication remains separately authorized.
+
 ## 2026-09-28 — Aqua photography stays native and undeformed
 
 Review showed that rendering the supplied Aqua Play photography through the WebGL shader made the background look softer/pixelated and the stronger pointer refraction visibly warped the product image. The liquid effect is now an overlay only: the browser renders the original supplied JPG directly as the CSS background, while WebGL draws transparent caustic light, pointer-driven wave highlights, the radial entrance cue and the product-transition light frontier above it.

@@ -1,6 +1,6 @@
 # Current State / Next — Profils Sports Refonte
 
-Last updated: 2026-09-28
+Last updated: 2026-09-29
 
 ## Current version
 
@@ -19,6 +19,8 @@ Primary branch:
 `main`
 
 ## Recently completed
+
+- Reworked Aqua Play as one continuous gallery-to-viewer water interaction. Hover/focus opens a radial window into the supplied imagery; activating the row or header shortcut expands a radial portal from the actual trigger. The entry ring and light-only WebGL overlay now follow that same origin, and the shader canvas uses the viewport's actual pixel size. Water Court ↔ Water Bike now uses a real, interruptible 900 ms wave-front mask on two native-resolution CSS photographs; the shader draws only light at that same boundary, never resamples or distorts the imagery. Mobile/no-WebGL retains the photographic mask; reduced motion switches immediately. Desktop/mobile and fallback regression checks cover the midpoint, reversal, FR/EN PDFs, focus return and the four original catalogue ribbons. Physical Safari/iOS remains to be validated before separate OVH publication.
 
 - Refined the Aqua Play liquid viewer so supplied photography is never warped or resampled through the shader. The native CSS background remains crisp and stable; WebGL now renders only transparent radial light, pointer-responsive wave highlights, caustics and transition accents above the image. Regression checks explicitly protect this no-deformation contract.
 
@@ -100,7 +102,7 @@ Primary branch:
 
 ## Current priorities
 
-1. Review Aqua Play's new gallery-to-viewer transition on the GitHub Pages preview, especially physical Safari/iOS, before publishing it to OVH production.
+1. Review Aqua Play's continuous gallery-to-viewer transition on the GitHub Pages preview, especially physical Safari/iOS. Publish to OVH production only on a separate explicit request.
 2. Validate the directional cursor visually against the reference video on the live GitHub Pages build.
 3. Validate the new Solutions maquette and large typography on physical tablet/mobile browsers, especially Safari/iOS.
 4. Build a proper Project / Reference page template ready for real verified projects.
