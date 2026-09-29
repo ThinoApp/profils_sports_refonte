@@ -18,7 +18,7 @@
   position:absolute; z-index:3; top:30px; left:var(--pad); right:var(--pad);
   display:flex; align-items:center; justify-content:space-between; gap:20px;
 }
-.brand-emblem__toolbar p { margin:0; font-size:10px; font-weight:700; letter-spacing:.16em; color:#f1efe6; }
+.brand-emblem__toolbar p { margin:0; font-size:11px; font-weight:700; letter-spacing:.1em; color:#f1efe6; }
 .brand-emblem__controls { display:flex; gap:8px; }
 .brand-emblem__controls button {
   display:grid; place-items:center; width:44px; height:44px; padding:0;
@@ -43,7 +43,7 @@
   width:84px; height:84px; filter:none; opacity:.72; transition:opacity .25s,transform .25s;
 }
 .brand-emblem[data-emblem-ready] figure[data-active] img { opacity:1; transform:scale(1.1); }
-.brand-emblem[data-emblem-ready] figure figcaption { color:#f1efe6; font-size:9px; }
+.brand-emblem[data-emblem-ready] figure figcaption { color:#f1efe6; font-size:11px; }
 .brand-emblem[data-emblem-ready] figure[data-active] figcaption { color:#efe158; }
 .brand-emblem__node {
   position:absolute; inset:0; border:0; padding:0; background:none; cursor:pointer;
@@ -54,7 +54,7 @@
   display:flex; justify-content:space-between; align-items:end; gap:20px; pointer-events:none;
 }
 .brand-emblem__bottom p {
-  max-width:190px; margin:0; font-size:9px; line-height:1.7; letter-spacing:.1em;
+  max-width:220px; margin:0; font-size:11px; line-height:1.6; letter-spacing:.06em;
   text-transform:uppercase; color:#f1efe699;
 }
 .brand-emblem__action {
@@ -64,14 +64,14 @@
 @media (max-width:720px) {
   .brand-emblem[data-emblem-pending], .brand-emblem[data-emblem-ready] { height:clamp(550px, 95vw, 684px); }
   .brand-emblem__toolbar { top:22px; gap:10px; }
-  .brand-emblem__toolbar p { max-width:135px; font-size:9px; line-height:1.6; }
+  .brand-emblem__toolbar p { max-width:155px; font-size:11px; line-height:1.5; }
   .brand-emblem__controls { gap:5px; }
   .brand-emblem[data-emblem-ready] figure { width:100px; height:105px; gap:6px; }
   .brand-emblem[data-emblem-ready] figure img { width:64px; height:64px; }
-  .brand-emblem[data-emblem-ready] figure figcaption { font-size:7px; letter-spacing:.1em; }
+  .brand-emblem[data-emblem-ready] figure figcaption { font-size:11px; letter-spacing:.04em; }
   .brand-emblem__bottom { bottom:18px; flex-direction:column; align-items:center; gap:8px; }
-  .brand-emblem__bottom p { max-width:none; font-size:8px; }
-  .brand-emblem__action { font-size:10px; padding:10px 4px; }
+  .brand-emblem__bottom p { max-width:none; font-size:11px; }
+  .brand-emblem__action { font-size:11px; padding:10px 4px; }
 }
 @media (prefers-reduced-motion:reduce) {
   .brand-emblem figure, .brand-emblem figure img, .brand-emblem__controls button { transition:none !important; }

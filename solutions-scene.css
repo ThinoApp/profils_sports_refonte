@@ -50,8 +50,8 @@
   .solutions-scene-label strong { max-width: 170px; text-align: right; line-height: 1.2; }
   .solutions-tools { gap: 12px; padding-top: 6px; min-height: 35px; }
   .solutions-parts { gap: 2px 15px; }
-  .solutions-tools button { font-size: 10px; min-height: 38px; }
-  .solutions-figure figcaption { margin-top: 5px; font-size: 9px; }
+  .solutions-tools button { font-size: 11px; min-height: 44px; }
+  .solutions-figure figcaption { margin-top: 5px; font-size: 11px; }
   .solutions-annotation { bottom: 15px; font-size: 11px; }
   .solution-entry button { padding: 15px 0; }
   .solution-entry button { scroll-margin-top: calc(100px + min(45svh, 390px) + 90px); }

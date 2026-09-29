@@ -2,6 +2,10 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-09-29 — Functional labels are not microprint
+
+Preserve the V3 editorial/technical language, but raise functional labels, controls, catalogue page counts, model captions and contact details to at least 11 px on both desktop and mobile. Reduce tracking where necessary to keep them readable without inflating the layout. Legal footer copy may remain at 10 px. Hover states should change color or transform, not animate padding and force nearby content to reflow. This is an accessibility/performance refinement, not a new visual direction.
+
 ## 2026-09-29 — One continuous Aqua Play water transition
 
 The September 28 Aqua interactions were individually present but the gallery hover, portal opening and product change did not share a perceptible material or timing. Make the authentic photo the continuous substrate: a radial gallery preview grows from the hovered row, then a radial full-screen reveal grows from the actual row or header shortcut. The entrance ring and WebGL light use the same measured origin. Keep the content readable throughout; no intermediate blank, generic modal cut or second unrelated reveal.

@@ -384,10 +384,10 @@
     grid-template-columns: 30px minmax(0,1fr);
     gap: 0 18px;
     align-items: start;
-    padding: 22px 0;
+    padding: 26px 0 28px 14px;
     border-bottom: 1px solid rgba(255,255,255,.13);
     background: transparent !important;
-    transition: padding .32s cubic-bezier(.18,.82,.18,1);
+    transition: background .32s cubic-bezier(.18,.82,.18,1);
   }
 
   #approach:has([data-blueprint].approach-drag-ready) .approach-row:first-child {
@@ -418,7 +418,7 @@
     border: 1px solid rgba(255,255,255,.22);
     background: #091521;
     color: rgba(255,255,255,.52);
-    font-size: 8px;
+    font-size: 11px;
     transition: background .28s ease,color .28s ease,border-color .28s ease;
   }
 

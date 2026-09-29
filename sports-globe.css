@@ -18,7 +18,7 @@
   opacity:1; filter:sepia(1) saturate(3); padding:3px;
 }
 .brand-emblem[data-emblem-ready] figure figcaption {
-  white-space:nowrap; font-size:9px; background:#091521; padding:4px 7px;
+  white-space:nowrap; font-size:11px; background:#091521; padding:4px 7px;
 }
 .brand-emblem[data-emblem-ready] figure:hover img,
 .brand-emblem[data-emblem-ready] figure:focus-within img { transform:scale(1.12); }
@@ -27,7 +27,7 @@
 .globe-popup h3 { margin:0 25px 12px 0; font-family:'Barlow Condensed',sans-serif; font-size:34px; line-height:1; }
 .globe-popup p { font-size:13px; line-height:1.6; margin:0 0 16px; }
 .globe-popup__question { padding-top:14px; border-top:1px solid #09152130; }
-.globe-popup small { display:block; font-size:10px; line-height:1.5; margin-bottom:15px; }
+.globe-popup small { display:block; font-size:11px; line-height:1.5; margin-bottom:15px; }
 .globe-popup__action { display:block; font-size:12px; font-weight:700; border-bottom:1px solid #091521; padding:10px 0; }
 .globe-popup__close { position:absolute; right:7px; top:7px; display:grid; place-items:center; width:38px; height:38px; background:none; border:0; color:inherit; cursor:pointer; }
 .globe-popup :focus-visible { outline:2px solid #091521; outline-offset:3px; }
@@ -42,7 +42,7 @@
   .brand-emblem[data-emblem-ready] .discipline-rail__track { inset:90px 0 110px; height:calc(100% - 200px); }
   .brand-emblem[data-emblem-ready] figure { width:64px; height:80px; gap:4px; }
   .brand-emblem[data-emblem-ready] figure img { width:48px; height:48px; }
-  .brand-emblem[data-emblem-ready] figure figcaption { font-size:7px; padding:3px; }
+  .brand-emblem[data-emblem-ready] figure figcaption { font-size:11px; padding:3px; }
   .brand-emblem[data-globe-fallback] .discipline-rail__track { grid-template-columns:repeat(2,1fr); }
   .brand-emblem__status { font-size:11px; bottom:100px; }
 }

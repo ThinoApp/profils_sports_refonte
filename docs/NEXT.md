@@ -20,6 +20,8 @@ Primary branch:
 
 ## Recently completed
 
+- Raised functional microcopy in the header, catalogues, globe, Solutions model, Method scene and footer to a readable 11 px minimum, with less tracking and steadier contrast. Removed padding transitions from Aqua product choices and legacy list rows, keeping hover emphasis without layout reflow. Impeccable's hooked `layout-transition` and `undersized-ui-text` findings are resolved in the active page. Verify the mobile hierarchy visually alongside the existing interaction regressions.
+
 - Reworked Aqua Play as one continuous gallery-to-viewer water interaction. Hover/focus opens a radial window into the supplied imagery; activating the row or header shortcut expands a radial portal from the actual trigger. The entry ring and light-only WebGL overlay now follow that same origin, and the shader canvas uses the viewport's actual pixel size. Water Court ↔ Water Bike now uses a real, interruptible 900 ms wave-front mask on two native-resolution CSS photographs; the shader draws only light at that same boundary, never resamples or distorts the imagery. Mobile/no-WebGL retains the photographic mask; reduced motion switches immediately. Desktop/mobile and fallback regression checks cover the midpoint, reversal, FR/EN PDFs, focus return and the four original catalogue ribbons. Physical Safari/iOS remains to be validated before separate OVH publication.
 
 - Refined the Aqua Play liquid viewer so supplied photography is never warped or resampled through the shader. The native CSS background remains crisp and stable; WebGL now renders only transparent radial light, pointer-responsive wave highlights, caustics and transition accents above the image. Regression checks explicitly protect this no-deformation contract.
