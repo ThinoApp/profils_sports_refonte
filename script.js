@@ -245,9 +245,11 @@
   const activateCatalogue = (row, index) => {
     qa('[data-catalogue]').forEach(r => r.classList.remove('is-active'));
     row.classList.add('is-active');
+    const unavailable = row.hasAttribute('data-catalogue-unavailable');
     if (previewImage) {
-      previewImage.style.backgroundImage = `url("${catalogueImages[row.dataset.catalogue]}")`;
-      if (!reduced && previewImage.animate) {
+      const image = unavailable ? '' : catalogueImages[row.dataset.catalogue];
+      previewImage.style.backgroundImage = image ? `url("${image}")` : 'none';
+      if (image && !reduced && previewImage.animate) {
         previewImage.animate(
           [{transform:'scale(1.045)',filter:'brightness(.72)'},{transform:'scale(1)',filter:'brightness(1)'}],
           {duration:520,easing:'cubic-bezier(.18,.82,.18,1)'}
