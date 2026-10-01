@@ -1574,9 +1574,27 @@ body.is-loaded .hero-line:nth-child(3) b {
   transform: none;
 }
 .catalogue-row--unavailable .catalogue-name {
-  max-width: 28ch;
-  font-size: clamp(28px, 3vw, 46px);
-  line-height: .98;
+  max-width: none;
+}
+.catalogue-name--notice {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1vw, 14px);
+  min-width: 0;
+  white-space: nowrap;
+  font-size: clamp(18px, 2.35vw, 34px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.catalogue-status-icon {
+  width: clamp(18px, 1.8vw, 24px);
+  height: clamp(18px, 1.8vw, 24px);
+  flex: 0 0 auto;
+  fill: none;
+  stroke: #7d7200;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .catalogue-row--unavailable .catalogue-action {
   display: none;
@@ -1811,10 +1829,14 @@ body.is-loaded .hero-line:nth-child(3) b {
     row-gap: 8px;
     padding-block: 16px;
   }
-  .catalogue-row--unavailable .catalogue-name {
-    max-width: 22ch;
-    font-size: clamp(24px, 8vw, 34px);
-    line-height: 1;
+  .catalogue-name--notice {
+    gap: 7px;
+    font-size: 14px;
+    letter-spacing: -0.025em;
+  }
+  .catalogue-status-icon {
+    width: 16px;
+    height: 16px;
   }
   .discipline-rail {
     overflow: auto;
