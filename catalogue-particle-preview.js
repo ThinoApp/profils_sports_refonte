@@ -6,7 +6,7 @@
   const body = document.body;
   const catalogue = document.querySelector('#catalogues');
   const list = catalogue?.querySelector('.catalogue-list');
-  const rows = catalogue ? [...catalogue.querySelectorAll('[data-catalogue]:not([data-catalogue="aqua"])')] : [];
+  const rows = catalogue ? [...catalogue.querySelectorAll('[data-catalogue]:not([data-catalogue="aqua"]):not([data-catalogue-unavailable])')] : [];
 
   if (!catalogue || !list || !rows.length) return;
 
@@ -246,7 +246,8 @@
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin('anonymous');
 
-    const entries = Object.entries(catalogueImages);
+    const availableKeys = new Set(rows.map(row => row.dataset.catalogue));
+    const entries = Object.entries(catalogueImages).filter(([key]) => availableKeys.has(key));
     const settled = await Promise.allSettled(entries.map(([key, url]) => new Promise((resolve, reject) => {
       loader.load(
         url,
@@ -463,12 +464,12 @@
     });
 
     list.addEventListener('mouseenter', event => {
-      if (document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-catalogue="aqua"]')) return;
+      if (document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-catalogue="aqua"], [data-catalogue-unavailable]')) return;
       setCanvasVisible(true);
       setTargetFromPointer(event);
     });
     list.addEventListener('pointermove', event => {
-      if (event.target.closest('[data-catalogue="aqua"]')) return;
+      if (event.target.closest('[data-catalogue="aqua"], [data-catalogue-unavailable]')) return;
       setTargetFromPointer(event);
     }, { passive: true });
     list.addEventListener('mouseleave', () => setCanvasVisible(false));
