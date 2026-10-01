@@ -13,12 +13,13 @@
   const rows=[...document.querySelectorAll('[data-catalogue]')];
   const reduced=matchMedia('(prefers-reduced-motion:reduce)');
   const text=(fr,en)=>document.documentElement.lang==='en'?en:fr;
+  const padelNotice='Notre nouveau catalogue arrive bientôt !';
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const mod=n=>(n%8+8)%8;
   const descriptions=[
     ['Un espace dédié au jeu et à la convivialité.','A space for play and shared moments.','Quel espace souhaitez-vous aménager et pour quels joueurs ?','What space are you planning, and who will play there?'],
     ['Préparez votre espace de fitness à partir des équipements du catalogue.','Plan your fitness space with equipment from the catalogue.','Quels usages, quelle surface et quel public envisagez-vous ?','Which activities, floor area and users do you have in mind?'],
-    ['Explorez le catalogue Padel pour préparer votre projet de terrain.','Explore the Padel catalogue to plan your court project.','Un nouveau terrain ou un site à faire évoluer ?','A new court or an existing site to develop?'],
+    ['Préparez votre projet de terrain de padel, de son implantation à son usage.','Plan your padel court project, from its layout to its use.','Un nouveau terrain ou un site à faire évoluer ?','A new court or an existing site to develop?'],
     ['Imaginez la place du pickleball dans votre espace sportif.','Explore how pickleball could fit your sports space.','Disposez-vous déjà d’un terrain ou partez-vous d’un nouvel espace ?','Do you have an existing court or a new space in mind?'],
     ['Pensez un espace adapté à la pratique du pilates.','Plan a space suited to pilates.','Pratique individuelle ou cours collectifs : quels sont vos besoins ?','Individual practice or group classes: what do you need?'],
     ['Préparez votre projet de football, du lieu de pratique à son aménagement.','Plan your football project, from the playing space to its layout.','Pour une école, un club ou un espace en accès libre ?','For a school, a club or an open-access space?'],
@@ -55,9 +56,11 @@
     popup.querySelector('h3').textContent=names[i];
     popup.querySelector('.globe-popup__description').textContent=descriptions[i][english?1:0];
     popup.querySelector('.globe-popup__question').textContent=descriptions[i][english?3:2].replace(/ ([?!:])/g,'\u00a0$1');
-    popup.querySelector('small').textContent=row?text('À explorer : ','Explore: ')+row.querySelector('.catalogue-name').textContent+' · '+row.dataset.pages+text(' pages',' pages'):text('Échangeons sur votre projet','Let’s discuss your project');
+    const unavailable=row?.hasAttribute('data-catalogue-unavailable');
+    popup.querySelector('small').textContent=unavailable?padelNotice:row?text('À explorer : ','Explore: ')+row.querySelector('.catalogue-name').textContent+' · '+row.dataset.pages+text(' pages',' pages'):text('Échangeons sur votre projet','Let’s discuss your project');
     popup.querySelector('button').setAttribute('aria-label',text('Fermer la fiche','Close details'));
-    if(row){link.dataset.catalogueTrigger=row.dataset.catalogue;link.href=row.href;link.target='_blank';link.textContent=text('Ouvrir le catalogue','Open catalogue')+' ↗';}
+    if(unavailable){delete link.dataset.catalogueTrigger;link.removeAttribute('target');link.href='#catalogues';link.textContent=padelNotice;}
+    else if(row){link.dataset.catalogueTrigger=row.dataset.catalogue;link.href=row.href;link.target='_blank';link.textContent=text('Ouvrir le catalogue','Open catalogue')+' ↗';}
     else{delete link.dataset.catalogueTrigger;link.removeAttribute('target');link.href='mailto:contact@profilssports.com?subject='+encodeURIComponent(text('Projet ','Project ')+names[i]);link.textContent=text('Parler de ce projet','Discuss this project')+' ↗';}
   }
   function positionPopup(){
@@ -123,7 +126,9 @@
   window.addEventListener('resize',positionPopup);window.addEventListener('scroll',()=>{if(popupIndex>=0)positionPopup();},{passive:true});
   function copy(){
     const row=rows.find(r=>r.dataset.catalogue===catalogues[selected]);
-    if(row){action.dataset.catalogueTrigger=row.dataset.catalogue;action.href=row.href;action.target='_blank';action.textContent=text('FEUILLETER ','BROWSE ')+row.querySelector('.catalogue-name').textContent+' ↗';}
+    const unavailable=row?.hasAttribute('data-catalogue-unavailable');
+    if(unavailable){delete action.dataset.catalogueTrigger;action.removeAttribute('target');action.href='#catalogues';action.textContent=padelNotice;}
+    else if(row){action.dataset.catalogueTrigger=row.dataset.catalogue;action.href=row.href;action.target='_blank';action.textContent=text('FEUILLETER ','BROWSE ')+row.querySelector('.catalogue-name').textContent+' ↗';}
     else {delete action.dataset.catalogueTrigger;action.removeAttribute('target');action.href='mailto:contact@profilssports.com?subject='+encodeURIComponent(text('Projet ','Project ')+names[selected]);action.textContent=text('PARLONS ','DISCUSS ')+names[selected]+' ↗';}
     figures.forEach((f,i)=>{f.toggleAttribute('data-active',i===selected);buttons[i].setAttribute('aria-pressed',String(i===selected));buttons[i].setAttribute('aria-label',text('Sélectionner ','Select ')+names[i]);});
     stage.setAttribute('aria-label',text('Globe des sports. Glissez pour tourner. Flèches pour choisir une discipline, Début pour recentrer.','Sports globe. Drag to rotate. Arrow keys select a discipline, Home resets the view.'));
