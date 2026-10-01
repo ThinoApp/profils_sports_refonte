@@ -2,6 +2,12 @@
 
 This file records meaningful design, content and implementation decisions so future agents do not accidentally undo choices that were made intentionally.
 
+## 2026-10-01 — Padel catalogue is temporarily unpublished
+
+Per the PSI directive, the existing public Padel catalogue must not be browsable for now. Keep the Padel discipline and project-related content on the site, but replace catalogue availability with the exact phrase “Notre nouveau catalogue arrive bientôt !”. Do not translate, shorten or paraphrase that sentence in the public interface.
+
+This is a reversible content gate, not a deletion of the catalogue system. Preserve the 20-page Padel entry in the ribbon configuration and keep its local page assets/components intact. The Padel catalogue row is non-navigable, direct and indirect ribbon triggers are guarded, the old Padel particle preview is not preloaded, and globe catalogue CTAs show the same exact notice instead of opening the viewer. The other catalogue collections remain unchanged.
+
 ## 2026-09-29 — Functional labels are not microprint
 
 Preserve the V3 editorial/technical language, but raise functional labels, controls, catalogue page counts, model captions and contact details to at least 11 px on both desktop and mobile. Reduce tracking where necessary to keep them readable without inflating the layout. Legal footer copy may remain at 10 px. Hover states should change color or transform, not animate padding and force nearby content to reflow. This is an accessibility/performance refinement, not a new visual direction.
