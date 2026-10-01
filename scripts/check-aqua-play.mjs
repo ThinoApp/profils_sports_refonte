@@ -173,7 +173,12 @@ try {
   await page.locator('[data-aqua-close]').click();
   await page.waitForTimeout(600);
 
-  await page.locator('[data-catalogue="padel"]').click();
+  const padel = page.locator('[data-catalogue="padel"]');
+  assert.equal((await padel.locator('.catalogue-action').textContent()).trim(), 'Notre nouveau catalogue arrive bientôt !', 'Padel shows the exact temporary catalogue notice');
+  await padel.click();
+  await page.waitForTimeout(180);
+  assert.equal(await page.locator('.catalogue-ribbon.is-open').count(), 0, 'Padel cannot open the legacy ribbon while temporarily unpublished');
+  await page.locator('[data-catalogue="fitness"]').click();
   await page.waitForSelector('.catalogue-ribbon.is-open');
   await page.locator('[data-ribbon-close]').click();
   await page.close();
