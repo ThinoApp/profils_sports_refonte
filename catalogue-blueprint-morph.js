@@ -16,6 +16,7 @@
   const SPRING = 0.072;
   const DAMPING = 0.79;
   const SETTLE_EPSILON = 0.018;
+  const PADEL_NOTICE = 'Notre nouveau catalogue arrive bientôt !';
 
   const STATES = {
     fitness: {
@@ -28,8 +29,8 @@
     padel: {
       number: '02 / 05',
       title: 'PADEL',
-      footer: 'CATALOGUE PADEL',
-      coordinate: '20 PAGES',
+      footer: PADEL_NOTICE,
+      coordinate: '',
       path: 'M126 404C178 348 189 300 156 263c-30-34-19-82 28-102 62-26 118 20 106 78-10 49-60 62-79 100-18 36 10 81 63 73 56-8 87-68 63-115-19-38-6-90 45-113'
     },
     csp: {
