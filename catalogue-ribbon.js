@@ -2,7 +2,7 @@
   'use strict';
 
   const catalogueSection = document.querySelector('#catalogues');
-  const rows = catalogueSection ? [...catalogueSection.querySelectorAll('[data-catalogue]:not([data-catalogue="aqua"])')] : [];
+  const rows = catalogueSection ? [...catalogueSection.querySelectorAll('[data-catalogue]:not([data-catalogue="aqua"]):not([data-catalogue-unavailable])')] : [];
   if (!catalogueSection || !rows.length) return;
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -36,6 +36,7 @@
     csp: { title: 'CSP PRO', pages: 4, ratio: 1241 / 1754, categoryFr: 'OUTDOOR', categoryEn: 'OUTDOOR' },
     canopy: { title: 'CANOPY SCHOOL', pages: 4, ratio: 1241 / 1754, categoryFr: 'ÉDUCATION', categoryEn: 'EDUCATION' }
   });
+  const TEMPORARILY_UNAVAILABLE = new Set(['padel']);
 
   const overlay = document.createElement('section');
   overlay.className = 'catalogue-ribbon';
@@ -520,6 +521,7 @@
   };
 
   const open = (row, key = row.dataset.catalogue) => {
+    if (TEMPORARILY_UNAVAILABLE.has(key)) return;
     clearTimeout(closeTimer);
     setOrigin(row);
     activeKey = CATALOGUES[key] ? key : 'fitness';
@@ -601,7 +603,7 @@
   // The discipline rotor uses the same viewer and returns focus to its own CTA.
   document.addEventListener('click', event => {
     const source = event.target.closest('[data-catalogue-trigger]');
-    if (!source || !CATALOGUES[source.dataset.catalogueTrigger] || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (!source || !CATALOGUES[source.dataset.catalogueTrigger] || TEMPORARILY_UNAVAILABLE.has(source.dataset.catalogueTrigger) || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     open(source, source.dataset.catalogueTrigger);
   });
